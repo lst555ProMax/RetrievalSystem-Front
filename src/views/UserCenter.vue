@@ -35,31 +35,6 @@ const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
 
-// 动态背景色
-onMounted(() => {
-  const container = document.querySelector('.container');
-  const gradient = container.querySelector('::before');
-
-  function updateGradient(e) {
-    const { clientX: x, clientY: y } = e;
-    const { offsetWidth: width, offsetHeight: height } = container;
-
-    // 计算相对位置
-    const xPos = (x / width) * 100;
-    const yPos = (y / height) * 100;
-
-    // 更新渐变位置
-    container.style.setProperty('--gradient-x', `${xPos}%`);
-    container.style.setProperty('--gradient-y', `${yPos}%`);
-  }
-
-  container.addEventListener('mousemove', updateGradient);
-
-  onUnmounted(() => {
-    container.removeEventListener('mousemove', updateGradient);
-  });
-});
-
 </script>
 
 <style scoped>
@@ -99,20 +74,6 @@ header h1 {
 
   position: relative;
   overflow: hidden;
-}
-
-.container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 5%);
-  pointer-events: none;
-  transition: transform 0.1s ease-out;
-  transform: scale(1) translate(calc(var(--gradient-x) - 50%), calc(var(--gradient-y) - 50%));
-  z-index: 1;
 }
 
 .main-content {
