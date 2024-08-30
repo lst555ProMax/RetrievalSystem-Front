@@ -7,7 +7,6 @@
     </header>
 
     <div class="main-content">
-      
       <section class="user-info">
         <h2>用户名</h2>
         <p>邮箱：example@example.com</p>
@@ -24,7 +23,6 @@
         </ul>
       </section>
     </div>
-    <FooterComponent></FooterComponent>
   </div>
 </template>
 
@@ -33,27 +31,52 @@ import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 
-import FooterComponent from "../components/FooterComponent.vue";
-
 const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
+
+// 动态背景色
+onMounted(() => {
+  const container = document.querySelector('.container');
+  const gradient = container.querySelector('::before');
+
+  function updateGradient(e) {
+    const { clientX: x, clientY: y } = e;
+    const { offsetWidth: width, offsetHeight: height } = container;
+
+    // 计算相对位置
+    const xPos = (x / width) * 100;
+    const yPos = (y / height) * 100;
+
+    // 更新渐变位置
+    container.style.setProperty('--gradient-x', `${xPos}%`);
+    container.style.setProperty('--gradient-y', `${yPos}%`);
+  }
+
+  container.addEventListener('mousemove', updateGradient);
+
+  onUnmounted(() => {
+    container.removeEventListener('mousemove', updateGradient);
+  });
+});
+
 </script>
 
 <style scoped>
 body {
   margin: 0;
+  padding: 0;
   font-family: "Montserrat", sans-serif;
   background-color: #001f3f; /* 深海蓝色调 */
   color: #d3d3d3; /* 淡雅灰色调 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 100vh;
+  height: 100%;
 }
 
 header {
-  background-color: #001732; /* 深海蓝色的略深调 */
+  background-color: #001f3f; /* 深海蓝色的略深调 */
   padding: 20px;
   text-align: center;
 }
@@ -68,16 +91,36 @@ header h1 {
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  flex: 1; 
+  margin: 5px;
+  background-color: #001732; 
+  height: calc(100vh - 10px);
+  border-radius: 5px;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 5%);
+  pointer-events: none;
+  transition: transform 0.1s ease-out;
+  transform: scale(1) translate(calc(var(--gradient-x) - 50%), calc(var(--gradient-y) - 50%));
+  z-index: 1;
 }
 
 .main-content {
   padding: 40px 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  min-height: 0;
   flex: 1;
+  align-items: center;
 }
 
 .user-info,
