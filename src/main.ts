@@ -7,6 +7,8 @@ import App from './App.vue'
 import router from './router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import { ElIcon } from 'element-plus';
+/* import 'element-plus/lib/theme-chalk/el-icon.css'; */
 
 //图标 图标在附件中
 import './assets/icon/iconfont.css'
@@ -29,6 +31,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)
+app.component(ElIcon.name, ElIcon);
 
 //配置全局变量
 app.config.globalProperties.Request = Request;

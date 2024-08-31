@@ -2,7 +2,7 @@
   <div class="admin-panel">
     <!-- 左侧侧边栏 -->
 
-    <headbar></headbar>
+    <headbar @toggleForm="handleToggleForm"></headbar>
     <div class="non-header">
       <sidebar></sidebar>
 
@@ -44,7 +44,6 @@
       </div>
     </div>
   </div>
-  <!--   <FooterComponent></FooterComponent> -->
 </template>
 
 <script setup>
@@ -54,7 +53,10 @@ import FooterComponent from "../components/FooterComponent.vue";
 import Sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
 
+
 const router = useRouter();
+
+
 
 const modules = [
   { title: "文本检索", link: "#", buttonText: "文本检索" },
@@ -72,6 +74,7 @@ const handleDialogue = () => router.push("/dialogue");
 
 const handlePersonal = () => router.push("/recommendation");
 const handleOther = () => router.push("/other");
+
 </script>
 
 <style scoped>

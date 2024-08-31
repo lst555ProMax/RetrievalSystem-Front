@@ -9,7 +9,7 @@ import imageSearch from '../views/ImageSearch.vue'
 import userCenter from '../views/UserCenter.vue'
 import result from '../views/Result.vue'
 import dialogue from '../views/dialogue.vue'
-import others from '../views/others.vue'
+import others from '../views/Others.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
