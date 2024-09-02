@@ -15,7 +15,7 @@
         </div>
 
         <!--input输入-->
-        <el-form-item prop="email">
+        <el-form-item prop="email" v-if="opType==0||opType==1">
           <el-input
             size="large"
             clearable
@@ -47,7 +47,7 @@
 
         <!-- 注册或忘记密码 -->
         <div v-if="opType == 0 || opType == 2">
-          <el-form-item prop="emailCode">
+<!--           <el-form-item prop="emailCode">
             <div class="send-email-panel">
               <el-input
                 size="large"
@@ -79,14 +79,29 @@
               </template>
             </el-popover>
           </el-form-item>
+ -->
+          <!-- 用户名 -->
+          <el-form-item prop="username" v-if="opType == 0||opType ==2">
+            <el-input
+              size="large"
+              clearable
+              placeholder="请输入用户名"
+              v-model="formData.username"
+              maxlength="20"
+            >
+              <template #prefix>
+                <span class="iconfont icon-account"></span>
+              </template>
+            </el-input>
+          </el-form-item>
 
-          <!-- 昵称 -->
-          <el-form-item prop="nickName" v-if="opType == 0">
+                    <!-- 昵称 -->
+                    <el-form-item prop="nickname" v-if="opType == 0">
             <el-input
               size="large"
               clearable
               placeholder="请输入昵称"
-              v-model="formData.nickName"
+              v-model="formData.nickname"
               maxlength="20"
             >
               <template #prefix>
@@ -127,7 +142,7 @@
         </div>
 
         <!-- 验证码 -->
-        <el-form-item prop="checkCode">
+<!--         <el-form-item prop="checkCode">
           <div class="check-code-panel">
             <el-input
               size="large"
@@ -146,7 +161,7 @@
             />
           </div>
         </el-form-item>
-
+ -->
         <!-- 跳转链接 -->
         <el-form-item v-if="opType == 1">
           <div class="rememberme-panel">
@@ -204,8 +219,7 @@
       </div>
     </div>
 
-    <!--发送邮箱验证码-->
-    <Dialog
+    <!-- <Dialog
       :show="dialogConfig4SendMailCode.show"
       :title="dialogConfig4SendMailCode.title"
       :buttons="dialogConfig4SendMailCode.buttons"
@@ -223,7 +237,6 @@
           {{ formData.email }}
         </el-form-item>
 
-        <!-- prop用于规则验证 -->
         <el-form-item label="验证码" prop="checkCode">
           <div class="check-code-panel">
             <el-input
@@ -243,8 +256,7 @@
           </div>
         </el-form-item>
       </el-form>
-    </Dialog>
-    {{ data }}
+    </Dialog> -->
   </div>
 </template>
 
@@ -260,11 +272,11 @@ const route = useRoute();
 
 const data = ref("");
 const api = {
-  checkCode: "/api/checkCode",
-  sendEmailCode: "/sendEmailCode",
-  register: "/register",
+/*   checkCode: "http://172.20.10.7:8000/user/api/checkCode",
+  sendEmailCode: "http://172.20.10.7:8000/user/sendEmailCode", */
+  register: "http://172.20.10.7:8000/user/register",
   login: "http://172.20.10.7:8000/user/login",
-  resetPwd: "/resetPwd",
+  resetPwd: "http://172.20.10.7:8000/user/edit",
   /*   qqlogin: "/qqlogin", */
 };
 
@@ -281,7 +293,7 @@ onMounted(() => {
 });
 
 //验证码(两个界面的验证码独立)
-const checkCodeUrl = ref(api.checkCode);
+/* const checkCodeUrl = ref(api.checkCode);
 const checkCodeUrl4SendMailCode = ref(api.checkCode);
 const changeCheckCode = (type) => {
   if (type == 0) {
@@ -291,10 +303,10 @@ const changeCheckCode = (type) => {
     checkCodeUrl4SendMailCode.value =
       api.checkCode + "?type=" + type + "&time=" + new Date().getTime();
   }
-};
+}; */
 
 /* 发送邮箱验证码弹窗 */
-const formData4SendMailCode = ref({});
+/* const formData4SendMailCode = ref({});
 const formData4SendMailCodeRef = ref();
 const dialogConfig4SendMailCode = reactive({
   show: false,
@@ -308,28 +320,28 @@ const dialogConfig4SendMailCode = reactive({
       },
     },
   ],
-});
+}); */
 
 //获取邮箱验证码
-const getEmailCode = () => {
-  formDataRef.value.validateField("email", (valid) => {
-    if (!valid) {
-      return;
-    }
-    dialogConfig4SendMailCode.show = true; /* 判断邮箱格式是否正确 */
+// const getEmailCode = () => {
+//   formDataRef.value.validateField("email", (valid) => {
+//     if (!valid) {
+//       return;
+//     }
+//     dialogConfig4SendMailCode.show = true; /* 判断邮箱格式是否正确 */
 
-    nextTick(() => {
-      changeCheckCode(1); /* 将验证码换掉 */
-      formData4SendMailCodeRef.value.resetFields(); /* 重置表单值 */
-      formData4SendMailCode.value = {
-        email: formData.value.email /* 将登录界面的邮箱传到验证界面 */,
-      };
-    });
-  });
-};
+//     nextTick(() => {
+//       changeCheckCode(1); /* 将验证码换掉 */
+//       formData4SendMailCodeRef.value.resetFields(); 
+//       formData4SendMailCode.value = {
+//         email: formData.value.email,
+//       };
+//     });
+//   });
+// };
 
 /* 发送邮件，要后端联调 */
-const sendEmailCode = () => {
+/* const sendEmailCode = () => {
   formData4SendMailCodeRef.value.validate(async (valid) => {
     if (!valid) {
       return;
@@ -349,7 +361,7 @@ const sendEmailCode = () => {
     proxy.Message.success("验证码发送成功，请登录邮箱查看");
     dialogConfig4SendMailCode.show = false;
   });
-};
+}; */
 
 //登录，注册 弹出配置   reactive响应式对象
 const dialogConfig = reactive({
@@ -376,8 +388,8 @@ const rules = {
     { validator: proxy.Verify.email, message: "请输入正确的邮箱" },
   ],
   password: [{ required: true, message: "请输入密码" }],
-  emailCode: [{ required: true, message: "请输入邮箱验证码" }],
-  nickName: [{ required: true, message: "请输入昵称" }],
+  /* emailCode: [{ required: true, message: "请输入邮箱验证码" }], */
+  username: [{ required: true, message: "请输入昵称" }],
   registerPassword: [
     { required: true, message: "请输入密码" },
     {
@@ -392,7 +404,7 @@ const rules = {
       message: "两次输入的密码不一致",
     },
   ],
-  checkCode: [{ required: true, message: "请输入图片验证码" }],
+  /* checkCode: [{ required: true, message: "请输入图片验证码" }], */
 };
 
 /* 重置表单 */
@@ -406,7 +418,7 @@ const resetForm = () => {
     dialogConfig.title = "重置密码";
   }
   nextTick(() => {
-    changeCheckCode(0);
+    /* changeCheckCode(0); */
     formDataRef.value.resetFields();
     formData.value = {};
 
@@ -442,9 +454,9 @@ const doSubmit = () => {
       let cookieLoginInfo = proxy.VueCookies.get("loginInfo");
       let cookiePassword =
         cookieLoginInfo == null ? null : cookieLoginInfo.password;
-      /*       if (params.password !== cookiePassword) {
+/*        if (params.password !== cookiePassword) {
         params.password = md5(params.password);
-      } */
+      }  */
     }
     let url = null;
     if (opType.value == 0) {
@@ -454,18 +466,39 @@ const doSubmit = () => {
     } else if (opType.value == 2) {
       url = api.resetPwd;
     }
-    console.log("yyyyyyyyy");
-    console.log(params);
-    const result = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(params),
-    });
+    
+    // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
+    const urlEncodedParams = new URLSearchParams(params);
 
-    const re = await result.json();
-    data.value = re;
-    console.log(re);
-    console.log("eeeeeee");
-    console.log(re.message);
+
+    try {
+      // 发送请求
+      const result = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded", // 确保内容类型为表单数据
+        },
+        body: urlEncodedParams.toString(), // 传递参数
+      });
+
+      // 解析响应
+      const response = await result.json();
+      data.value = response; // 更新数据
+
+      console.log(response.message); // 输出消息
+
+      // 可根据需求添加进一步的处理逻辑
+      if (response.code===0) {
+        // 根据接口返回的数据判断是否操作成功
+        alert("操作成功");
+        router.push("/framework");
+      } else {
+        alert("操作失败：" + response.message);
+      }
+    } catch (error) {
+      console.error("请求失败", error);
+      alert("请求失败，请检查网络或稍后再试");
+    }
   });
 };
 

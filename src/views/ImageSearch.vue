@@ -25,17 +25,17 @@
                   <img
                     :src="images[0 + 2 * questionSelection]"
                     alt="Gallery Image"
+                    class="image-class"
                   />
                   <img
                     :src="images[1 + 2 * questionSelection]"
                     alt="Gallery Image"
+                    class="image-class"
                   />
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div v-if="messages.length" class="chat-history" ref="chatHistory">
+          <div v-if="messages.length" class="chat-history" ref="chatHistory">
         <div v-for="(message, index) in messages" :key="index" class="message">
           <div class="message-header">
             <span class="message-time">{{ message.time }}</span>
@@ -62,6 +62,7 @@
       </div>
     </div>
 
+
     <div class="history-section">
       <h4>历史记录</h4>
       <ul class="history-list">
@@ -71,6 +72,8 @@
         </li>
       </ul>
     </div>
+  </div>
+</div>
   </div>
 </template>
 
@@ -268,28 +271,20 @@ const copyResponse = (index) => {
   align-items: center;
 }
 
-.image-container {
-    display: flex;
-  gap: 10px;
-  justify-content: space-around;
-  align-items: stretch;
-  width: 100%;
+.image-list {
+  display: flex;
+  gap: 60px;
+  justify-content:center;
+  align-items: center;
+  width: 80%;
   margin: 10px;
-  height: 12%;
+  height: 100%;
 }
 
-/* .image-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  width:80%;
-  height:60%;
-} */
-
-.image-container img {
-  width: 100px !important; /* 强制应用样式 */
-  height: auto !important;
+.image-class {
+  width: 224px;
+  height: 224px;
+  border-radius: 5px;
 }
 
 .chat-history {

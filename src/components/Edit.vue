@@ -1,9 +1,9 @@
 <template>
-  <div v-if="isVisible" class="edit-overlay" >
+  <div v-if="isVisible" class="edit-overlay">
     <div class="edit-content" @click="stop">
       <!-- 头部 -->
       <div class="edit-header">
-        <h2>个人资料</h2>
+        <h2>您好，请您修改您的资料</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
@@ -11,47 +11,121 @@
       <div class="edit-body">
         <form>
           <!-- 用户名 -->
-          <div class="form-group">
+          <!--           <div class="form-group1">
             <label for="username">用户名 *</label>
             <input type="text" id="username" placeholder="请输入用户名" />
           </div>
+ -->
+          <!-- 昵称 -->
+          <div class="form-group">
+            <label for="nickname">昵称</label>
+            <input
+              type="text"
+              id="nickname"
+              placeholder="请输入昵称"
+              v-model="form.nickname"
+            />
+          </div>
+
+          <!-- 邮箱 -->
+          <div class="form-group">
+            <label for="email">邮箱 *</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="请输入邮箱"
+              v-model="form.email"
+            />
+          </div>
+
+          <!-- 密码 -->
+          <div class="form-group">
+            <label for="password">密码 *</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="请输入密码"
+              v-model="form.password"
+            />
+          </div>
 
           <!-- 用户头像 -->
+          <!--           <div class="form-group">
+            <label>用户头像</label>
+            <div class="avatar-upload">
+              <div class="upload-area">点击上传或拖拽图片到此处</div>
+            </div>
+          </div> -->
           <div class="form-group">
             <label>用户头像</label>
             <div class="avatar-upload">
-              <!-- <img src="default-avatar.png" alt="用户头像" class="avatar" /> -->
-              <div class="upload-area">点击上传或拖拽图片到此处</div>
+              <input
+                type="file"
+                id="avatar"
+                @change="handleFileChange"
+                accept="image/*"
+              />
+              <div class="upload-area" v-if="!avatarPreview">
+                点击上传或拖拽图片到此处
+              </div>
+              <img
+                v-if="avatarPreview"
+                :src="avatarPreview"
+                alt="用户头像"
+                class="avatar"
+              />
             </div>
           </div>
 
           <!-- 生日 -->
           <div class="form-group">
             <label for="birthday">生日</label>
-            <input type="date" id="birthday" />
+            <input type="date" id="birthday" v-model="form.birthday" />
           </div>
 
           <!-- 性别选择 -->
           <div class="form-group">
             <label>性别</label>
             <div class="gender-options">
-              <label
-                ><input type="radio" name="gender" value="male" /> 男</label
-              >
-              <label
-                ><input type="radio" name="gender" value="female" /> 女</label
-              >
-              <label
-                ><input type="radio" name="gender" value="secret" checked />
-                保密</label
-              >
+              <div class="gender-option">
+                <label>男</label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  v-model="selectedGender"
+                />
+              </div>
+              <div class="gender-option">
+                <label>女</label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  v-model="selectedGender"
+                />
+              </div>
+              <div class="gender-option">
+                <label>保密</label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="secret"
+                  v-model="selectedGender"
+                  checked
+                />
+              </div>
             </div>
           </div>
 
           <!-- 个人简介 -->
           <div class="form-group">
             <label for="bio">个人简介</label>
-            <textarea id="bio" placeholder="请输入个人简介"></textarea>
+            <textarea
+              id="bio"
+              placeholder="请输入个人简介"
+              v-model="form.description"
+            ></textarea>
           </div>
         </form>
       </div>
@@ -59,18 +133,72 @@
       <!-- 底部按钮 -->
       <div class="edit-footer">
         <button class="cancel-button" @click="close">取消</button>
-        <button class="confirm-button">确定</button>
+        <button class="confirm-button" @click="submitForm">确定</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import assert from "assert";
+import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+
+const { proxy } = getCurrentInstance();
+const router = useRouter();
+const route = useRoute();
 
 const props = defineProps({
   isVisible: Boolean,
 });
+
+const form = ref({
+  nickname: "",
+  email: "",
+  password: "",
+  birthday: "",
+  gender: "secret",
+  description: "",
+});
+
+// 定义性别选择的数据绑定
+const selectedGender = ref("secret");
+
+const api = {
+  edit: "http://172.20.10.7:8000/user/edit",
+};
+
+let url = api.edit;
+
+// 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
+const urlEncodedParams = new URLSearchParams(form.value);
+// 提交表单的方法
+const submitForm = async () => {
+  // 更新 form 对象中的性别值
+  form.value.gender = selectedGender.value;
+  //发送请求到后端
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: urlEncodedParams.toString(),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      console.log("修改成功", result);
+      console.log(urlEncodedParams.toString());
+    } else {
+      console.error("修改失败", result.message);
+    }
+  } catch (error) {
+    console.error("请求失败", error);
+  }
+};
+
+
 
 const emit = defineEmits(["update:isVisible"]);
 
@@ -126,10 +254,46 @@ const close = () => {
   margin-bottom: 20px;
 }
 
+.form-groups {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.form-group1 {
+  display: flex;
+  flex: 1;
+  margin-bottom: 15px;
+  /* width:100%; */
+}
+
 .form-group {
   margin-bottom: 15px;
 }
 
+.form-group1 label {
+  display: flex;
+  color: #ffffff;
+  margin-bottom: 5px;
+  flex: 1;
+  font-size: 13px;
+  justify-content: left;
+  align-items: center;
+}
+
+.form-group1 input,
+.form-group1 textarea {
+  display: flex;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #2b2e3e;
+  color: #ffffff;
+  flex: 3;
+}
 .form-group label {
   display: block;
   color: #ffffff;
@@ -172,6 +336,13 @@ const close = () => {
 .gender-options {
   display: flex;
   gap: 10px;
+  align-items: center;
+  /*   justify-content: center; */
+}
+
+.gender-option {
+  display: flex;
+  flex-direction: row;
 }
 
 .gender-options label {
