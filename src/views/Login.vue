@@ -1,5 +1,6 @@
 <template>
   <div class="body">
+    <BackgroundAnimation />
     <div class="login-panel">
       <el-form
         class="login-register"
@@ -251,6 +252,7 @@
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
+import BackgroundAnimation from '../components/BackgroundAnimation.vue';
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -481,8 +483,7 @@ const FastjumpToFrame = () => {
 .body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
-  background-color: #001f3f; /* 深海蓝色调 */
-  color: #d3d3d3; /* 淡雅灰色调 */
+
   display: flex;
   justify-content: center;
   align-items: center;
