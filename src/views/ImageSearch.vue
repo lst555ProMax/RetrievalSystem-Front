@@ -4,6 +4,8 @@
 <!-- 聊天历史的样式需要改进 -->
 <!-- 需要引入大模型接口来实现最终的聊天逻辑 -->
 <template>
+  <starfield />
+
   <div class="imageToText-system">
     <headbar></headbar>
 
@@ -79,6 +81,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from "vue";
+import Starfield from "@/components/Starfield.vue"
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
 
@@ -221,7 +224,6 @@ const copyResponse = (index) => {
   padding: 0px;
   flex: 1;
   overflow-y: auto;
-  background-color: #0e0d27;
 }
 
 .up-down {
@@ -229,7 +231,6 @@ const copyResponse = (index) => {
   display: flex;
   flex-direction: column;
   flex: 4;
-  background-color: #0e0d27;
   margin: 10px;
 }
 

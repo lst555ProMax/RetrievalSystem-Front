@@ -1,4 +1,6 @@
 <template>
+    <Starfield />
+
     <div class="userManagement">
       <HeadbarAdmin></HeadbarAdmin>
       <div class="non-header">
@@ -58,6 +60,7 @@
   
   import SidebarAdmin from "../../components/SidebarAdmin.vue";
   import HeadbarAdmin from "../../components/HeadbarAdmin.vue";
+  import Starfield from "@/components/Starfield.vue"
   
   const router = useRouter();
   const route = useRoute();
@@ -165,7 +168,6 @@
     padding: 10px;
     flex: 1;
     overflow-y: auto;
-    background-color: #0e0d27;
     box-sizing: border-box;
   }
   
