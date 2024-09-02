@@ -1,4 +1,6 @@
 <template>
+  <Starfield />
+
   <div class="container">
     <!-- Header -->
     <header class="header">
@@ -30,6 +32,7 @@
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
+import Starfield from "@/components/Starfield.vue";
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -42,8 +45,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Montserrat", sans-serif;
-  background-color: #001f3f; /* 深海蓝色调 */
-  color: #d3d3d3; /* 淡雅灰色调 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -68,10 +69,8 @@ header h1 {
   flex-direction: column;
   flex: 1; 
   margin: 5px;
-  background-color: #001732; 
   height: calc(100vh - 10px);
   border-radius: 5px;
-
   position: relative;
   overflow: hidden;
 }

@@ -170,8 +170,29 @@ onMounted(() => {
       <!-- 新增：标题和副标题 -->
       <transition name="fade">
         <div v-if="showTitle" class="title-container">
-          <h1 class="main-title">Image Text Retrieval</h1>
-          <h2 class="subtitle">Make image and text links tighter</h2>
+          <h1 class="fancy-wipe">
+            <span class="text">
+              Image-Text Retrieval:
+            </span>
+            <span class="wipe-in">
+              Image-Text Retrieval:
+            </span>
+            <span class="blur-in">
+              Image-Text Retrieval:	
+            </span>
+          </h1>
+
+          <h2 class="fancy-wipe">
+            <span class="text">
+              Link image and text together
+            </span>
+            <span class="wipe-in">
+              Link image and text together
+            </span>
+            <span class="blur-in">
+              Link image and text together	
+            </span>
+          </h2>
         </div>
       </transition>
     </div>
@@ -366,13 +387,77 @@ onMounted(() => {
   z-index: 9999;
 }
 
-.main-title {
-  font-size: 48px; /* 标题字号 */
-  margin: 0;
+.fancy-wipe {
+	margin: 15px;
+	font-weight: 900;
+	font-size: 6rem;
+	position: relative;
+	--duration: 2.5s;
+	--easing: cubic-bezier(0.45, 0, 0.55, 1);
+	--colors: linear-gradient(
+		90deg,
+		#fff89a,
+		#cdf2ca,
+		#a2cdcd,
+		#d1e8e4,
+		#cab8ff,
+		#ff7878,
+		#ffc898
+	);
 }
 
-.subtitle {
-  font-size: 24px; /* 副标题字号 */
-  margin: 0;
+.text {
+  font-size: 24px;
+	display: block;
+	color: white;
+	animation: wipe-in var(--duration) 1 var(--easing) forwards;
+	mask: linear-gradient(to right, white, white 45%, black, 55%, black);
+  	mask-composite: exclude;
+	mask-mode: luminance;
+	mask-size: 300% 100%;
+	mask-position: 100% 0px;
+}
+
+.wipe-in {
+  font-size: 24px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-image: var(--colors);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	animation: wipe-in var(--duration) 1 var(--easing) forwards;
+	mask: linear-gradient(to right, black, black 45%, white 50%, black 52.5%, black);
+  	mask-composite: exclude;
+	mask-mode: luminance;
+	mask-size: 300% 100%;
+	mask-position: 100% 0px;
+}
+
+.blur-in {
+  font-size: 24px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-image: var(--colors);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	animation: wipe-in var(--duration) 1 var(--easing) forwards;
+	mask: linear-gradient(to right, black, black 45%, white 52.5%, black 55%, black);
+  	mask-composite: exclude;
+	mask-mode: luminance;
+	mask-size: 300% 100%;
+	mask-position: 100% 0px;
+	filter: blur(10px);
+}
+
+@keyframes wipe-in {
+	100% {
+		mask-position: 0px 0px;
+	}
 }
 </style>
