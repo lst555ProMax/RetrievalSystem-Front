@@ -84,6 +84,10 @@
     :isVisible="isPayVisible"
     @update:isVisible="isPayVisible = $event"
   ></Pay>
+  <Delete
+  :isVisible="isDeleteVisible"
+  @update:isVisible="isDeleteVisible = $event"
+  ></Delete>
 </template>
 
 <script setup>
@@ -96,6 +100,7 @@ import MoneyHistory from "../components/MoneyHistory.vue";
 import Pay from "../components/Pay.vue";
 import Settings from "../components/Settings.vue";
 import Message from "../components/Message.vue"
+import Delete from "../components/Delete.vue"
 
 import { defineEmits } from "vue";
 
@@ -114,6 +119,7 @@ const isFeedBackVisible = ref(false);
 const isMoneyHistoryVisible = ref(false);
 const currentTab = ref("score");
 const isPayVisible = ref(false);
+const isDeleteVisible =ref(false);
 
 const hideTimers = ref({});
 

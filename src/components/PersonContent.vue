@@ -115,43 +115,7 @@ const GotoDelete =()=>{
   emit("delete");
 }
 
-const api = {
-  delete: "http://172.20.10.7:8000/user/delete",
-};
 
-let url = api.delete;
-
-import { useUserStore } from "../stores/userStore"; // 引入 Store
-
-const userStore = useUserStore(); // 使用 Store
-
-// 从 Store 中获取 username
-const { username } = userStore;
-
-const form = ref({
-  username: username,
-  password: "333",
-});
-const Delete = async () => {
-  // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
-  const urlEncodedParams = new URLSearchParams(form.value);
-
-  const response = await fetch(url, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: urlEncodedParams.toString(),
-  });
-
-  const result = await response.json();
-  if (response.ok) {
-    console.log("修改成功", result);
-    console.log(urlEncodedParams.toString());
-  } else {
-    console.error("修改失败", result.message);
-  }
-};
 </script>
 
 <style scoped>

@@ -27,9 +27,13 @@
               <td v-else>{{ user.username }}</td>
 
               <td v-if="editingIndex === index">
-                <input v-model="editUserData.password" placeholder="暂时无密码" disabled/>
+                <input
+                  v-model="editUserData.password"
+                  placeholder="暂时无密码"
+                  disabled
+                />
               </td>
-              <td v-else>{{ user.password || 'N/A' }}</td>
+              <td v-else>{{ user.password || "N/A" }}</td>
 
               <td v-if="editingIndex === index">
                 <input v-model="editUserData.email" />
@@ -39,28 +43,39 @@
               <td v-if="editingIndex === index">
                 <input v-model="editUserData.nickname" />
               </td>
-              <td v-else>{{ user.nickname || 'N/A' }}</td>
+              <td v-else>{{ user.nickname || "N/A" }}</td>
 
               <td v-if="editingIndex === index">
                 <input type="date" v-model="editUserData.birthday" />
               </td>
-              <td v-else>{{ formatDate(user.birthday) || 'N/A' }}</td>
+              <td v-else>{{ formatDate(user.birthday) || "N/A" }}</td>
 
               <td v-if="editingIndex === index">
-                <input v-model="editUserData.sex" placeholder="暂时无性别" disabled/>
+                <input
+                  v-model="editUserData.sex"
+                  placeholder="暂时无性别"
+                  disabled
+                />
               </td>
-              <td v-else>{{ user.sex || 'N/A' }}</td>
+              <td v-else>{{ user.sex || "N/A" }}</td>
 
               <td v-if="editingIndex === index">
                 <input v-model="editUserData.description" />
               </td>
-              <td v-else>{{ user.description || 'N/A' }}</td>
+              <td v-else>{{ user.description || "N/A" }}</td>
 
               <td>
-                <button v-if="editingIndex === index" @click="saveUser(index)">保存</button>
+                <button v-if="editingIndex === index" @click="saveUser(index)">
+                  保存
+                </button>
                 <button v-else @click="editUser(index)">修改</button>
                 <button @click="deleteUser(index)">删除</button>
-                <button v-if="editingIndex === index" @click="cancelEdit(index)">取消</button>
+                <button
+                  v-if="editingIndex === index"
+                  @click="cancelEdit(index)"
+                >
+                  取消
+                </button>
               </td>
             </tr>
           </tbody>
@@ -83,7 +98,8 @@ const router = useRouter();
 const route = useRoute();
 
 // 用户数据
-const users = ref([]);
+const users = ref([
+]);
 
 // 当前正在编辑的行索引
 const editingIndex = ref(null);
@@ -100,10 +116,11 @@ const editUserData = ref({
 });
 
 const api = {
-  admin: "http://172.20.10.7:8000/admin/get_user_info",
+  get: "http://172.20.10.7:8000/admin/get_user_info",
+  edit:"http://172.20.10.7:8000/admin/edit_user_info"
 };
 
-let url = ref(api.admin);
+let url = ref(api.get);
 
 // 从后端获取用户数据
 const fetchUsers = async () => {
@@ -126,13 +143,39 @@ const editUser = (index) => {
   editUserData.value = { ...users.value[index] };
 };
 
+let url2=api.edit;
 // 保存用户信息
-const saveUser = (index) => {
+const saveUser = async (index) => {
   if (editingIndex.value !== null) {
     users.value[index] = { ...editUserData.value };
-    editingIndex.value = null;
+
+    const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
+    console.log(users.value[index]);
+
+    try{
+    const response = await fetch(url2, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: urlEncodedParams.toString(),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("修改成功", result);
+      console.log(urlEncodedParams.toString());
+      editingIndex.value = null;
     alert("用户信息已更新！");
+    } else {
+      console.error("修改失败", result.message);
+    }
   }
+  catch (error){
+    console.error("请求失败", error);
+  }
+}
 };
 
 // 删除用户

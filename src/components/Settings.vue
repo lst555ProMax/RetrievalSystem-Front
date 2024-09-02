@@ -33,16 +33,15 @@
       </div>
   
       <!-- 背景图片上传 -->
-      <div class="tabs3">
+<!--       <div class="tabs3">
         <i class="fa-solid fa-images"></i>
- <!--        <text>背景图片</text> -->
         <input
           type="file"
           @change="handleImageUpload"
           accept="image/*"
           class="upload-input"
         />
-      </div>
+      </div> -->
 
       <div class="tabs4">
         <i class="fa-solid fa-images"></i>
