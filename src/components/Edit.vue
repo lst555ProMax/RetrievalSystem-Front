@@ -144,6 +144,13 @@ import assert from "assert";
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
+import { useUserStore } from '../stores/userStore'; // 引入 Store
+
+const userStore = useUserStore(); // 使用 Store
+
+// 从 Store 中获取 username
+const { username } = userStore;
+
 const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
@@ -153,6 +160,7 @@ const props = defineProps({
 });
 
 const form = ref({
+  username:username,
   nickname: "",
   email: "",
   password: "",
@@ -176,6 +184,10 @@ const urlEncodedParams = new URLSearchParams(form.value);
 const submitForm = async () => {
   // 更新 form 对象中的性别值
   form.value.gender = selectedGender.value;
+
+  // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
+const urlEncodedParams = new URLSearchParams(form.value);
+
   //发送请求到后端
   try {
     const response = await fetch(url, {
@@ -190,6 +202,7 @@ const submitForm = async () => {
     if (response.ok) {
       console.log("修改成功", result);
       console.log(urlEncodedParams.toString());
+      emit("update:isVisible", false);
     } else {
       console.error("修改失败", result.message);
     }

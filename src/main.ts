@@ -26,11 +26,13 @@ import Utils from '@/utils/Utils'
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-const app = createApp(App)
+const app = createApp(App);
+const pinia = createPinia();
 
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)
+app.use(pinia);
 app.component(ElIcon.name, ElIcon);
 
 //配置全局变量

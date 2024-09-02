@@ -14,8 +14,23 @@
           >图灵不灵
         </div>
 
+        <!-- 用户名 -->
+        <el-form-item prop="username">
+          <el-input
+            size="large"
+            clearable
+            placeholder="请输入用户名"
+            v-model="formData.username"
+            maxlength="20"
+          >
+            <template #prefix>
+              <span class="iconfont icon-account"></span>
+            </template>
+          </el-input>
+        </el-form-item>
+
         <!--input输入-->
-        <el-form-item prop="email" v-if="opType==0||opType==1">
+        <el-form-item prop="email" v-if="opType == 0">
           <el-input
             size="large"
             clearable
@@ -47,7 +62,7 @@
 
         <!-- 注册或忘记密码 -->
         <div v-if="opType == 0 || opType == 2">
-<!--           <el-form-item prop="emailCode">
+          <!--           <el-form-item prop="emailCode">
             <div class="send-email-panel">
               <el-input
                 size="large"
@@ -80,23 +95,9 @@
             </el-popover>
           </el-form-item>
  -->
-          <!-- 用户名 -->
-          <el-form-item prop="username" v-if="opType == 0||opType ==2">
-            <el-input
-              size="large"
-              clearable
-              placeholder="请输入用户名"
-              v-model="formData.username"
-              maxlength="20"
-            >
-              <template #prefix>
-                <span class="iconfont icon-account"></span>
-              </template>
-            </el-input>
-          </el-form-item>
 
-                    <!-- 昵称 -->
-                    <el-form-item prop="nickname" v-if="opType == 0">
+          <!-- 昵称 -->
+          <el-form-item prop="nickname" v-if="opType == 0">
             <el-input
               size="large"
               clearable
@@ -142,7 +143,7 @@
         </div>
 
         <!-- 验证码 -->
-<!--         <el-form-item prop="checkCode">
+        <!--         <el-form-item prop="checkCode">
           <div class="check-code-panel">
             <el-input
               size="large"
@@ -264,7 +265,8 @@
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
-import BackgroundAnimation from '../components/BackgroundAnimation.vue';
+import BackgroundAnimation from "../components/BackgroundAnimation.vue";
+import { useUserStore } from "../stores/userStore"; // 引入 Store
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -272,7 +274,7 @@ const route = useRoute();
 
 const data = ref("");
 const api = {
-/*   checkCode: "http://172.20.10.7:8000/user/api/checkCode",
+  /*   checkCode: "http://172.20.10.7:8000/user/api/checkCode",
   sendEmailCode: "http://172.20.10.7:8000/user/sendEmailCode", */
   register: "http://172.20.10.7:8000/user/register",
   login: "http://172.20.10.7:8000/user/login",
@@ -332,7 +334,7 @@ const dialogConfig4SendMailCode = reactive({
 
 //     nextTick(() => {
 //       changeCheckCode(1); /* 将验证码换掉 */
-//       formData4SendMailCodeRef.value.resetFields(); 
+//       formData4SendMailCodeRef.value.resetFields();
 //       formData4SendMailCode.value = {
 //         email: formData.value.email,
 //       };
@@ -432,6 +434,17 @@ const resetForm = () => {
   });
 };
 
+const userStore = useUserStore(); // 使用 Store
+
+// 发射用户名的函数
+const emitUsername = () => {
+  if (formData.value.username) {
+    userStore.setUsername(formData.value.username); // 更新 Store 中的 username
+    console.log("用户名已更新为:", userStore.username);
+  } else {
+    console.error("用户名为空，无法发射！");
+  }
+};
 //登录、注册、重置密码  提交表单
 const doSubmit = () => {
   formDataRef.value.validate(async (valid) => {
@@ -454,7 +467,7 @@ const doSubmit = () => {
       let cookieLoginInfo = proxy.VueCookies.get("loginInfo");
       let cookiePassword =
         cookieLoginInfo == null ? null : cookieLoginInfo.password;
-/*        if (params.password !== cookiePassword) {
+      /*        if (params.password !== cookiePassword) {
         params.password = md5(params.password);
       }  */
     }
@@ -466,10 +479,9 @@ const doSubmit = () => {
     } else if (opType.value == 2) {
       url = api.resetPwd;
     }
-    
+
     // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
     const urlEncodedParams = new URLSearchParams(params);
-
 
     try {
       // 发送请求
@@ -488,10 +500,11 @@ const doSubmit = () => {
       console.log(response.message); // 输出消息
 
       // 可根据需求添加进一步的处理逻辑
-      if (response.code===0) {
+      if (response.code === 0) {
         // 根据接口返回的数据判断是否操作成功
         alert("操作成功");
         router.push("/framework");
+        emitUsername();
       } else {
         alert("操作失败：" + response.message);
       }

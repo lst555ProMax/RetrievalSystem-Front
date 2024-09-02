@@ -61,6 +61,7 @@
               @moneyHistory="handleMoneyHistory"
               @creditsHistory="handleCreditsHistory"
               @pay="handlePay"
+              @delete="handleDelete"
             ></PersonContent>
           </div>
         </div>
@@ -199,6 +200,11 @@ const handlePay = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isPayVisible.value = true;
 };
+
+const handleDelete =()=>{
+  document.querySelector(".form3Vision").style.display = "none";
+  isDeleteVisible.value = true;
+}
 </script>
 
 <style scoped>
