@@ -7,6 +7,7 @@
       <sidebar></sidebar>
 
       <div class="main-content">
+        <div v-html="htmlContent"></div>
       </div>
     </div>
   </div>
@@ -25,6 +26,13 @@ const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
 
+const htmlContent = ref("")
+
+onMounted(async () => {
+  // 加载 output.html 文件的内容
+  const response = await fetch('../../../public/output.html'); // 确保路径正确
+  htmlContent.value = await response.text();
+});
 
 </script>
 
