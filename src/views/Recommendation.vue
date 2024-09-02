@@ -1,4 +1,6 @@
 <template>
+    <starfield />
+
     <div class="recommendation">
       <headbar></headbar>
 
@@ -41,7 +43,8 @@ import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 import sidebar from '../components/Sidebar.vue';
-  import headbar from "../components/Headbar.vue";
+import headbar from "../components/Headbar.vue";
+import Starfield from "@/components/Starfield.vue"
 
 const router = useRouter();
 const route = useRoute();
@@ -102,7 +105,6 @@ const applySettings = () => {
   padding: 10px;
   flex: 1;
   overflow-y: auto; /* 如果内容超出高度，允许在该区域滚动 */
-  background-color: #0e0d27;
   box-sizing: border-box; /* 包含 padding 在内计算总高度 */
   height: calc(100%);
   }

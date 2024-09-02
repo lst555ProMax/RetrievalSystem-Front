@@ -1,4 +1,6 @@
 <template>
+  <starfield />
+
   <div class="admin-panel">
     <!-- 左侧侧边栏 -->
 
@@ -45,6 +47,7 @@ import { useRouter } from "vue-router";
 import FooterComponent from "../components/FooterComponent.vue";
 import Sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
+import Starfield from "@/components/Starfield.vue"
 
 
 const router = useRouter();
@@ -104,7 +107,6 @@ body {
   align-items: center;
   overflow-y: auto; /* 如果内容超出高度，允许在该区域滚动 */
   justify-content: space-between; /* 分布内容，避免超出视口 */
-  background-color: #0e0d27;
   box-sizing: border-box; /* 包含 padding 在内计算总高度 */
   height: calc(100%);
 }
