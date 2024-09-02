@@ -283,7 +283,7 @@ const close = () => {
 .edit-content {
   background-color: #1a1c2d;
   border-radius: 8px;
-  width: 500px;
+  width: 400px;
   padding: 20px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);

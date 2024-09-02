@@ -25,8 +25,8 @@
       <span @click="GotoUserCenter">个人主页</span>
     </div>
     <div class="tab4-item">
-      <i class="fa-solid fa-list-check"></i>
-      <span>任务中心</span>
+      <i class="fa-solid fa-list-check" @click="GoToAnswer"></i>
+      <span @click="GoToAnswer">问题解答</span>
     </div>
     <div class="tab4-item">
       <i class="fa-solid fa-comment" @click="GotoFeedback"></i>
@@ -82,7 +82,8 @@ const emit = defineEmits(
   ["moneyHistory"],
   ["creditsHistory"],
   ["pay"],
-  ["delete"]
+  ["delete"],
+  ["answer"]
 );
 
 const edit = () => {
@@ -90,6 +91,10 @@ const edit = () => {
 };
 
 const GotoUserCenter = () => router.push("/userCenter");
+
+const GoToAnswer=()=>{
+  emit("answer");
+}
 
 const GotoFeedback = () => {
   emit("feedBack");
