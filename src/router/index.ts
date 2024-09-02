@@ -11,6 +11,9 @@ import result from '../views/Result.vue'
 import dialogue from '../views/dialogue.vue'
 import others from '../views/Others.vue'
 
+import userManagement from '../views/AdminOperations/UserManagement.vue'
+import systemManagement from '../views/AdminOperations/SystemManagement.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -69,6 +72,16 @@ const router = createRouter({
       name:'others',
       component:others
     },
+    {
+      path:'/userManagement',
+      name:'userManagement',
+      component:userManagement
+    },   
+     {
+      path:'/systemManagement',
+      name:'systemManagement',
+      component:systemManagement
+    }
   ]
 })
 

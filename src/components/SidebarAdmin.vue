@@ -2,12 +2,9 @@
     <aside class="sidebar">
       <nav class="nav-menu">
         <ul>
-          <li><a href="#" @click.prevent="goHome">主页</a></li>
-          <li><a href="#" @click.prevent="handleTextSearch">文生图</a></li>
-          <li><a href="#" @click.prevent="handleImageSearch">图生文</a></li>
-          <li><a href="#" @click.prevent="handleDialogue">对话</a></li>
-          <li><a href="#" @click.prevent="handlePersonal">个性化推荐</a></li>
-          <li><a href="#" @click.prevent="handleOther">其他</a></li>
+          <li><a href="#" @click.prevent="Home">首页</a></li>
+          <li><a href='#' @click.prevent="GoToUserManagement">用户管理</a></li>
+          <li><a href='#' @click.prevent="GoToSystemManagement">系统管理</a></li>
         </ul>
       </nav>
     </aside>
@@ -15,15 +12,14 @@
   
   <script setup>
   import { useRouter } from "vue-router";
+  import Sidebar from "../components/Sidebar.vue";
   
   const router = useRouter();
+
+  const Home =()=>router.push("/admin");
+  const GoToUserManagement=()=>router.push("/userManagement");
+  const GoToSystemManagement=()=>router.push("/systemManagement");
   
-  const goHome = () => router.push("/framework");
-  const handleTextSearch = () => router.push("/textSearch");
-  const handleImageSearch = () => router.push("/imageSearch");
-  const handleDialogue = () => router.push("/dialogue");
-  const handlePersonal = () => router.push("/recommendation");
-  const handleOther = () => router.push("/others");
   </script>
   
   <style scoped>
@@ -34,7 +30,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: calc(100vh - 60px); /* 调整为视口高度减去外边距 */
+    height: calc(100vh-60px); /* 调整为视口高度减去外边距 */
     box-sizing: border-box; /* 包括内边距和边框在内的高度 */
   }
   

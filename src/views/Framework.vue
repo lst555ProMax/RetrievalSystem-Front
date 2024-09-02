@@ -34,13 +34,6 @@
             </a>
           </div>
         </div>
-
-        <div class="button-container">
-          <button class="userCenter-button" @click="userCenter">
-            个人中心
-          </button>
-          <button class="logout-button" @click="logout">退出后台</button>
-        </div>
       </div>
     </div>
   </div>
@@ -157,27 +150,4 @@ body {
   background-color: #33b045; /* 草绿色加深 */
 }
 
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%; /* 宽度设为100% */
-  padding: 10px; /* 减少内边距 */
-}
-
-.userCenter-button,
-.logout-button {
-  padding: 15px 30px;
-  background-color: #39d353; /* 草绿色调 */
-  color: #d3d3d3; /* 淡雅灰色调 */
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.logout-button:hover {
-  background-color: #33b045; /* 鼠标悬停时草绿色加深 */
-}
 </style>

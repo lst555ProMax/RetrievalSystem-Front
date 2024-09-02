@@ -8,6 +8,8 @@
 import { RouterLink, RouterView } from 'vue-router'
 import {reactive} from "vue";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
+
+
 const locale =zhCn;
 const config =reactive({
   max: 1,

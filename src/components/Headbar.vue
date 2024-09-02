@@ -22,12 +22,7 @@
           ></i>
 
           <div class="form1Vision">
-            <div class="tabs">
-              <!-- 内容可以按需要添加 -->
-            </div>
-            <el-form ref="form1" :model="form1" label-width="80px">
-              <component :is="activeTabComponent"></component>
-            </el-form>
+            <Message></Message>
           </div>
         </div>
         <!-- -------------------------------------------------------------------------------------- -->
@@ -99,6 +94,7 @@ import FeedBack from "../components/FeedBack.vue";
 import MoneyHistory from "../components/MoneyHistory.vue";
 import Pay from "../components/Pay.vue";
 import Settings from "../components/Settings.vue";
+import Message from "../components/Message.vue"
 
 import { defineEmits } from "vue";
 
