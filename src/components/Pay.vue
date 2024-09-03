@@ -13,7 +13,7 @@
               <li>1000 call permissions</li>
               <li>Regular feedback support</li>
             </ul>
-            <a href="#basic" class="card__cta cta">Get Started</a>
+            <a href="#basic" class="card__cta cta" @click="basicPurchase">Get Started</a>
           </div>
 
           <div class="cards__card card">
@@ -65,6 +65,27 @@ const close = () => {
 const cardsContainer = ref(null); // 使用ref代替直接查询
 const overlay = ref(null); // 使用ref代替直接查询
 const cards = ref([]); // 存储所有卡片元素
+
+const api = {
+  pay: "http://172.20.10.7:8000/user/pay",
+};
+
+let url = api.pay
+
+const basicPurchase = async () => {  
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: urlEncodedParams.toString(),
+    })
+  }
+  catch(error) {
+    console.error("请求失败", error);
+  }
+}
 
 // 在mounted阶段查询DOM
 onMounted(() => {
