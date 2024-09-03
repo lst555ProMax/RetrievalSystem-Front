@@ -9,8 +9,7 @@
 
       <div class="main-content">
         <div class="up-down">
-
-        <!-- 推荐搜索----------------------------------------------------------------------------- -->
+          <!-- 推荐搜索----------------------------------------------------------------------------- -->
           <div v-if="!uiChange" :key="1">
             <div class="recommendations">
               <div class="headbar">
@@ -64,7 +63,7 @@
               </div>
             </div>
           </div>
-        <!-- 搜索界面-------------------------------------------------------------------------------------- -->
+          <!-- 搜索界面-------------------------------------------------------------------------------------- -->
           <div v-if="messages.length" class="chat-history" ref="chatHistory">
             <div
               v-for="(message, index) in messages"
@@ -77,7 +76,12 @@
               <div class="message-content">
                 <p>{{ message.text }}</p>
                 <!-- 判断并显示图片 -->
-                <img v-if="message.imageUrl" :src="message.imageUrl" alt="图片" class="response-image" />
+                <img
+                  v-if="message.imageUrl"
+                  :src="message.imageUrl"
+                  alt="图片"
+                  class="response-image"
+                />
               </div>
               <div v-if="message.isResponse" class="response">
                 <p>{{ responseText }}</p>
@@ -86,7 +90,7 @@
               </div>
             </div>
           </div>
-        <!-- 输入框---------------------------------------------------------------------- -->
+          <!-- 输入框---------------------------------------------------------------------- -->
           <div class="input-area">
             <input
               type="text"
@@ -96,7 +100,7 @@
             />
             <button @click="sendMessage">➤</button>
           </div>
-        <!-- ------------------------------------------------------------------------ -->
+          <!-- ------------------------------------------------------------------------ -->
         </div>
 
         <div class="history-section">
@@ -108,15 +112,12 @@
             </li>
           </ul>
         </div>
-
-
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-
 import { ref, watch, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import sidebar from "../components/Sidebar.vue";
@@ -193,9 +194,7 @@ let url = api.search;
 
 // 发送用户消息和请求后端接口
 const sendMessage = async () => {
-
   if (userInput.value.trim()) {
-
     const currentTime = new Date().toLocaleTimeString();
 
     uiChange.value = 1;
@@ -240,15 +239,15 @@ const sendMessageIndex = async (index) => {
 // 发送请求到后端
 const sendToBackend = async (inputText) => {
   const formData = new FormData();
-  formData.append("username", getUsername());  // 假设 getUsername() 函数返回当前的用户名
-  formData.append("keywords", inputText);  // 添加关键词到表单数据中
+  formData.append("username", getUsername()); // 假设 getUsername() 函数返回当前的用户名
+  formData.append("keywords", inputText); // 添加关键词到表单数据中
 
   try {
     console.log("开始发送请求...");
 
     // 获取 JWT Token，假设 token 存储在 localStorage 中
-    const token = localStorage.getItem('jwtToken');
-    
+    const token = localStorage.getItem("jwtToken");
+
     if (!token) {
       handleError("缺少身份验证令牌，请重新登录。");
       return;
@@ -258,9 +257,9 @@ const sendToBackend = async (inputText) => {
     const result = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}` // 设置 Authorization 头部
+        Authorization: `Bearer ${token}`, // 设置 Authorization 头部
       },
-      body: formData,  // 使用 FormData 发送请求体
+      body: formData, // 使用 FormData 发送请求体
     });
 
     // 检查响应状态码
@@ -269,7 +268,7 @@ const sendToBackend = async (inputText) => {
       return;
     }
 
-    const response = await result.json();  // 将响应解析为 JSON
+    const response = await result.json(); // 将响应解析为 JSON
 
     if (response.code === 0) {
       const responseTime = new Date().toLocaleTimeString();
@@ -278,13 +277,13 @@ const sendToBackend = async (inputText) => {
       // 检查是否包含 data 数据
       if (response.data) {
         // 将 base64 字符串数组转换为可用于 img 标签的 URL
-        response.data.forEach(imgBase64 => {
+        response.data.forEach((imgBase64) => {
           const imgSrc = `data:image/png;base64,${imgBase64}`;
           messages.value.push({
             text: "生成的图像如下：", // 可选的描述文本
             time: responseTime,
             isResponse: true,
-            imageUrl: imgSrc,  // 保存图片 URL 以供渲染
+            imageUrl: imgSrc, // 保存图片 URL 以供渲染
           });
         });
       } else {
@@ -577,4 +576,5 @@ onMounted(() => {
 .hidden {
   display: none;
 }
-</style>、
+</style>
+、

@@ -1,3 +1,4 @@
+<!-- 目前用户上传图片之后消息处显示的是文字 -->
 <template>
   <starfield />
 
@@ -19,19 +20,19 @@
                 </div>
               </div>
               <div class="image-list">
-  <img
-    :src="images[0 + 2 * questionSelection]"
-    alt="Gallery Image"
-    class="image-class"
-    @click="uploadImageFromList(0 + 2 * questionSelection)"
-  />
-  <img
-    :src="images[1 + 2 * questionSelection]"
-    alt="Gallery Image"
-    class="image-class"
-    @click="uploadImageFromList(1 + 2 * questionSelection)"
-  />
-</div>
+                <img
+                  :src="images[0 + 2 * questionSelection]"
+                  alt="Gallery Image"
+                  class="image-class"
+                  @click="uploadImageFromList(0 + 2 * questionSelection)"
+                />
+                <img
+                  :src="images[1 + 2 * questionSelection]"
+                  alt="Gallery Image"
+                  class="image-class"
+                  @click="uploadImageFromList(1 + 2 * questionSelection)"
+                />
+              </div>
             </div>
           </div>
           <div v-if="messages.length" class="chat-history" ref="chatHistory">
@@ -123,7 +124,6 @@ const imageFiles = [
   new File([img12], "12.jpg", { type: "image/jpeg" }),
 ];
 
-
 const router = useRouter();
 
 const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
@@ -188,7 +188,7 @@ const onFileChange = (event) => {
 // 上传显示的图片
 const uploadImageFromList = (index) => {
   const currentTime = new Date().toLocaleTimeString();
-  uiChange.value=1;
+  uiChange.value = 1;
 
   // 添加用户点击图片上传的消息
   messages.value.push({
@@ -217,8 +217,8 @@ const sendImage = async () => {
     return;
   }
 
-  uiChange.value=1;
- const currentTime = new Date().toLocaleTimeString();
+  uiChange.value = 1;
+  const currentTime = new Date().toLocaleTimeString();
 
   // 添加用户的上传消息到消息列表
   messages.value.push({
@@ -283,7 +283,6 @@ const sendImage = async () => {
     console.error("提交失败", error);
   }
 };
-
 
 // 错误处理函数
 const handleError = (errorMessage) => {
@@ -390,12 +389,12 @@ onMounted(() => {
   justify-content: space-evenly;
   align-items: center;
   height: 100%;
-  width:80%;
+  width: 80%;
 }
 
 .image-class {
-  height:224px;
-  width:224px;
+  height: 224px;
+  width: 224px;
   border-radius: 15px;
 }
 
@@ -482,7 +481,6 @@ onMounted(() => {
   justify-content: center;
 }
 
-
 .input-area button {
   flex: 1;
   padding: 10px;
@@ -491,7 +489,7 @@ onMounted(() => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  height:48.16px;
+  height: 48.16px;
 }
 
 .history-section {
