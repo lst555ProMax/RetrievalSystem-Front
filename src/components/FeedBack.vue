@@ -43,6 +43,7 @@
 <script setup>
 import { ref,onMounted} from "vue";
 import { defineProps, defineEmits } from "vue";
+import { getUsername } from "@/utils/Auth"
 
 const props = defineProps({
   isVisible: Boolean,
@@ -141,7 +142,8 @@ async function submitFeedback() {
   // 构建表单数据
   const formData = new FormData();
   console.log(feedbackContent.value);
-  formData.append("username")
+  console.log(getUsername())
+  formData.append("username", getUsername())
   formData.append("content", feedbackContent.value);
 
   try {

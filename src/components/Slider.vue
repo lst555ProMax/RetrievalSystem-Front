@@ -22,33 +22,6 @@
         <button>Read More</button>
       </div>
     </li>
-    <li class='item' style="background-image: url('https://images7.alphacoders.com/878/878663.jpg')">
-      <div class='content'>
-        <h2 class='title'>"Last Trace Of Us"</h2>
-        <p class='description'>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore fuga voluptatum, iure corporis inventore praesentium nisi. Id laboriosam ipsam enim.
-        </p>
-        <button>Read More</button>
-      </div>
-    </li>
-    <li class='item' style="background-image: url('https://theawesomer.com/photos/2017/07/simon_stalenhag_the_electric_state_6.jpg')">
-      <div class='content'>
-        <h2 class='title'>"Urban Decay"</h2>
-        <p class='description'>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore fuga voluptatum, iure corporis inventore praesentium nisi. Id laboriosam ipsam enim.
-        </p>
-        <button>Read More</button>
-      </div>
-    </li>
-    <li class='item' style="background-image: url('https://da.se/app/uploads/2015/09/simon-december1994.jpg')">
-      <div class='content'>
-        <h2 class='title'>"The Migration"</h2>
-        <p class='description'> Lorem ipsum, dolor sit amet consectetur
-        adipisicing elit. Tempore fuga voluptatum, iure corporis inventore
-        praesentium nisi. Id laboriosam ipsam enim.  </p>
-        <button>Read More</button>
-      </div>
-    </li>
   </ul>
   <nav class='nav'>
     <ion-icon class='btn prev' name="arrow-back-outline" @click="prevSlide"></ion-icon>
@@ -110,12 +83,13 @@ main {
 }
 
 .item {
-  width: 200px;
-  height: 300px;
+  width: 100px;
+  height: 100px;
   list-style-type: none;
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 5%;
+  left: 5%;
+  transform: translateX(-50%);
   z-index: 1;
   background-position: center;
   background-size: 100% 100%;
@@ -134,11 +108,6 @@ main {
     box-shadow: none;
     opacity: 1;
   }
-
-  &:nth-child(3) { left: 50%; }
-  &:nth-child(4) { left: calc(50% + 220px); }
-  &:nth-child(5) { left: calc(50% + 440px); }
-  &:nth-child(6) { left: calc(50% + 660px); opacity: 0; }
 }
 
 .content {
@@ -224,10 +193,6 @@ main {
     width: 160px;
     height: 270px;
 
-    &:nth-child(3) { left: 50%; }
-    &:nth-child(4) { left: calc(50% + 170px); }
-    &:nth-child(5) { left: calc(50% + 340px); }
-    &:nth-child(6) { left: calc(50% + 510px); opacity: 0; }
   }
 }
 
@@ -241,10 +206,6 @@ main {
     width: 130px;
     height: 220px;
 
-    &:nth-child(3) { left: 50%; }
-    &:nth-child(4) { left: calc(50% + 140px); }
-    &:nth-child(5) { left: calc(50% + 280px); }
-    &:nth-child(6) { left: calc(50% + 420px); opacity: 0; }
   }
 }
   </style>
