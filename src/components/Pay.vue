@@ -1,97 +1,55 @@
 <template>
-  <div v-if="isVisible" class="pay-overlay">
-    <div class="pay-container">
-        <header class="pay-header">
-          <h2>会员权益</h2>
-          <button class="close-button" @click="close">×</button>
-        </header>
-        <div class="lr-container">
-      <!-- 左侧：会员权益比较 -->
-      <div class="benefits-section">
-        <div class="benefits-header">
-          <!--           <img src="path/to/your/icon.png" alt="会员图标" class="benefits-icon" /> -->
-          <h2>会员权益对比</h2>
-        </div>
-        <div class="benefits-table">
-          <div class="benefits-row">
-            <div class="benefit-item">权益</div>
-            <div class="benefit-item">普通用户</div>
-            <div class="benefit-item">充值用户</div>
-            <div class="benefit-item">会员用户</div>
+  <div v-if="isVisible" class="modal-overlay">
+    <div class="main flow modal-content">
+      <button class="modal-close-button" @click="close">✖</button>
+
+      <h1 class="main__heading">Pricing</h1>
+      <div class="main__cards cards">
+        <div class="cards__inner">
+          <div class="cards__card card">
+            <h2 class="card__heading">Basic</h2>
+            <p class="card__price">¥9.99 per month</p>
+            <ul role="list" class="card__bullets flow">
+              <li>1000 call permissions</li>
+              <li>Regular feedback support</li>
+            </ul>
+            <a href="#basic" class="card__cta cta">Get Started</a>
           </div>
-          <div
-            class="benefits-row"
-            v-for="(benefit, index) in benefits"
-            :key="index"
-          >
-            <div class="benefit-item" >{{ benefit.name }}</div>
-            <div class="benefit-item">{{ benefit.normal }}</div>
-            <div class="benefit-item">{{ benefit.recharged }}</div>
-            <div class="benefit-item">{{ benefit.member }}</div>
+
+          <div class="cards__card card">
+            <h2 class="card__heading">Pro</h2>
+            <p class="card__price">¥29.99 per month</p>
+            <ul role="list" class="card__bullets flow">
+              <li>5000 call permissions</li>
+              <li>500 downloads</li>
+              <li>Priority feedback support</li>
+            </ul>
+            <a href="#pro" class="card__cta cta">Upgrade to Pro</a>
+          </div>
+
+          <div class="cards__card card">
+            <h2 class="card__heading">Ultimate</h2>
+            <p class="card__price">¥49.99 per month</p>
+            <ul role="list" class="card__bullets flow">
+              <li>Unlimited call permissions</li>
+              <li>Unlimited downloads</li>
+              <li>7/24 feedback support</li>
+              <li>Experience in advance</li>
+              <li>Intelligent dialogue, automatic summarization</li>
+            </ul>
+            <a href="#ultimate" class="card__cta cta">Go Ultimate</a>
           </div>
         </div>
-        <button class="open-membership-btn">立即开通Boser AI会员</button>
+
+        <div class="overlay cards__inner"></div>
       </div>
-
-      <!-- 右侧：积分和会员购买 -->
-      <div class="purchase-section">
-        <!-- 积分选项 -->
-        <div class="points-section">
- <!--          <h6>积分</h6> -->
-          <div class="points-options">
-            <div
-              class="point-option"
-              v-for="(point, index) in points"
-              :key="index"
-            >
-              <div class="point-value" style="font-size: 10px;">{{ point.value }}积分</div>
-              <div class="point-price" style="font-size: 10px;">¥ {{ point.price }}</div>
-              <div class="point-original" style="font-size: 10px;">¥ {{ point.original }}</div>
-              <div class="point-per-cost" style="font-size: 10px;">仅需{{ point.perCost }}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 会员选项 -->
-        <div class="membership-section">
-          <div class="membership-options">
-            <div
-              class="membership-option"
-              v-for="(membership, index) in memberships"
-              :key="index"
-            >
-              <div class="membership-duration" style="font-size: 10px;">{{ membership.duration }}</div>
-              <div class="membership-price" style="font-size: 10px;">¥ {{ membership.price }}</div>
-              <div class="membership-original" style="font-size: 10px;">¥ {{ membership.original }}</div>
-              <div class="membership-per-day" style="font-size: 10px;">{{ membership.perDay }}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 扫码支付 -->
-        <div class="payment-section">
-          <p>扫码支付：<span class="total-price">¥ 99.90</span></p>
-          <div class="payment-methods">
-            <button class="wechat-pay-btn">使用微信扫码支付</button>
-          </div>
-          <p class="payment-warning">
-            提示：虚拟产品不支持退款，最终解释权归图灵不灵组所有
-          </p>
-          <div class="agreements">
-            <input type="checkbox" id="agreement" />
-            <label for="agreement">
-              同意《<a href="#">充值协议</a>》和《<a href="#">隐私协议</a>》
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
@@ -104,291 +62,255 @@ const close = () => {
   emit("update:isVisible", false);
 };
 
-// 模拟数据：会员权益
-const benefits = ref([
-  { name: "多模型切换", normal: "✔", recharged: "✔", member: "✔" },
-  { name: "高速通道", normal: "✘", recharged: "✔", member: "✔" },
-  { name: "无限绘图", normal: "✘", recharged: "✔", member: "✔" },
-  { name: "批量绘图", normal: "✔", recharged: "✔", member: "✔" },
-  { name: "无限问答", normal: "✘", recharged: "✔", member: "✔" },
-  { name: "绘图离线设置", normal: "✘", recharged: "✔", member: "✔" },
-]);
+const cardsContainer = ref(null); // 使用ref代替直接查询
+const overlay = ref(null); // 使用ref代替直接查询
+const cards = ref([]); // 存储所有卡片元素
 
-// 模拟数据：积分选项
-const points = ref([
-  {
-    discount: "限时7折",
-    value: 300,
-    price: 5.9,
-    original: 20,
-    perCost: "0.02元/积分",
-  },
-  {
-    discount: "",
-    value: 500,
-    price: 4.9,
-    original: 38,
-    perCost: "0.01元/积分",
-  },
-  {
-    discount: "",
-    value: 1000,
-    price: 7.9,
-    original: 60,
-    perCost: "0.01元/积分",
-  },
-  {
-    discount: "",
-    value: 5000,
-    price: 14.9,
-    original: 250,
-    perCost: "0.01元/积分",
-  },
-]);
+// 在mounted阶段查询DOM
+onMounted(() => {
+  cardsContainer.value = document.querySelector(".cards");
+  const cardsContainerInner = document.querySelector(".cards__inner");
+  cards.value = Array.from(document.querySelectorAll(".card"));
+  overlay.value = document.querySelector(".overlay");
 
-// 模拟数据：会员选项
-const memberships = ref([
-  {
-    discount: "已减50元",
-    duration: "6个月",
-    price: 99.9,
-    original: 150,
-    perDay: "仅需0.56元/天",
-  },
-  {
-    discount: "已减60元",
-    duration: "3个月",
-    price: 39.9,
-    original: 100,
-    perDay: "仅需0.44元/天",
-  },
-  {
-    discount: "",
-    duration: "1个月",
-    price: 29.9,
-    original: 40,
-    perDay: "仅需1.00元/天",
-  },
-  {
-    discount: "限时7折",
-    duration: "1天",
-    price: 5,
-    original: 8,
-    perDay: "仅需5.00元/天",
-  },
-]);
+  // 定义鼠标跟随动画的函数
+  const applyOverlayMask = (e) => {
+    const x = e.pageX - cardsContainer.value.offsetLeft;
+    const y = e.pageY - cardsContainer.value.offsetTop;
+
+    overlay.value.style = `--opacity: 1; --x: ${x}px; --y:${y}px;`;
+  };
+
+  const createOverlayCta = (overlayCard, ctaEl) => {
+    const overlayCta = document.createElement("div");
+    overlayCta.classList.add("cta");
+    overlayCta.textContent = ctaEl.textContent;
+    overlayCta.setAttribute("aria-hidden", true);
+    overlayCard.append(overlayCta);
+  };
+
+  const observer = new ResizeObserver((entries) => {
+    entries.forEach((entry) => {
+      const cardIndex = cards.value.indexOf(entry.target);
+      let width = entry.borderBoxSize[0].inlineSize;
+      let height = entry.borderBoxSize[0].blockSize;
+
+      if (cardIndex >= 0) {
+        overlay.value.children[cardIndex].style.width = `${width}px`;
+        overlay.value.children[cardIndex].style.height = `${height}px`;
+      }
+    });
+  });
+
+  const initOverlayCard = (cardEl) => {
+    const overlayCard = document.createElement("div");
+    overlayCard.classList.add("card");
+    createOverlayCta(overlayCard, cardEl.lastElementChild);
+    overlay.value.append(overlayCard);
+    observer.observe(cardEl);
+  };
+
+  cards.value.forEach(initOverlayCard);
+  document.body.addEventListener("pointermove", applyOverlayMask);
+});
+
 </script>
 
+
 <style scoped>
-.pay-overlay {
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&display=swap");
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  min-height: 100vh;
+}
+
+body {
+  font-family: "League Spartan", system-ui, sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  background-color: #212121;
+  color: #ddd;
+}
+
+ul {
+  list-style: none;
+}
+
+.main__heading {
+  font-weight: 600;
+  font-size: 2.25em;
+  margin-bottom: 0.75em;
+  text-align: center;
+  color: #eceff1;
+}
+
+.cards {
+  position: relative;
+}
+
+.cards__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5em;
+}
+
+.card {
+  --flow-space: 0.5em;
+  --hsl: var(--hue), var(--saturation), var(--lightness);
+  flex: 1 1 14rem;
+  padding: 1.5em 2em;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  align-items: start;
+  gap: 1.25em;
+  color: #eceff1;
+  background-color: #2b2b2b;
+  border: 1px solid #eceff133;
+  border-radius: 15px;
+}
+
+.card:nth-child(1) {
+  --hue: 165;
+  --saturation: 82.26%;
+  --lightness: 51.37%;
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  color: #eceff1;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.card:nth-child(2) {
+  --hue: 291.34;
+  --saturation: 95.9%;
+  --lightness: 61.76%;
+}
+
+.card:nth-child(3) {
+  --hue: 338.69;
+  --saturation: 100%;
+  --lightness: 48.04%;
+}
+
+.card__bullets {
+  line-height: 1.4;
+}
+
+.card__bullets li::before {
+  display: inline-block;
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='16' title='check' fill='%23dddddd'%3E%3Cpath d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z' /%3E%3C/svg%3E");
+  transform: translatey(0.25ch);
+  margin-right: 1ch;
+}
+
+.card__heading {
+  font-size: 1.05em;
+  font-weight: 600;
+}
+
+.card__price {
+  font-size: 1.75em;
+  font-weight: 700;
+}
+
+.flow > * + * {
+  margin-top: var(--flow-space, 1.25em);
+}
+
+.cta {
+  display: block;
+  align-self: end;
+  margin: 1em 0 0.5em 0;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #0d0d0d;
+  padding: 0.7em;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  opacity: var(--opacity, 0);
+  -webkit-mask: radial-gradient(
+    25rem 25rem at var(--x) var(--y),
+    #000 1%,
+    transparent 50%
+  );
+  mask: radial-gradient(
+    25rem 25rem at var(--x) var(--y),
+    #000 1%,
+    transparent 50%
+  );
+  transition: 400ms mask ease;
+  will-change: mask;
+}
+
+.overlay .card {
+  background-color: hsla(var(--hsl), 0.15);
+  border-color: hsla(var(--hsl), 1);
+  box-shadow: 0 0 0 1px inset hsl(var(--hsl));
+}
+
+.overlay .cta {
+  display: block;
+  grid-row: -1;
+  width: 100%;
+  background-color: hsl(var(--hsl));
+  box-shadow: 0 0 0 1px hsl(var(--hsl));
+}
+
+:not(.overlay) > .card {
+  transition: 400ms background ease;
+  will-change: background;
+}
+
+:not(.overlay) > .card:hover {
+  --lightness: 95%;
+  background: hsla(var(--hsl), 0.1);
+}
+
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
-.pay-container {
-    height: 80vh; /* 修改为使用视口高度，便于调整适应不同屏幕 */
-  max-width: 90vw; /* 确保在小屏幕上不会超出视口宽度 */
-  display: flex;
-  background-color: #1a1c2d;
-  padding: 20px;
-  border-radius: 10px;
-  color: #fff;
-  flex-direction: column;
-  overflow: hidden; /* 防止内容溢出 */
-}
 
-.pay-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #262938;
-    border-bottom: 1px solid #2c2f45;
-  }
-  
-  .pay-header h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #fff;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    color: #ccc;
-    font-size: 20px;
-    cursor: pointer;
-  }
-
-.lr-container{
-    display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  overflow: auto; /* 当内容超出高度时显示滚动条 */
-  max-height: calc(100% - 40px); /* 确保高度不超过父级，减去 padding */
-  margin:10px;
-}
-
-/* 左侧会员权益 */
-.benefits-section {
-  flex: 1;
-  margin-right: 20px;
-  padding: 20px;
-  background-color: #24273a;
-  border-radius: 10px;
-  height:100%;
-}
-
-.benefits-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.benefits-icon {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-}
-
-.benefits-table {
-  display: flex;
-  flex-direction: column;
-}
-
-.benefits-row {
-  display: flex;
-  justify-content: space-between;
-  margin: 5px 0;
-}
-
-.benefit-item {
-  flex: 1;
-  text-align: center;
-}
-
-.open-membership-btn {
-  width: 100%;
-  padding: 10px;
-  background-color: #901bf5;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  margin-top: 20px;
-  cursor: pointer;
-}
-
-/* 右侧购买区域 */
-.purchase-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.points-section,
-.membership-section {
-  background-color: #24273a;
-  padding: 10px;
-  border-radius: 10px;
-  height:30%;
-}
-
-.points-options,
-.membership-options {
-  display: flex;
-  gap: 10px;
-}
-
-.point-option,
-.membership-option {
-  flex: 1;
-  background-color: #33354a;
-  padding: 5px;
-  border-radius: 10px;
-  text-align: center;
-  color: #fff;
-  height:60%;
-}
-
-.point-discount,
-.membership-discount {
-  color: #ff4747;
-  font-size: 12px;
-}
-
-.point-value,
-.membership-duration {
-  font-size: 16px;
-  margin: 5px 0;
-}
-
-.point-price,
-.membership-price {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.point-original,
-.membership-original {
-  text-decoration: line-through;
-  font-size: 12px;
-  color: #aaa;
-}
-
-.point-per-cost,
-.membership-per-day {
-  font-size: 12px;
-  color: #ddd;
-}
-
-.payment-section {
-  background-color: #24273a;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.total-price {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ff4747;
-}
-
-.payment-methods {
-  margin: 10px 0;
-}
-
-.wechat-pay-btn {
-  background-color: #07c160;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.payment-warning {
-  font-size: 12px;
-  color: #aaa;
-}
-
-.agreements {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  margin-top: 10px;
-}
-
-.agreements a {
-  color: #ff4747;
-  text-decoration: none;
+.modal-content {
+  background-color: #2b2b2b;
+  padding: 2rem;
+  border-radius: 15px;
+  max-width: 75rem;
+  width: 90%;
+  overflow: auto;
+  max-height: 90vh;
 }
 </style>
