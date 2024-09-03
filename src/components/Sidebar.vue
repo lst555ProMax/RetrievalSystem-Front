@@ -6,7 +6,6 @@
           <li><a href="#" @click.prevent="handleTextSearch">文生图</a></li>
           <li><a href="#" @click.prevent="handleImageSearch">图生文</a></li>
           <li><a href="#" @click.prevent="handleDialogue">对话</a></li>
-          <li><a href="#" @click.prevent="handlePersonal">个性化推荐</a></li>
           <li><a href="#" @click.prevent="handleOther">其他</a></li>
         </ul>
       </nav>
@@ -22,7 +21,6 @@
   const handleTextSearch = () => router.push("/textSearch");
   const handleImageSearch = () => router.push("/imageSearch");
   const handleDialogue = () => router.push("/dialogue");
-  const handlePersonal = () => router.push("/recommendation");
   const handleOther = () => router.push("/others");
   </script>
   

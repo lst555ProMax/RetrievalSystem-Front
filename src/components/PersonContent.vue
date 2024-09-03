@@ -32,14 +32,6 @@
       <i class="fa-solid fa-comment" @click="GotoFeedback"></i>
       <span @click="GotoFeedback">意见反馈</span>
     </div>
-    <div class="tab4-item" @click="GotoMoneyHistory">
-      <i class="fa-solid fa-money-bill" @click="GotoMoneyHistory"></i>
-      <span>充值记录</span>
-    </div>
-    <div class="tab4-item" @click="GotoCreditsHistory">
-      <i class="fa-solid fa-bitcoin-sign" @click="GotoCreditsHistory"></i>
-      <span>积分记录</span>
-    </div>
   </div>
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs5">
@@ -60,15 +52,8 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  reactive,
-  getCurrentInstance,
-  nextTick,
-  onMounted,
-  computed,
-} from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { ref, } from "vue";
+import { useRouter } from "vue-router";
 
 const credits = ref(32);
 const router = useRouter();
@@ -79,8 +64,6 @@ import { defineEmits } from "vue";
 const emit = defineEmits(
   ["toggleForm"],
   ["feedBack"],
-  ["moneyHistory"],
-  ["creditsHistory"],
   ["pay"],
   ["delete"],
   ["answer"]
@@ -100,14 +83,6 @@ const GotoFeedback = () => {
   emit("feedBack");
 };
 
-const GotoMoneyHistory = () => {
-  emit("moneyHistory");
-};
-
-const GotoCreditsHistory = () => {
-  emit("creditsHistory");
-};
-
 const GoToPay = () => {
   emit("pay");
 };
@@ -119,8 +94,6 @@ const Return = () => {
 const GotoDelete =()=>{
   emit("delete");
 }
-
-
 </script>
 
 <style scoped>

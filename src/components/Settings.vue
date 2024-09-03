@@ -16,22 +16,6 @@
         </select>
       </div>
   
-      <!-- 字体选项 -->
-      <div class="tabs2" @click.stop="toggleFontDropdown">
-        <i class="fa-solid fa-font"></i>
-        <text>字体</text>
-        <select
-          v-if="showFontDropdown"
-          v-model="selectedFont"
-          class="font-select"
-          @click.stop
-        >
-          <option v-for="font in fonts" :key="font" :value="font">
-            {{ font }}
-          </option>
-        </select>
-      </div>
-  
       <!-- 背景图片上传 -->
 <!--       <div class="tabs3">
         <i class="fa-solid fa-images"></i>
@@ -76,13 +60,7 @@
     showThemeDropdown.value = !showThemeDropdown.value;
     showFontDropdown.value = false; // 确保字体下拉框关闭
   };
-  
-  // 切换字体选择下拉菜单
-  const toggleFontDropdown = () => {
-    showFontDropdown.value = !showFontDropdown.value;
-    showThemeDropdown.value = false; // 确保主题下拉框关闭
-  };
-  
+
   // 处理背景图片上传
   const handleImageUpload = (event) => {
     const file = event.target.files[0];

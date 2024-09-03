@@ -6,12 +6,6 @@
       <text>主题</text>
     </div>
 
-    <!-- 字体选项 -->
-    <div class="tabs2" @click.stop="toggleFontDropdown">
-      <i class="fa-solid fa-font"></i>
-      <text>字体</text>
-    </div>
-
     <!-- 背景图片上传 -->
     <div class="tabs3">
       <i class="fa-solid fa-images"></i>
@@ -34,7 +28,6 @@ const themes = ["默认主题", "黑暗模式", "浅色模式", "复古模式"];
 const fonts = ["Arial", "宋体", "微软雅黑", "Times New Roman"]; // 示例字体
 
 const selectedTheme = ref(themes[0]); // 默认主题
-const selectedFont = ref(fonts[0]); // 默认字体
 const backgroundImage = ref(null); // 上传的背景图片
 
 const showThemeDropdown = ref(false); // 控制主题选择下拉菜单显示
@@ -44,12 +37,6 @@ const showFontDropdown = ref(false); // 控制字体选择下拉菜单显示
 const toggleThemeDropdown = () => {
   showThemeDropdown.value = !showThemeDropdown.value;
   showFontDropdown.value = false; // 确保字体下拉框关闭
-};
-
-// 切换字体选择下拉菜单
-const toggleFontDropdown = () => {
-  showFontDropdown.value = !showFontDropdown.value;
-  showThemeDropdown.value = false; // 确保主题下拉框关闭
 };
 
 // 处理背景图片上传

@@ -1,16 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import login from '../views/Login.vue'
 import framework from '../views/Framework.vue'
-import recommendation from '../views/Recommendation.vue'
 import help from '../views/Help.vue'
-import admin from '../views/Administrator.vue'
 import textSearch from '../views/TextSearch.vue'
 import imageSearch from '../views/ImageSearch.vue'
 import userCenter from '../views/UserCenter.vue'
 import result from '../views/Result.vue'
 import dialogue from '../views/dialogue.vue'
 import others from '../views/Others.vue'
-
 import userManagement from '../views/AdminOperations/UserManagement.vue'
 import systemManagement from '../views/AdminOperations/SystemManagement.vue'
 
@@ -28,19 +25,9 @@ const router = createRouter({
       component:framework
     },
     {
-      path:'/recommendation',
-      name:'recommendation',
-      component:recommendation
-    },
-    {
       path:'/help',
       name:'help',
       component:help
-    },
-    {
-      path:'/admin',
-      name:'admin',
-      component:admin
     },
     {
       path:'/textSearch',
