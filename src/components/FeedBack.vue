@@ -26,29 +26,6 @@
           <label>反馈内容 *</label>
           <textarea v-model="feedbackContent" placeholder="请填写您的具体描述"></textarea>
         </div>
-
-        <!-- Image Upload Section -->
-        <div class="image-upload-section">
-          <label>上传图片</label>
-          <div class="image-upload-container">
-<!--             <div v-for="(image, index) in uploadedImages" :key="index" class="upload-slot">
-              <img v-if="image.url" :src="image.url" alt="上传的图片" class="uploaded-image"/>
-              <button v-if="!image.url" @click="triggerFileInput(index)">+ 上传图片</button>
-              <input type="file" accept="image/*" ref="fileInputs" :key="index" @change="handleFileChange($event, index)" hidden />
-            </div> -->
-            <div v-for="(image, index) in images" :key="index" class="upload-slot">
-        <img v-if="image.url" :src="image.url" alt="上传的图片" @click="removeImage(index)" />
-        <button v-else @click="uploadImage(index)">+ 上传图片</button>
-      </div>
-          </div>
-          <p class="hint">温馨提示：支持jpg, png, gif, bmg格式的图片，可上传5张，单张最大2M</p>
-        </div>
-
-        <!-- Contact Section -->
-        <div class="contact-section">
-          <label>联系方式</label>
-          <input type="text" v-model="contactInfo" placeholder="请填写您的手机号" />
-        </div>
       </div>
 
       <!-- Footer Buttons -->
@@ -163,16 +140,9 @@ let url = api.edit;
 async function submitFeedback() {
   // 构建表单数据
   const formData = new FormData();
-  formData.append("type", selectedType.value);
+  console.log(feedbackContent.value);
+  formData.append("username")
   formData.append("content", feedbackContent.value);
-  formData.append("contact", contactInfo.value);
-
-  // 附加上传的图片
-  uploadedImages.value.forEach((image, i) => {
-    if (image.url) {
-      formData.append(`image_${i}`, dataURLtoFile(image.url, `upload_${i}.png`)); // 将base64转为文件对象
-    }
-  });
 
   try {
     const response = await fetch(url, {
@@ -185,9 +155,12 @@ async function submitFeedback() {
     const result = await response.json();
     // 更新反馈次数
   feedbackCount.value += 1;
-  localStorage.setItem('feedbackCount', feedbackCount.value);
-    alert("提交成功！");
-    close();
+
+    if (response.ok) {
+      localStorage.setItem('feedbackCount', feedbackCount.value);
+      alert("提交成功！");
+      close();
+    }
   } catch (error) {
     console.error("提交失败", error);
   }

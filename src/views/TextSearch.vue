@@ -97,9 +97,13 @@
 
 <script setup>
 import { ref,watch,onMounted } from "vue";
+import { useRouter } from "vue-router";
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
-import Starfield from "@/components/Starfield.vue"
+import Starfield from "@/components/Starfield.vue";
+import { getUsername } from "@/utils/Auth";
+
+const router = useRouter();
 
 const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
 const question = ref([
@@ -233,6 +237,14 @@ const copyResponse = (index) => {
   navigator.clipboard.writeText(responseText);
   alert("回答已复制到剪贴板！");
 };
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
 </script>
 
 <style scoped>
