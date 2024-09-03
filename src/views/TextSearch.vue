@@ -9,6 +9,8 @@
 
       <div class="main-content">
         <div class="up-down">
+
+        <!-- 推荐搜索----------------------------------------------------------------------------- -->
           <div v-if="!uiChange" :key="1">
             <div class="recommendations">
               <div class="headbar">
@@ -62,6 +64,7 @@
               </div>
             </div>
           </div>
+        <!-- 搜索界面-------------------------------------------------------------------------------------- -->
           <div v-if="messages.length" class="chat-history" ref="chatHistory">
             <div
               v-for="(message, index) in messages"
@@ -83,7 +86,7 @@
               </div>
             </div>
           </div>
-
+        <!-- 输入框---------------------------------------------------------------------- -->
           <div class="input-area">
             <input
               type="text"
@@ -93,6 +96,7 @@
             />
             <button @click="sendMessage">➤</button>
           </div>
+        <!-- ------------------------------------------------------------------------ -->
         </div>
 
         <div class="history-section">
@@ -104,12 +108,15 @@
             </li>
           </ul>
         </div>
+
+
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+
 import { ref, watch, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import sidebar from "../components/Sidebar.vue";
@@ -186,9 +193,12 @@ let url = api.search;
 
 // 发送用户消息和请求后端接口
 const sendMessage = async () => {
-  uiChange.value = 1;
+
   if (userInput.value.trim()) {
+
     const currentTime = new Date().toLocaleTimeString();
+
+    uiChange.value = 1;
 
     // 添加用户的提问到消息列表
     messages.value.push({
@@ -222,7 +232,7 @@ const sendMessageIndex = async (index) => {
     // 调用后端接口
     await sendToBackend(userInput2.value);
 
-    // 清空输入框
+    // 清空
     userInput2.value = "";
   }
 };
@@ -304,6 +314,7 @@ const handleError = (errorMessage) => {
   });
 };
 
+//界面跟随文本滚动，未实现
 watch(messages, async () => {
   await nextTick(); // 等待 DOM 更新完成
   if (chatHistory.value) {

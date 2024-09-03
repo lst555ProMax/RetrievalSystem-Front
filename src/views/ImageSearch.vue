@@ -12,24 +12,26 @@
           <div v-if="!uiChange" :key="1">
             <div class="recommendations">
               <div class="headbar">
- <!--                <div class="text">你可以这样向我提问</div> -->
+                <div class="text">你可以这样向我提问</div>
                 <div class="icon" @click="changeSelection">
                   <div>换一批</div>
                   <i class="fa-solid fa-rotate"></i>
                 </div>
               </div>
               <div class="image-list">
-                <img
-                  :src="images[0 + 2 * questionSelection]"
-                  alt="Gallery Image"
-                  class="image-class"
-                />
-                <img
-                  :src="images[1 + 2 * questionSelection]"
-                  alt="Gallery Image"
-                  class="image-class"
-                />
-              </div>
+  <img
+    :src="images[0 + 2 * questionSelection]"
+    alt="Gallery Image"
+    class="image-class"
+    @click="uploadImageFromList(0 + 2 * questionSelection)"
+  />
+  <img
+    :src="images[1 + 2 * questionSelection]"
+    alt="Gallery Image"
+    class="image-class"
+    @click="uploadImageFromList(1 + 2 * questionSelection)"
+  />
+</div>
             </div>
           </div>
           <div v-if="messages.length" class="chat-history" ref="chatHistory">
@@ -105,6 +107,23 @@ import img10 from "../assets/image_example/10.jpg";
 import img11 from "../assets/image_example/11.jpg";
 import img12 from "../assets/image_example/12.jpg";
 
+// 定义一个映射，以保持图片文件数据
+const imageFiles = [
+  new File([img1], "1.jpg", { type: "image/jpeg" }),
+  new File([img2], "2.jpg", { type: "image/jpeg" }),
+  new File([img3], "3.jpg", { type: "image/jpeg" }),
+  new File([img4], "4.jpg", { type: "image/jpeg" }),
+  new File([img5], "5.jpg", { type: "image/jpeg" }),
+  new File([img6], "6.jpg", { type: "image/jpeg" }),
+  new File([img7], "7.jpg", { type: "image/jpeg" }),
+  new File([img8], "8.jpg", { type: "image/jpeg" }),
+  new File([img9], "9.jpg", { type: "image/jpeg" }),
+  new File([img10], "10.jpg", { type: "image/jpeg" }),
+  new File([img11], "11.jpg", { type: "image/jpeg" }),
+  new File([img12], "12.jpg", { type: "image/jpeg" }),
+];
+
+
 const router = useRouter();
 
 const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
@@ -128,7 +147,7 @@ const uiChange = ref(0);
 
 const changeSelection = () => {
   questionSelection.value++;
-  questionSelection.value = questionSelection.value % 5;
+  questionSelection.value = questionSelection.value % 6;
 };
 
 const removeHistory = (index) => {
@@ -158,20 +177,29 @@ watch(messages, async () => {
 // 存储上传的文件
 const selectedFile = ref(null);
 
-// 处理文件上传
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    selectedFile.value = file;
-  }
-};
-
 // 处理文件改变事件
 const onFileChange = (event) => {
   const files = event.target.files;
   if (files && files[0]) {
     selectedFile.value = files[0]; // 将选择的文件赋值给 selectedFile
   }
+};
+
+// 上传显示的图片
+const uploadImageFromList = (index) => {
+  const currentTime = new Date().toLocaleTimeString();
+  uiChange.value=1;
+
+  // 添加用户点击图片上传的消息
+  messages.value.push({
+    text: `用户选择了第 ${index + 1} 张图片进行上传。`,
+    time: currentTime,
+    isResponse: false,
+  });
+
+  // 根据 index 设置所选的文件
+  selectedFile.value = imageFiles[index];
+  sendImage(); // 调用现有的上传逻辑
 };
 
 const token = localStorage.getItem("jwtToken");
@@ -182,7 +210,6 @@ const api = {
 
 let url = api.search;
 
-
 // 发送上传的图像
 const sendImage = async () => {
   if (!selectedFile.value) {
@@ -190,14 +217,23 @@ const sendImage = async () => {
     return;
   }
 
+  uiChange.value=1;
+ const currentTime = new Date().toLocaleTimeString();
+
+  // 添加用户的上传消息到消息列表
+  messages.value.push({
+    text: "用户上传了一张图片。",
+    time: currentTime,
+    isResponse: false,
+  });
+
   const formData = new FormData();
-  formData.append("username", getUsername()); // 假设 getUsername() 函数返回当前的用户名
-  formData.append("file", selectedFile.value); // 添加图像文件到表单数据中
+  formData.append("username", getUsername());
+  formData.append("file", selectedFile.value);
 
   try {
     console.log("开始发送请求...");
 
-    // 获取 JWT Token，假设 token 存储在 localStorage 中
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
@@ -205,40 +241,34 @@ const sendImage = async () => {
       return;
     }
 
-    // 发送请求
     const result = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`, // 设置 Authorization 头部
+        Authorization: `Bearer ${token}`,
       },
-      body: formData, // 使用 FormData 发送请求体
+      body: formData,
     });
 
-    // 检查响应状态码
     if (!result.ok) {
       handleError(`请求失败，状态码：${result.status}`);
       return;
     }
 
-    const response = await result.json(); // 将响应解析为 JSON
-
+    const response = await result.json();
     const responseTime = new Date().toLocaleTimeString();
 
     if (response.code === "0") {
       console.log(response);
 
-      // 检查是否包含 text_list 数据
       if (response.text_list && response.text_list.length > 0) {
-        // 遍历 text_list 并将每条文本添加到消息中
         response.text_list.forEach((text) => {
           messages.value.push({
-            text, // 显示后端返回的文本
+            text,
             time: responseTime,
             isResponse: true,
           });
         });
       } else {
-        // 当 text_list 为空时显示默认信息
         messages.value.push({
           text: response.message || "这是系统给出的回答。",
           time: responseTime,
@@ -253,6 +283,7 @@ const sendImage = async () => {
     console.error("提交失败", error);
   }
 };
+
 
 // 错误处理函数
 const handleError = (errorMessage) => {
@@ -337,20 +368,21 @@ onMounted(() => {
 }
 
 .text {
-  display: flex;
-  align-items: center;
-  font-size: 20px;
-  margin-left: 15px;
-  flex: 5;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); /* Center the element horizontally */
+  font-size: 18px;
+  font-weight: bold;
+  color: #d3d3d3;
 }
 
 .icon {
   display: flex;
+  position: absolute;
+  right: 27px;
+  gap: 5px;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-  flex: 1;
-  gap: 8px;
 }
 
 .image-list {
@@ -358,88 +390,148 @@ onMounted(() => {
   justify-content: space-evenly;
   align-items: center;
   height: 100%;
+  width:80%;
 }
 
 .image-class {
-  width: 45%;
+  height:224px;
+  width:224px;
   border-radius: 15px;
 }
 
 .chat-history {
+  position: absolute; /* 绝对定位 */
+  top: 0; /* 固定在底部 */
+  width: 100%;
+  height: 85%;
+  flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  height: calc(100% - 80px);
-  margin-top: 5px;
-  margin-bottom: 10px;
 }
 
 .message {
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  background: #2e2e4d;
+  border-radius: 8px;
   padding: 10px;
-  max-width: 80%;
-  align-self: flex-end;
+  margin-bottom: 10px;
 }
 
 .message-header {
-  font-size: 0.8em;
-  color: #555;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
-.message-content p {
-  margin: 0;
-  word-wrap: break-word;
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
-.generated-image {
+.message-time {
+  color: #ccc;
+  font-size: 12px;
+}
+
+.message-content {
+  color: #fff;
+}
+
+.response-image {
   max-width: 100%;
+  height: auto;
   margin-top: 10px;
   border-radius: 5px;
 }
 
 .response {
-  margin-top: 5px;
+  margin-top: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  gap: 10px;
 }
 
+.response button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
 .input-area {
+  position: absolute; /* 绝对定位 */
+  bottom: 0; /* 固定在底部 */
   display: flex;
-  flex-direction: row;
-  gap: 10px;
-  z-index: 1000;
+  align-items: center;
+  background-color: #0e0d27;
+  border-top: 1px solid #34345f;
+  width: 100%;
+  height: 15%;
+}
+
+.input-area input {
+  flex: 10;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-color: #1e1e3f;
+  color: #d3d3d3;
+  height: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.input-area button {
+  flex: 1;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  height:48.16px;
 }
 
 .history-section {
-  display: flex;
-  flex-direction: column;
   flex: 1;
+  background-color: #232343;
   padding: 10px;
-  border-left: 1px solid #ccc;
+  border-radius: 5px;
+}
+.history-section h4 {
+  color: #d3d3d3;
+  margin-bottom: 10px;
 }
 
 .history-list {
   list-style: none;
   padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .history-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  background-color: #34345f;
+  padding: 8px;
+  border-radius: 4px;
+  color: #d3d3d3;
 }
 
 .history-list button {
   background: none;
   border: none;
-  color: red;
+  color: #d3d3d3;
   cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
 </style>
