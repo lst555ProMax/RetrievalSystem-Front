@@ -3,7 +3,7 @@
     <div class="edit-content" @click="stop">
       <!-- 头部 -->
       <div class="edit-header">
-        <h2>您好，请您修改您的资料</h2>
+        <h2>资料修改</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
@@ -13,7 +13,7 @@
           <!-- 用户名 -->
           <!--           <div class="form-group1">
             <label for="username">用户名 *</label>
-            <input type="text" id="username" placeholder="请输入用户名" />
+            <input type="text" id="username" placeholder="请修改用户名" />
           </div>
  -->
           <!-- 昵称 -->
@@ -22,30 +22,45 @@
             <input
               type="text"
               id="nickname"
-              placeholder="请输入昵称"
+              placeholder="请修改昵称"
               v-model="form.nickname"
             />
           </div>
 
           <!-- 邮箱 -->
-          <div class="form-group">
-            <label for="email">邮箱 *</label>
+          <div class="form-group" prop="email">
+            <label for="email">邮箱</label>
             <input
               type="email"
               id="email"
-              placeholder="请输入邮箱"
+              placeholder="请修改邮箱"
               v-model="form.email"
-            />
+              clearable
+              maxLength="150"
+            />                      
           </div>
 
-          <!-- 密码 -->
-          <div class="form-group">
-            <label for="password">密码 *</label>
+
+
+          <!-- 新密码 -->
+          <div class="form-group" prop="password">
+            <label for="password">密码</label>
             <input
               type="password"
               id="password"
-              placeholder="请输入密码"
+              placeholder="请修改密码"
               v-model="form.password"
+            />
+          </div>
+
+          <!-- 确认新密码 -->
+          <div class="form-group" prop="rePassword">
+            <label for="rePassword">确认新密码</label>
+            <input
+              type="password"
+              id="rePassword"
+              placeholder="请确认新密码"
+              v-model="form.rePassword"
             />
           </div>
 
@@ -65,9 +80,6 @@
                 @change="handleFileChange"
                 accept="image/*"
               />
-              <div class="upload-area" v-if="!avatarPreview">
-                点击上传或拖拽图片到此处
-              </div>
               <img
                 v-if="avatarPreview"
                 :src="avatarPreview"
@@ -88,31 +100,33 @@
             <label>性别</label>
             <div class="gender-options">
               <div class="gender-option">
-                <label>男</label>
+                <label class="gender-option-label">男</label>
                 <input
                   type="radio"
                   name="gender"
                   value="male"
                   v-model="selectedGender"
+                  class="gender-option-input"
                 />
               </div>
               <div class="gender-option">
-                <label>女</label>
+                <label class="gender-option-label">女</label>
                 <input
                   type="radio"
                   name="gender"
                   value="female"
                   v-model="selectedGender"
+                  class="gender-option-input"
                 />
               </div>
               <div class="gender-option">
-                <label>保密</label>
+                <label class="gender-option-label">保密</label>
                 <input
                   type="radio"
                   name="gender"
                   value="secret"
                   v-model="selectedGender"
-                  checked
+                  class="gender-option-input"
                 />
               </div>
             </div>
@@ -123,7 +137,7 @@
             <label for="bio">个人简介</label>
             <textarea
               id="bio"
-              placeholder="请输入个人简介"
+              placeholder="请修改个人简介"
               v-model="form.description"
             ></textarea>
           </div>
@@ -143,6 +157,14 @@
 import assert from "assert";
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import Verify from "../utils/verify"
+
+import { useUserStore } from "../stores/userStore"; // 引入 Store
+
+const userStore = useUserStore(); // 使用 Store
+
+// 从 Store 中获取 username
+const { username } = userStore;
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -153,13 +175,47 @@ const props = defineProps({
 });
 
 const form = ref({
+  username: username,
   nickname: "",
   email: "",
   password: "",
+  rePassword: "",
   birthday: "",
   gender: "secret",
   description: "",
 });
+
+/* 检查密码的再次修改 */
+const checkRePassword = (rule, value, callback) => {
+  if (value !== formData.value.registerPassword) {
+    callback(new Error(rule.message));
+  } else {
+    callback();
+  }
+};
+
+const rules = {
+  email: [
+    { required: true, message: "请修改邮箱" },
+    { validator: proxy.Verify.email, message: "请输入正确的邮箱" },
+  ],
+  password: [
+    { required: true, message: "请输入密码" },
+    {
+      validator: proxy.Verify.password,
+      message: "密码只能是数字，字母，特殊字符 8-18位",
+    },
+  ],
+  rePassword: [
+    { required: true, message: "请再次输入密码" },
+    {
+      validator: checkRePassword,
+      message: "两次输入的密码不一致",
+    },
+  ],
+};
+
+
 
 // 定义性别选择的数据绑定
 const selectedGender = ref("secret");
@@ -169,13 +225,16 @@ const api = {
 };
 
 let url = api.edit;
-
-// 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
-const urlEncodedParams = new URLSearchParams(form.value);
 // 提交表单的方法
 const submitForm = async () => {
   // 更新 form 对象中的性别值
   form.value.gender = selectedGender.value;
+
+  delete form.value.rePassword;
+
+  // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
+  const urlEncodedParams = new URLSearchParams(form.value);
+
   //发送请求到后端
   try {
     const response = await fetch(url, {
@@ -190,6 +249,7 @@ const submitForm = async () => {
     if (response.ok) {
       console.log("修改成功", result);
       console.log(urlEncodedParams.toString());
+      emit("update:isVisible", false);
     } else {
       console.error("修改失败", result.message);
     }
@@ -197,8 +257,6 @@ const submitForm = async () => {
     console.error("请求失败", error);
   }
 };
-
-
 
 const emit = defineEmits(["update:isVisible"]);
 
@@ -219,15 +277,18 @@ const close = () => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+
 }
 
 .edit-content {
   background-color: #1a1c2d;
   border-radius: 8px;
-  width: 500px;
+  width: 400px;
   padding: 20px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  overflow-y: auto; 
+  height: 80%;
 }
 
 .edit-header {
@@ -254,46 +315,13 @@ const close = () => {
   margin-bottom: 20px;
 }
 
-.form-groups {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
-  gap: 20px;
-}
-
-.form-group1 {
-  display: flex;
-  flex: 1;
-  margin-bottom: 15px;
-  /* width:100%; */
-}
 
 .form-group {
   margin-bottom: 15px;
+  height:100%;
 }
 
-.form-group1 label {
-  display: flex;
-  color: #ffffff;
-  margin-bottom: 5px;
-  flex: 1;
-  font-size: 13px;
-  justify-content: left;
-  align-items: center;
-}
 
-.form-group1 input,
-.form-group1 textarea {
-  display: flex;
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #333;
-  border-radius: 4px;
-  background-color: #2b2e3e;
-  color: #ffffff;
-  flex: 3;
-}
 .form-group label {
   display: block;
   color: #ffffff;
@@ -322,17 +350,6 @@ const close = () => {
   border-radius: 50%;
 }
 
-.upload-area {
-  flex: 1;
-  height: 50px;
-  border: 1px dashed #555;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #aaa;
-  cursor: pointer;
-}
-
 .gender-options {
   display: flex;
   gap: 10px;
@@ -343,10 +360,18 @@ const close = () => {
 .gender-option {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;;
 }
 
-.gender-options label {
-  color: #ffffff;
+.gender-option-label{
+display: flex;
+flex:6;
+}
+
+.gender-option-input{
+  display: flex;
+flex:1;
 }
 
 .edit-footer {
@@ -373,3 +398,4 @@ const close = () => {
   cursor: pointer;
 }
 </style>
+<!-- #2c2e3d -->

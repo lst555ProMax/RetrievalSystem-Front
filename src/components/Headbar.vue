@@ -57,10 +57,12 @@
               :isVisible="isFormVisible"
               @hide="hideForm"
               @toggleForm="handleToggleForm"
+              @answer="handleAnswer"
               @feedBack="handleFeedBack"
               @moneyHistory="handleMoneyHistory"
               @creditsHistory="handleCreditsHistory"
               @pay="handlePay"
+              @delete="handleDelete"
             ></PersonContent>
           </div>
         </div>
@@ -70,6 +72,9 @@
     </div>
   </div>
   <Edit :isVisible="isEditVisible" @update:isVisible="isEditVisible = $event" />
+  <Answer     
+    :isVisible="isAnswerVisible"
+    @update:isVisible="isAnswerVisible = $event"></Answer>
   <FeedBack
     :isVisible="isFeedBackVisible"
     @update:isVisible="isFeedBackVisible = $event"
@@ -83,6 +88,10 @@
     :isVisible="isPayVisible"
     @update:isVisible="isPayVisible = $event"
   ></Pay>
+  <Delete
+  :isVisible="isDeleteVisible"
+  @update:isVisible="isDeleteVisible = $event"
+  ></Delete>
 </template>
 
 <script setup>
@@ -95,6 +104,8 @@ import MoneyHistory from "../components/MoneyHistory.vue";
 import Pay from "../components/Pay.vue";
 import Settings from "../components/Settings.vue";
 import Message from "../components/Message.vue"
+import Delete from "../components/Delete.vue"
+import Answer from "../components/Answer.vue"
 
 import { defineEmits } from "vue";
 
@@ -109,10 +120,12 @@ const form3 = ref({});
 
 const isFormVisible = ref(false);
 const isEditVisible = ref(false);
+const isAnswerVisible=ref(false);
 const isFeedBackVisible = ref(false);
 const isMoneyHistoryVisible = ref(false);
 const currentTab = ref("score");
 const isPayVisible = ref(false);
+const isDeleteVisible =ref(false);
 
 const hideTimers = ref({});
 
@@ -171,6 +184,12 @@ const handleToggleForm = () => {
   isEditVisible.value = true;
 };
 
+const handleAnswer =()=>{
+    // 关闭 form3Vision
+    document.querySelector(".form3Vision").style.display = "none";
+   // 显示 Edit 组件
+   isAnswerVisible.value = true;
+}
 const handleFeedBack = () => {
   // 关闭 form3Vision
   document.querySelector(".form3Vision").style.display = "none";
@@ -199,6 +218,11 @@ const handlePay = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isPayVisible.value = true;
 };
+
+const handleDelete =()=>{
+  document.querySelector(".form3Vision").style.display = "none";
+  isDeleteVisible.value = true;
+}
 </script>
 
 <style scoped>
