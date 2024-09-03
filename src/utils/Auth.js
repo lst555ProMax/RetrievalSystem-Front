@@ -1,7 +1,7 @@
 const USER_KEY = 'username';
 
 export function saveUsername(username) {
-    localStorage.setItem(USER_KEY, username);
+    localStorage.setItem(USER_KEY, "test");
 }
 
 export function getUsername() {
