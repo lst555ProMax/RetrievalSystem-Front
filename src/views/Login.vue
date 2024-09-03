@@ -508,7 +508,13 @@ if (response.code === 0) {
   localStorage.setItem('jwtToken', response.access_token); // 假设 token 是返回的 JWT 令牌字段名
 /*   console.log(localStorage.getItem('jwtToken')); */
   alert("操作成功");
-  router.push("/framework");
+  if(response.data.permission_level===1)
+  {  router.push("/framework");}
+  else if(response.data.permission_level===0)
+  {
+router.push("/admin");
+  }
+
   emitUsername();
   saveUsername(params.username);
 } else {

@@ -1,8 +1,3 @@
-<!-- 进度条不随内容更新而滚动 -->
-<!-- v-if无法渲染样式的问题始终无法解决 -->
-<!-- 历史记录还没有实现 -->
-<!-- 聊天历史的样式需要改进 -->
-<!-- 需要引入大模型接口来实现最终的聊天逻辑 -->
 <template>
   <starfield />
 
@@ -15,39 +10,57 @@
       <div class="main-content">
         <div class="up-down">
           <div v-if="!uiChange" :key="1">
-              <div class="recommendations">
-                <div class="headbar">
-                  <div class="text">你可以这样向我提问</div>
-                  <div class="icon" @click="changeSelection">
-                    <div>换一批</div>
-                    <i class="fa-solid fa-rotate"></i>
-                  </div>
-                </div>
-                <div class="question-list">
-                  <button class="question-button" @click="sendMessageIndex(0 + 6 * questionSelection)">
-                    {{ question[0 + 6 * questionSelection] }}
-                  </button>
-                  <button class="question-button" @click="sendMessageIndex(1 + 6 * questionSelection)">
-                    {{ question[1 + 6 * questionSelection] }}
-                  </button>
-                </div>
-                <div class="question-list">
-                  <button class="question-button" @click="sendMessageIndex(2 + 6 * questionSelection)">
-                    {{ question[2 + 6 * questionSelection] }}
-                  </button>
-                  <button class="question-button" @click="sendMessageIndex(3 + 6 * questionSelection)">
-                    {{ question[3 + 6 * questionSelection] }}
-                  </button>
-                </div>
-                <div class="question-list">
-                  <button class="question-button" @click="sendMessageIndex(4 + 6 * questionSelection)">
-                    {{ question[4 + 6 * questionSelection] }}
-                  </button>
-                  <button class="question-button" @click="sendMessageIndex(5 + 6 * questionSelection)">
-                    {{ question[5 + 6 * questionSelection] }}
-                  </button>
+            <div class="recommendations">
+              <div class="headbar">
+                <div class="text">你可以这样向我提问</div>
+                <div class="icon" @click="changeSelection">
+                  <div>换一批</div>
+                  <i class="fa-solid fa-rotate"></i>
                 </div>
               </div>
+              <div class="question-list">
+                <button
+                  class="question-button"
+                  @click="sendMessageIndex(0 + 6 * questionSelection)"
+                >
+                  {{ question[0 + 6 * questionSelection] }}
+                </button>
+                <button
+                  class="question-button"
+                  @click="sendMessageIndex(1 + 6 * questionSelection)"
+                >
+                  {{ question[1 + 6 * questionSelection] }}
+                </button>
+              </div>
+              <div class="question-list">
+                <button
+                  class="question-button"
+                  @click="sendMessageIndex(2 + 6 * questionSelection)"
+                >
+                  {{ question[2 + 6 * questionSelection] }}
+                </button>
+                <button
+                  class="question-button"
+                  @click="sendMessageIndex(3 + 6 * questionSelection)"
+                >
+                  {{ question[3 + 6 * questionSelection] }}
+                </button>
+              </div>
+              <div class="question-list">
+                <button
+                  class="question-button"
+                  @click="sendMessageIndex(4 + 6 * questionSelection)"
+                >
+                  {{ question[4 + 6 * questionSelection] }}
+                </button>
+                <button
+                  class="question-button"
+                  @click="sendMessageIndex(5 + 6 * questionSelection)"
+                >
+                  {{ question[5 + 6 * questionSelection] }}
+                </button>
+              </div>
+            </div>
           </div>
           <div v-if="messages.length" class="chat-history" ref="chatHistory">
             <div
@@ -56,11 +69,12 @@
               class="message"
             >
               <div class="message-header">
-                <!--                 <img src="user-avatar.png" alt="User Avatar" class="avatar" /> -->
                 <span class="message-time">{{ message.time }}</span>
               </div>
               <div class="message-content">
                 <p>{{ message.text }}</p>
+                <!-- 判断并显示图片 -->
+                <img v-if="message.imageUrl" :src="message.imageUrl" alt="图片" class="response-image" />
               </div>
               <div v-if="message.isResponse" class="response">
                 <p>{{ responseText }}</p>
@@ -96,12 +110,12 @@
 </template>
 
 <script setup>
-import { ref,watch,onMounted } from "vue";
+import { ref, watch, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
-import Starfield from "@/components/Starfield.vue";
-import { getUsername } from "@/utils/Auth";
+import Starfield from "../components/Starfield.vue";
+import { getUsername } from "../utils/Auth";
 
 const router = useRouter();
 
@@ -136,9 +150,8 @@ const question = ref([
   "An elderly man climbing on blue roping.",
   "A boy in red climbs a rope bridge at the park.",
   "A small girl grips onto the blue ropes at the playground.",
-  "The small boy climbs on blue ropes on a playground."
+  "The small boy climbs on blue ropes on a playground.",
 ]);
-
 
 const questionSelection = ref(0);
 const uiChange = ref(0);
@@ -163,19 +176,18 @@ const responseText = "这是系统给出的示例回答内容。";
 // 绑定 chat-history 的 DOM 元素
 const chatHistory = ref(null);
 
-// 监听 messages 数组变化时，触发滚动到底部
-watch(messages, async () => {
-  await nextTick(); // 等待 DOM 更新完成
-  if (chatHistory.value) {
-    // 滚动到最底部
-    chatHistory.value.scrollTop = chatHistory.value.scrollHeight;
-  }
-});
+const token = localStorage.getItem("jwtToken");
 
-const sendMessage = () => {
+const api = {
+  search: "http://172.20.10.7:8000/search/image",
+};
+
+let url = api.search;
+
+// 发送用户消息和请求后端接口
+const sendMessage = async () => {
   uiChange.value = 1;
   if (userInput.value.trim()) {
-    // 获取当前时间
     const currentTime = new Date().toLocaleTimeString();
 
     // 添加用户的提问到消息列表
@@ -185,21 +197,15 @@ const sendMessage = () => {
       isResponse: false,
     });
 
-    // 模拟系统回答
-    setTimeout(() => {
-      messages.value.push({
-        text: "系统正在处理您的请求...",
-        time: currentTime,
-        isResponse: true,
-      });
-    }, 500);
+    // 调用后端接口
+    await sendToBackend(userInput.value);
 
     // 清空输入框
     userInput.value = "";
   }
 };
 
-const sendMessageIndex = (index) => {
+const sendMessageIndex = async (index) => {
   uiChange.value = 1;
   userInput2.value = question.value[index];
   if (userInput2.value.trim()) {
@@ -213,19 +219,97 @@ const sendMessageIndex = (index) => {
       isResponse: false,
     });
 
-    // 模拟系统回答
-    setTimeout(() => {
-      messages.value.push({
-        text: "系统正在处理您的请求...",
-        time: currentTime,
-        isResponse: true,
-      });
-    }, 500);
+    // 调用后端接口
+    await sendToBackend(userInput2.value);
 
     // 清空输入框
     userInput2.value = "";
   }
 };
+
+// 发送请求到后端
+const sendToBackend = async (inputText) => {
+  const formData = new FormData();
+  formData.append("username", getUsername());  // 假设 getUsername() 函数返回当前的用户名
+  formData.append("keywords", inputText);  // 添加关键词到表单数据中
+
+  try {
+    console.log("开始发送请求...");
+
+    // 获取 JWT Token，假设 token 存储在 localStorage 中
+    const token = localStorage.getItem('jwtToken');
+    
+    if (!token) {
+      handleError("缺少身份验证令牌，请重新登录。");
+      return;
+    }
+
+    // 发送请求
+    const result = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}` // 设置 Authorization 头部
+      },
+      body: formData,  // 使用 FormData 发送请求体
+    });
+
+    // 检查响应状态码
+    if (!result.ok) {
+      handleError(`请求失败，状态码：${result.status}`);
+      return;
+    }
+
+    const response = await result.json();  // 将响应解析为 JSON
+
+    if (response.code === 0) {
+      const responseTime = new Date().toLocaleTimeString();
+      console.log(response);
+
+      // 检查是否包含 data 数据
+      if (response.data) {
+        // 将 base64 字符串数组转换为可用于 img 标签的 URL
+        response.data.forEach(imgBase64 => {
+          const imgSrc = `data:image/png;base64,${imgBase64}`;
+          messages.value.push({
+            text: "生成的图像如下：", // 可选的描述文本
+            time: responseTime,
+            isResponse: true,
+            imageUrl: imgSrc,  // 保存图片 URL 以供渲染
+          });
+        });
+      } else {
+        // 没有图片的情况下显示普通文本
+        messages.value.push({
+          text: response.message || "这是系统给出的回答。",
+          time: responseTime,
+          isResponse: true,
+        });
+      }
+    } else {
+      handleError("后端返回错误：" + (response.message || "未知错误"));
+    }
+  } catch (error) {
+    handleError("请求失败，请稍后重试");
+    console.error("提交失败", error);
+  }
+};
+
+// 错误处理函数
+const handleError = (errorMessage) => {
+  const errorTime = new Date().toLocaleTimeString();
+  messages.value.push({
+    text: errorMessage,
+    time: errorTime,
+    isResponse: true,
+  });
+};
+
+watch(messages, async () => {
+  await nextTick(); // 等待 DOM 更新完成
+  if (chatHistory.value) {
+    chatHistory.value.scrollTop = chatHistory.value.scrollHeight;
+  }
+});
 
 // 重新回答功能
 const retryResponse = (index) => {
@@ -244,7 +328,7 @@ onMounted(() => {
   if (!username) {
     router.push("/");
   }
-})
+});
 </script>
 
 <style scoped>
@@ -276,14 +360,14 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   flex: 4;
-  margin:10px;
+  margin: 10px;
 }
 
 .recommendations {
   position: absolute; /* 绝对定位 */
   top: 0; /* 固定在底部 */
-  width:100%;
-  height:80%;
+  width: 100%;
+  height: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -348,8 +432,8 @@ onMounted(() => {
 .chat-history {
   position: absolute; /* 绝对定位 */
   top: 0; /* 固定在底部 */
-  width:100%;
-  height:85%;
+  width: 100%;
+  height: 85%;
   flex: 1;
   overflow-y: auto;
 }
@@ -383,6 +467,13 @@ onMounted(() => {
   color: #fff;
 }
 
+.response-image {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
 .response {
   margin-top: 10px;
   display: flex;
@@ -406,7 +497,7 @@ onMounted(() => {
   background-color: #0e0d27;
   border-top: 1px solid #34345f;
   width: 100%;
-  height:15%;
+  height: 15%;
 }
 
 .input-area input {
@@ -417,11 +508,11 @@ onMounted(() => {
   margin-right: 10px;
   background-color: #1e1e3f;
   color: #d3d3d3;
-  height:50%;
+  height: 50%;
 }
 
 .input-area button {
-  flex:1;
+  flex: 1;
   padding: 10px;
   background-color: #007bff;
   color: white;
@@ -475,4 +566,4 @@ onMounted(() => {
 .hidden {
   display: none;
 }
-</style>
+</style>、

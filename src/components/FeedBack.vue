@@ -45,6 +45,8 @@ import { ref,onMounted} from "vue";
 import { defineProps, defineEmits } from "vue";
 import { getUsername } from "../utils/Auth"
 
+import Request from "../utils/Request";
+
 const props = defineProps({
   isVisible: Boolean,
 });
@@ -137,34 +139,62 @@ const api = {
 };
 
 let url = api.edit;
-// 提交反馈
+// // 提交反馈
+// async function submitFeedback() {
+//   // 构建表单数据
+//   const formData = new FormData();
+// /*   console.log(feedbackContent.value);
+//   console.log(getUsername()) */
+//   formData.append("username", getUsername())
+//   formData.append("content", feedbackContent.value);
+
+//   const token = localStorage.getItem('jwtToken');
+
+//   try {
+//     const response = await Request(url, {
+//       method: "POST",
+// /*       headers:{
+//         'Authorization':`Bearer ${token}`,
+//       }, */
+//       body: formData,
+//     });
+
+//     if (!response.ok) throw new Error("提交失败");
+
+//     const result = await response.json();
+//     // 更新反馈次数
+//   feedbackCount.value += 1;
+
+//     if (response.ok) {
+//       localStorage.setItem('feedbackCount', feedbackCount.value);
+//       alert("提交成功！");
+//       close();
+//     }
+//   } catch (error) {
+//     console.error("提交失败", error);
+//   }
+// }
+
 async function submitFeedback() {
-  // 构建表单数据
   const formData = new FormData();
-/*   console.log(feedbackContent.value);
-  console.log(getUsername()) */
-  formData.append("username", getUsername())
+  formData.append("username", getUsername());
   formData.append("content", feedbackContent.value);
 
-  const token = localStorage.getItem('jwtToken');
-
   try {
-    const response = await fetch(url, {
-      method: "POST",
-/*       headers:{
-        'Authorization':`Bearer ${token}`,
-      }, */
-      body: formData,
+    const response = await Request({
+      url: url,  // 替换成实际的接口地址
+      params: {
+        username: getUsername(),
+        content: feedbackContent.value
+      },
+      dataType: 'form',  // 表单数据
+      showLoading: true,
+      responseType: 'json',
     });
 
-    if (!response.ok) throw new Error("提交失败");
-
-    const result = await response.json();
-    // 更新反馈次数
-  feedbackCount.value += 1;
-
-    if (response.ok) {
-      localStorage.setItem('feedbackCount', feedbackCount.value);
+    if (response.code === 0) {
+      feedbackCount.value += 1;
+      localStorage.setItem('feedbackCount', feedbackCount.value.toString());
       alert("提交成功！");
       close();
     }

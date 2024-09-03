@@ -95,6 +95,8 @@ import HeadbarAdmin from "../../components/HeadbarAdmin.vue";
 import Starfield from "@/components/Starfield.vue";
 import {getUsername} from "@/utils/Auth";
 
+/* import request from "../../utils/Request" */
+
 
 const router = useRouter();
 const route = useRoute();
@@ -128,7 +130,14 @@ let url = ref(api.get);
 // 从后端获取用户数据
 const fetchUsers = async () => {
   try {
-    const response = await axios.get(url.value); // 请求后端API
+    const token = localStorage.getItem('jwtToken'); // 从 localStorage 获取 JWT 令牌
+    const response = await axios.get(url.value, {
+      headers: {
+        'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
+        'Content-Type': 'application/json', // 设置请求头的 Content-Type
+      }
+    });
+
     if (response.data.code === 0) {
       users.value = response.data.data; // 将返回的数据赋值给 users
       console.log(response.data.data);
@@ -139,7 +148,6 @@ const fetchUsers = async () => {
     console.error("获取用户数据失败:", error);
   }
 };
-
 // 开始编辑用户信息
 const editUser = (index) => {
   editingIndex.value = index;

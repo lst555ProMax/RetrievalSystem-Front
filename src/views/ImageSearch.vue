@@ -1,8 +1,3 @@
-<!-- 进度条不随内容更新而滚动 -->
-<!-- v-if无法渲染样式的问题始终无法解决 -->
-<!-- 历史记录还没有实现 -->
-<!-- 聊天历史的样式需要改进 -->
-<!-- 需要引入大模型接口来实现最终的聊天逻辑 -->
 <template>
   <starfield />
 
@@ -17,75 +12,85 @@
           <div v-if="!uiChange" :key="1">
             <div class="recommendations">
               <div class="headbar">
-                <div class="text">你可以这样向我提问</div>
+ <!--                <div class="text">你可以这样向我提问</div> -->
                 <div class="icon" @click="changeSelection">
                   <div>换一批</div>
                   <i class="fa-solid fa-rotate"></i>
                 </div>
               </div>
               <div class="image-list">
-                  <img
-                    :src="images[0 + 2 * questionSelection]"
-                    alt="Gallery Image"
-                    class="image-class"
-                  />
-                  <img
-                    :src="images[1 + 2 * questionSelection]"
-                    alt="Gallery Image"
-                    class="image-class"
-                  />
+                <img
+                  :src="images[0 + 2 * questionSelection]"
+                  alt="Gallery Image"
+                  class="image-class"
+                />
+                <img
+                  :src="images[1 + 2 * questionSelection]"
+                  alt="Gallery Image"
+                  class="image-class"
+                />
               </div>
             </div>
           </div>
           <div v-if="messages.length" class="chat-history" ref="chatHistory">
-        <div v-for="(message, index) in messages" :key="index" class="message">
-          <div class="message-header">
-            <span class="message-time">{{ message.time }}</span>
+            <div
+              v-for="(message, index) in messages"
+              :key="index"
+              class="message"
+            >
+              <div class="message-header">
+                <span class="message-time">{{ message.time }}</span>
+              </div>
+              <div class="message-content">
+                <p>{{ message.text }}</p>
+                <!-- 图片渲染逻辑 -->
+                <img
+                  v-if="message.imageUrl"
+                  :src="message.imageUrl"
+                  alt="生成的图像"
+                  class="generated-image"
+                />
+              </div>
+              <div v-if="message.isResponse" class="response">
+                <p>{{ responseText }}</p>
+                <button @click="retryResponse(index)">重新回答</button>
+                <button @click="copyResponse(index)">复制</button>
+              </div>
+            </div>
           </div>
-          <div class="message-content">
-            <p>{{ message.text }}</p>
-          </div>
-          <div v-if="message.isResponse" class="response">
-            <p>{{ responseText }}</p>
-            <button @click="retryResponse(index)">重新回答</button>
-            <button @click="copyResponse(index)">复制</button>
+
+          <div class="input-area">
+            <input
+              type="file"
+              accept="image/*"
+              @change="onFileChange"
+              ref="fileInput"
+            />
+            <button @click="sendImage">上传图片</button>
           </div>
         </div>
-      </div>
 
-      <div class="input-area">
-        <input
-          type="text"
-          v-model="userInput"
-          placeholder="请输入文本..."
-          @keyup.enter="sendMessage"
-        />
-        <button @click="sendMessage">➤</button>
+        <div class="history-section">
+          <h4>历史记录</h4>
+          <ul class="history-list">
+            <li v-for="(item, index) in history" :key="index">
+              <span>你好</span>
+              <button @click="removeHistory(index)">✖</button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-
-
-    <div class="history-section">
-      <h4>历史记录</h4>
-      <ul class="history-list">
-        <li v-for="(item, index) in history" :key="index">
-          <span>你好</span>
-          <button @click="removeHistory(index)">✖</button>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, nextTick, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Starfield from "@/components/Starfield.vue"
+import Starfield from "../components/Starfield.vue";
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
-import {getUsername} from "@/utils/Auth";
+import { getUsername } from "../utils/Auth";
 
 import img1 from "../assets/image_example/1.jpg";
 import img2 from "../assets/image_example/2.jpg";
@@ -104,7 +109,18 @@ const router = useRouter();
 
 const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
 const images = ref([
-img1,img2,img3,img4,img5,img6,img7,img8,img9,img10,img11,img12
+  img1,
+  img2,
+  img3,
+  img4,
+  img5,
+  img6,
+  img7,
+  img8,
+  img9,
+  img10,
+  img11,
+  img12,
 ]);
 
 const questionSelection = ref(0);
@@ -139,59 +155,113 @@ watch(messages, async () => {
   }
 });
 
-const sendMessage = () => {
-  uiChange.value = 1;
-  if (userInput.value.trim()) {
-    // 获取当前时间
-    const currentTime = new Date().toLocaleTimeString();
+// 存储上传的文件
+const selectedFile = ref(null);
 
-    // 添加用户的提问到消息列表
-    messages.value.push({
-      text: userInput.value,
-      time: currentTime,
-      isResponse: false,
-    });
-
-    // 模拟系统回答
-    setTimeout(() => {
-      messages.value.push({
-        text: "系统正在处理您的请求...",
-        time: currentTime,
-        isResponse: true,
-      });
-    }, 500);
-
-    // 清空输入框
-    userInput.value = "";
+// 处理文件上传
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    selectedFile.value = file;
   }
 };
 
-const sendMessageIndex = (index) => {
-  uiChange.value = 1;
-  userInput2.value = question.value[index];
-  if (userInput2.value.trim()) {
-    // 获取当前时间
-    const currentTime = new Date().toLocaleTimeString();
+// 处理文件改变事件
+const onFileChange = (event) => {
+  const files = event.target.files;
+  if (files && files[0]) {
+    selectedFile.value = files[0]; // 将选择的文件赋值给 selectedFile
+  }
+};
 
-    // 添加用户的提问到消息列表
-    messages.value.push({
-      text: userInput2.value,
-      time: currentTime,
-      isResponse: false,
+const token = localStorage.getItem("jwtToken");
+
+const api = {
+  search: "http://172.20.10.7:8000/search/text",
+};
+
+let url = api.search;
+
+
+// 发送上传的图像
+const sendImage = async () => {
+  if (!selectedFile.value) {
+    alert("请先选择一张图片！");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("username", getUsername()); // 假设 getUsername() 函数返回当前的用户名
+  formData.append("file", selectedFile.value); // 添加图像文件到表单数据中
+
+  try {
+    console.log("开始发送请求...");
+
+    // 获取 JWT Token，假设 token 存储在 localStorage 中
+    const token = localStorage.getItem("jwtToken");
+
+    if (!token) {
+      handleError("缺少身份验证令牌，请重新登录。");
+      return;
+    }
+
+    // 发送请求
+    const result = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`, // 设置 Authorization 头部
+      },
+      body: formData, // 使用 FormData 发送请求体
     });
 
-    // 模拟系统回答
-    setTimeout(() => {
-      messages.value.push({
-        text: "系统正在处理您的请求...",
-        time: currentTime,
-        isResponse: true,
-      });
-    }, 500);
+    // 检查响应状态码
+    if (!result.ok) {
+      handleError(`请求失败，状态码：${result.status}`);
+      return;
+    }
 
-    // 清空输入框
-    userInput2.value = "";
+    const response = await result.json(); // 将响应解析为 JSON
+
+    const responseTime = new Date().toLocaleTimeString();
+
+    if (response.code === "0") {
+      console.log(response);
+
+      // 检查是否包含 text_list 数据
+      if (response.text_list && response.text_list.length > 0) {
+        // 遍历 text_list 并将每条文本添加到消息中
+        response.text_list.forEach((text) => {
+          messages.value.push({
+            text, // 显示后端返回的文本
+            time: responseTime,
+            isResponse: true,
+          });
+        });
+      } else {
+        // 当 text_list 为空时显示默认信息
+        messages.value.push({
+          text: response.message || "这是系统给出的回答。",
+          time: responseTime,
+          isResponse: true,
+        });
+      }
+    } else {
+      handleError("后端返回错误：" + (response.message || "未知错误"));
+    }
+  } catch (error) {
+    handleError("请求失败，请稍后重试");
+    console.error("提交失败", error);
   }
+};
+
+// 错误处理函数
+const handleError = (errorMessage) => {
+  const errorTime = new Date().toLocaleTimeString();
+  messages.value.push({
+    text: errorMessage,
+    time: errorTime,
+    isResponse: true,
+  });
 };
 
 // 重新回答功能
@@ -211,7 +281,7 @@ onMounted(() => {
   if (!username) {
     router.push("/");
   }
-})
+});
 </script>
 
 <style scoped>
@@ -247,8 +317,8 @@ onMounted(() => {
 }
 
 .recommendations {
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 固定在底部 */
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 80%;
   display: flex;
@@ -267,167 +337,109 @@ onMounted(() => {
 }
 
 .text {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%); /* Center the element horizontally */
-  font-size: 18px;
-  font-weight: bold;
-  color: #d3d3d3;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  margin-left: 15px;
+  flex: 5;
 }
 
 .icon {
   display: flex;
-  position: absolute;
-  right: 27px;
-  gap: 5px;
-  flex-direction: row;
   align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  flex: 1;
+  gap: 8px;
 }
 
 .image-list {
   display: flex;
-  gap: 60px;
-  justify-content:center;
+  justify-content: space-evenly;
   align-items: center;
-  width: 80%;
-  margin: 10px;
   height: 100%;
 }
 
 .image-class {
-  width: 224px;
-  height: 224px;
-  border-radius: 5px;
+  width: 45%;
+  border-radius: 15px;
 }
 
 .chat-history {
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 固定在底部 */
-  width: 100%;
-  height: 85%;
-  flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: calc(100% - 80px);
+  margin-top: 5px;
+  margin-bottom: 10px;
 }
 
 .message {
-  background: #2e2e4d;
-  border-radius: 8px;
-  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
   margin-bottom: 10px;
+  padding: 10px;
+  max-width: 80%;
+  align-self: flex-end;
 }
 
 .message-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
+  font-size: 0.8em;
+  color: #555;
 }
 
-.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
+.message-content p {
+  margin: 0;
+  word-wrap: break-word;
 }
 
-.message-time {
-  color: #ccc;
-  font-size: 12px;
-}
-
-.message-content {
-  color: #fff;
+.generated-image {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
 }
 
 .response {
-  margin-top: 10px;
+  margin-top: 5px;
   display: flex;
-  gap: 10px;
-}
-
-.response button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .input-area {
-  position: absolute; /* 绝对定位 */
-  bottom: 0; /* 固定在底部 */
   display: flex;
-  align-items: center;
-  background-color: #0e0d27;
-  border-top: 1px solid #34345f;
-  width: 100%;
-  height: 15%;
-}
-
-.input-area input {
-  flex: 30;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  margin-right: 10px;
-  background-color: #1e1e3f;
-  color: #d3d3d3;
-  height: 50%;
-}
-
-.input-area button {
-  flex: 1;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.input-area button:hover {
-  background-color: #0056b3;
+  flex-direction: row;
+  gap: 10px;
+  z-index: 1000;
 }
 
 .history-section {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  background-color: #232343;
   padding: 10px;
-  border-radius: 5px;
-}
-
-.history-section h4 {
-  color: #d3d3d3;
-  margin-bottom: 10px;
+  border-left: 1px solid #ccc;
 }
 
 .history-list {
   list-style: none;
   padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 }
 
 .history-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #34345f;
-  padding: 8px;
-  border-radius: 4px;
-  color: #d3d3d3;
+  margin-bottom: 10px;
 }
 
 .history-list button {
   background: none;
   border: none;
-  color: #d3d3d3;
+  color: red;
   cursor: pointer;
-}
-
-.hidden {
-  display: none;
 }
 </style>
