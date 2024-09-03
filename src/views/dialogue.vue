@@ -7,7 +7,7 @@
   <starfield />
 
   <div class="chat-system">
-    <headbar></headbar>
+    <headbar @search="handleSearch"></headbar>
 
     <div class="non-header">
       <sidebar></sidebar>
@@ -170,6 +170,32 @@ watch(messages, async () => {
   }
 });
 
+const handleSearch=(question)=>{
+  uiChange.value = 1;
+  if (question.trim()) {
+    // 获取当前时间
+    const currentTime = new Date().toLocaleTimeString();
+
+    // 添加用户的提问到消息列表
+    messages.value.push({
+      text: question,
+      time: currentTime,
+      isResponse: false,
+    });
+
+    // 模拟系统回答
+    setTimeout(() => {
+      messages.value.push({
+        text: "系统正在处理您的请求...",
+        time: currentTime,
+        isResponse: true,
+      });
+    }, 500);
+
+    // 清空输入框
+    userInput.value = "";
+  }
+}
 const sendMessage = () => {
   uiChange.value = 1;
   if (userInput.value.trim()) {

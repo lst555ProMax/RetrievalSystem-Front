@@ -1,10 +1,17 @@
 <template>
   <div class="header-bar">
     <div class="header-content">
-      <h1>
+      <div class="logo-title">
         <i class="fa-solid fa-dragon fa-bounce"></i>
         <span>Turing AI 创作平台</span>
-      </h1>
+      </div>
+
+
+        <div class="search-container">
+      <span>AI搜索</span>
+      <input type="text" placeholder="AI搜索，只给你有用的结果" class="search-input" v-model="question" />
+      <el-button class="search-button" @click="GoToDialogue">搜一搜</el-button>
+    </div>
 
       <div class="icon-container">
         <el-button class="gradient-button" @click="GoToPay">充值</el-button>
@@ -109,6 +116,10 @@ import Answer from "../components/Answer.vue"
 
 import { defineEmits } from "vue";
 
+const emit = defineEmits(["search"]);
+
+const question=ref();
+
 const router = useRouter();
 const goHome = () => router.push("/home");
 const handleProfile = () => router.push("/profile");
@@ -173,6 +184,12 @@ const startHideTimer = (formName) => {
   }, 100);
 };
 
+const GoToDialogue=()=>{
+  router.push("/dialogue");
+  emit("search",question.value);
+
+}
+
 const GoToPay=()=>{
   isPayVisible.value=true;
 }
@@ -230,7 +247,7 @@ const handleDelete =()=>{
   height: 60px;
   width: 100%;
   background-color: #001732;
-  padding: 10px 20px;
+  padding: 5px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -239,24 +256,71 @@ const handleDelete =()=>{
 
 .header-content {
   display: flex;
-  align-items: center;
+  align-items: center; /* 确保内容垂直居中 */
   width: 100%;
   justify-content: space-between;
 }
 
-.header-content h1 {
+.logo-title {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: #fff;
 }
+
 
 .header-content i {
   font-size: 24px;
   color: #901bf5;
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  padding: 10px 10px;
+  height: 200%; /* 使得搜索框达到 header-bar 的高度 */
+/*   box-sizing: border-box; /* 确保 padding 不影响总高度 */ 
+}
+
+.search-container span{
+  text-align: center;
+  align-items: center;
+  font-style: italic;
+  font-weight: bold;
+  letter-spacing: 1.4px;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  padding: 0px 15px;
+  border-radius: 20px;
+  background-color: #1a1c2c;
+  color: #fff;
+  outline: none;
+  font-size: 14px;
+  height: 38px;
+  width:350px ;
+}
+
+.search-button {
+  background-color: #2a76f6;
+  border: none;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  height: 30px;
+}
+
+.search-button:hover {
+  background-color: #2365c4;
+}
+
 .header-content span {
-  font-size: 16px;
+  font-size: px;
   color: #fff;
   font-weight: normal;
 }

@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import SidebarAdmin from "../components/SidebarAdmin.vue";
 import HeadbarAdmin from "../components/HeadbarAdmin.vue";
