@@ -1,5 +1,5 @@
 <template>
-  <Starfield />
+  <CrossStar />
 
   <div class="container">
     <!-- Header -->
@@ -33,6 +33,8 @@ import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import Starfield from "@/components/Starfield.vue";
+import Neural from "@/components/Neural.vue"
+import CrossStar from "@/components/CrossStar.vue";
 import { getUsername } from "@/utils/Auth"
 
 const { proxy } = getCurrentInstance();
