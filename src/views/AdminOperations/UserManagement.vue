@@ -117,7 +117,8 @@ const editUserData = ref({
 
 const api = {
   get: "http://172.20.10.7:8000/admin/get_user_info",
-  edit:"http://172.20.10.7:8000/admin/edit_user_info"
+  edit:"http://172.20.10.7:8000/admin/edit_user_info",
+  delete:"http://172.20.10.7:8000/admin/delete_user",
 };
 
 let url = ref(api.get);
@@ -150,7 +151,8 @@ const saveUser = async (index) => {
     users.value[index] = { ...editUserData.value };
 
     const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
-    console.log(users.value[index]);
+
+    console.log(Object.entries(users.value[index]).toString())
 
     try{
     const response = await fetch(url2, {
@@ -178,15 +180,42 @@ const saveUser = async (index) => {
 }
 };
 
+let url3 = api.delete;
 // 删除用户
-const deleteUser = (index) => {
+const deleteUser = async (index) => {
   if (confirm("确定要删除这个用户吗？")) {
-    users.value.splice(index, 1);
-    alert("用户已删除！");
-    if (editingIndex.value === index) {
-      editingIndex.value = null;
-      editUserData.value = {};
+     alert("用户已删除！");
+     if (editingIndex.value === index) {
+       editingIndex.value = null;
+       editUserData.value = {};
     }
+  }
+
+  const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
+
+  try{
+    const response = await fetch(url3, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: urlEncodedParams.toString(),
+    });
+
+    console.log(urlEncodedParams.toString());
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("删除成功", result);
+      console.log(urlEncodedParams.toString());
+      editingIndex.value = null;
+      fetchUsers();
+    } else {
+      console.error("修改失败", result.message);
+    }
+  }
+  catch (error){
+    console.error("请求失败", error);
   }
 };
 
