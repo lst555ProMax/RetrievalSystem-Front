@@ -4,12 +4,13 @@ import router from '@/router';
 import Message from '../utils/Message';
 
 const contentTypeForm = 'application/x-www-form-urlencoded;charset=UTF-8';
-const contentTypeJson = 'application/json';
 const responseTypeJson = 'json';
 
 let loading = null;
+
+// 创建 Axios 实例
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: '/api',  // 确保与后端的 baseURL 一致
   timeout: 10 * 1000,
 });
 
@@ -36,7 +37,7 @@ instance.interceptors.request.use(
     return config;
   },
   (error) => {
-    if (error.config && error.config.showLoading && loading) {
+    if (loading) {
       loading.close();
     }
     Message.error('请求发送失败');
@@ -47,19 +48,15 @@ instance.interceptors.request.use(
 // 请求后拦截器
 instance.interceptors.response.use(
   (response) => {
-    const { showLoading, errorCallback, showError = true, responseType } = response.config;
+    const { showLoading, errorCallback, showError = true } = response.config;
     if (showLoading && loading) {
       loading.close();
     }
 
     const responseData = response.data;
 
-    if (responseType === 'arraybuffer' || responseType === 'blob') {
-      return responseData;
-    }
-
     // 正常请求
-    if (responseData.code === 200) {
+    if (responseData.code === 0) {
       return responseData;
     } else if (responseData.code === 901 || response.status === 401) {
       // 登录超时或未授权
@@ -69,46 +66,39 @@ instance.interceptors.response.use(
     } else {
       // 其他错误
       if (errorCallback) {
-        errorCallback(responseData.info);
+        errorCallback(responseData.message);
       }
-      return Promise.reject({ showError: showError, msg: responseData.info });
+      return Promise.reject({ showError: showError, msg: responseData.message });
     }
   },
   (error) => {
-    if (error.config && error.config.showLoading && loading) {
+    if (loading) {
       loading.close();
     }
+    Message.error('网络异常');
     return Promise.reject({ showError: true, msg: '网络异常' });
   }
 );
 
 // 请求封装
 const request = (config) => {
-  const { url, params, dataType, showLoading = true, responseType = responseTypeJson } = config;
-  let contentType = contentTypeForm;
-  let formData = new FormData();
+  const { url, params, showLoading = true, responseType = responseTypeJson } = config;
+  const formData = new URLSearchParams();
 
   // 创建 form 对象
   for (let key in params) {
     formData.append(key, params[key] === undefined ? '' : params[key]);
   }
 
-  if (dataType === 'json') {
-    contentType = contentTypeJson;
-  }
-
   const headers = {
-    'Content-Type': contentType,
+    'Content-Type': contentTypeForm,
     'X-Requested-With': 'XMLHttpRequest',
+    // 合并传入的 headers 确保 Authorization 头部不会被覆盖
+    ...config.headers,
   };
 
   return instance
-    .post(url, formData, {
-      onUploadProgress: (event) => {
-        if (config.uploadProgressCallback) {
-          config.uploadProgressCallback(event);
-        }
-      },
+    .post(url, formData.toString(), {  // 使用 `toString()` 将 `URLSearchParams` 转换为字符串
       responseType: responseType,
       headers: headers,
       showLoading: showLoading,
@@ -116,7 +106,7 @@ const request = (config) => {
       showError: config.showError,
     })
     .catch((error) => {
-      console.log(error);
+      console.error(error);
       if (error.showError) {
         Message.error(error.msg);
       }
