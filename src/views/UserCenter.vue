@@ -33,10 +33,19 @@ import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import Starfield from "@/components/Starfield.vue";
+import { getUsername } from "@/utils/Auth"
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
 
 </script>
 

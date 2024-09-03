@@ -267,6 +267,7 @@ import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import BackgroundAnimation from "../components/BackgroundAnimation.vue";
 import { useUserStore } from "../stores/userStore"; // 引入 Store
+import { saveUsername } from "@/utils/Auth"
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -505,6 +506,7 @@ const doSubmit = () => {
         alert("操作成功");
         router.push("/framework");
         emitUsername();
+        saveUsername(formData.username);
       } else {
         alert("操作失败：" + response.message);
       }

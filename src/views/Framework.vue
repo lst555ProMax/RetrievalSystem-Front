@@ -17,12 +17,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
 import Starfield from "@/components/Starfield.vue";
 import Slider from "@/components/Slider.vue";
+import {getUsername} from "@/utils/Auth";
 
 
 const router = useRouter();
@@ -37,6 +38,14 @@ const handleDialogue = () => router.push("/dialogue");
 
 const handlePersonal = () => router.push("/recommendation");
 const handleOther = () => router.push("/other");
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
 
 </script>
 

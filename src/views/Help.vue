@@ -53,6 +53,7 @@
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
+import {getUsername} from "@/utils/Auth";
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -65,6 +66,14 @@ function openFeedbackForm() {
 const returnToLogin = () => {
   router.push("/");
 };
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
 </script>
 
 <style scoped>

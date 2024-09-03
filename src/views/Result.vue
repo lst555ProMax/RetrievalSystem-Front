@@ -34,6 +34,7 @@
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
+import {getUsername} from "@/utils/Auth";
 
 import FooterComponent from '../components/FooterComponent.vue';
 
@@ -56,6 +57,14 @@ const route = useRoute();
       alert('结果已刷新！'); // 模拟刷新完成后的操作
     }, 2000); // 模拟2秒的刷新过程
   };
+
+  onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
   </script>
   
   <style scoped>

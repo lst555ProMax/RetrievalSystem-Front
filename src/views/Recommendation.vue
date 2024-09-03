@@ -45,6 +45,8 @@ import { useRouter, useRoute } from "vue-router";
 import sidebar from '../components/Sidebar.vue';
 import headbar from "../components/Headbar.vue";
 import Starfield from "@/components/Starfield.vue"
+import {getUsername} from "@/utils/Auth";
+
 
 const router = useRouter();
 const route = useRoute();
@@ -68,10 +70,19 @@ const applySettings = () => {
   console.log('用户画像:', userProfile.value);
 };
 
-  const returnToFrame =() =>{
-    router.push("/")
+const returnToFrame =() =>{
+  router.push("/")
+}
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
   }
-  </script>
+})
+</script>
+
   
   <style scoped>
   body {

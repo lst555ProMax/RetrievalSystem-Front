@@ -18,11 +18,19 @@ import { useRouter, useRoute } from "vue-router";
 import SidebarAdmin from "../components/SidebarAdmin.vue";
 import HeadbarAdmin from "../components/HeadbarAdmin.vue";
 import Starfield from "@/components/Starfield.vue"
+import {getUsername} from "@/utils/Auth";
 
 
 const router = useRouter();
 const route = useRoute();
 
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
 </script>
 
 <style scoped>
