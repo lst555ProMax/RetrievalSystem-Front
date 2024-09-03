@@ -506,7 +506,7 @@ const doSubmit = () => {
         alert("操作成功");
         router.push("/framework");
         emitUsername();
-        saveUsername(formData.username);
+        saveUsername(params.username)
       } else {
         alert("操作失败：" + response.message);
       }
