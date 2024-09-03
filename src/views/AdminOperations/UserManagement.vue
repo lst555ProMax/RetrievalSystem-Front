@@ -93,6 +93,8 @@ import axios from "axios"; // 引入axios用于发送请求
 import SidebarAdmin from "../../components/SidebarAdmin.vue";
 import HeadbarAdmin from "../../components/HeadbarAdmin.vue";
 import Starfield from "@/components/Starfield.vue";
+import {getUsername} from "@/utils/Auth";
+
 
 const router = useRouter();
 const route = useRoute();
@@ -235,7 +237,14 @@ const formatDate = (date) => {
 
 // 页面加载时获取用户数据
 onMounted(() => {
-  fetchUsers();
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/")
+  }
+  else {
+    fetchUsers();
+  }
 });
 </script>
 

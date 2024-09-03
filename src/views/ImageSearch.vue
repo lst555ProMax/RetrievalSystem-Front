@@ -81,9 +81,11 @@
 
 <script setup>
 import { ref, watch, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import Starfield from "@/components/Starfield.vue"
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
+import {getUsername} from "@/utils/Auth";
 
 import img1 from "../assets/image_example/1.jpg";
 import img2 from "../assets/image_example/2.jpg";
@@ -97,6 +99,8 @@ import img9 from "../assets/image_example/9.jpg";
 import img10 from "../assets/image_example/10.jpg";
 import img11 from "../assets/image_example/11.jpg";
 import img12 from "../assets/image_example/12.jpg";
+
+const router = useRouter();
 
 const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
 const images = ref([
@@ -200,6 +204,14 @@ const copyResponse = (index) => {
   navigator.clipboard.writeText(responseText);
   alert("回答已复制到剪贴板！");
 };
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
 </script>
 
 <style scoped>
