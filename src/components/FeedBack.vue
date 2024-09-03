@@ -43,7 +43,7 @@
 <script setup>
 import { ref,onMounted} from "vue";
 import { defineProps, defineEmits } from "vue";
-import { getUsername } from "@/utils/Auth"
+import { getUsername } from "../utils/Auth"
 
 const props = defineProps({
   isVisible: Boolean,
@@ -141,14 +141,19 @@ let url = api.edit;
 async function submitFeedback() {
   // 构建表单数据
   const formData = new FormData();
-  console.log(feedbackContent.value);
-  console.log(getUsername())
+/*   console.log(feedbackContent.value);
+  console.log(getUsername()) */
   formData.append("username", getUsername())
   formData.append("content", feedbackContent.value);
+
+  const token = localStorage.getItem('jwtToken');
 
   try {
     const response = await fetch(url, {
       method: "POST",
+/*       headers:{
+        'Authorization':`Bearer ${token}`,
+      }, */
       body: formData,
     });
 

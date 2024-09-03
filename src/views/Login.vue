@@ -267,7 +267,7 @@ import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import BackgroundAnimation from "../components/BackgroundAnimation.vue";
 import { useUserStore } from "../stores/userStore"; // 引入 Store
-import { saveUsername } from "@/utils/Auth"
+import { saveUsername } from "../utils/Auth"
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -495,21 +495,25 @@ const doSubmit = () => {
       });
 
       // 解析响应
-      const response = await result.json();
-      data.value = response; // 更新数据
+     // 解析响应
+const response = await result.json();
+data.value = response; // 更新数据
 
-      console.log(response.message); // 输出消息
+// 输出消息
+console.log(response.message);
 
-      // 可根据需求添加进一步的处理逻辑
-      if (response.code === 0) {
-        // 根据接口返回的数据判断是否操作成功
-        alert("操作成功");
-        router.push("/framework");
-        emitUsername();
-        saveUsername(params.username)
-      } else {
-        alert("操作失败：" + response.message);
-      }
+// 处理成功操作
+if (response.code === 0) {
+  // 存储 JWT 令牌
+  localStorage.setItem('jwtToken', response.access_token); // 假设 token 是返回的 JWT 令牌字段名
+/*   console.log(localStorage.getItem('jwtToken')); */
+  alert("操作成功");
+  router.push("/framework");
+  emitUsername();
+  saveUsername(params.username);
+} else {
+  alert("操作失败：" + response.message);
+}
     } catch (error) {
       console.error("请求失败", error);
       alert("请求失败，请检查网络或稍后再试");
