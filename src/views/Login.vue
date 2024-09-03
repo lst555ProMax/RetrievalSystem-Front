@@ -512,7 +512,7 @@ if (response.code === 0) {
   {  router.push("/framework");}
   else if(response.data.permission_level===0)
   {
-router.push("/admin");
+    router.push("userManagement");
   }
 
   emitUsername();
@@ -528,7 +528,7 @@ router.push("/admin");
 };
 
 const jumpToAdmin = () => {
-  router.push("/admin");
+  router.push("/userManagement");
 };
 
 const FastjumpToFrame = () => {

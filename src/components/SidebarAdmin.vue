@@ -2,7 +2,6 @@
     <aside class="sidebar">
       <nav class="nav-menu">
         <ul>
-          <li><a href="#" @click.prevent="Home">首页</a></li>
           <li><a href='#' @click.prevent="GoToUserManagement">用户管理</a></li>
           <li><a href='#' @click.prevent="GoToSystemManagement">系统管理</a></li>
         </ul>
@@ -16,7 +15,6 @@
   
   const router = useRouter();
 
-  const Home =()=>router.push("/admin");
   const GoToUserManagement=()=>router.push("/userManagement");
   const GoToSystemManagement=()=>router.push("/systemManagement");
   
