@@ -5,12 +5,9 @@
 <!-- 需要引入大模型接口来实现最终的聊天逻辑 -->
 <template>
   <starfield />
-
+  <dashboard> 
+  <template #left-content>
   <div class="chat-system">
-    <headbar @search="handleSearch"></headbar>
-
-    <div class="non-header">
-      <sidebar></sidebar>
 
       <div class="main-content">
         <div class="up-down">
@@ -112,7 +109,8 @@
 </div>
       </div>
     </div>
-  </div>
+</template>
+</dashboard>
 </template>
 
 <script setup>
@@ -122,6 +120,7 @@ import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
 import Starfield from "@/components/Starfield.vue";
 import { getUsername } from "@/utils/Auth";
+import dashboard from "../components/Dashboard.vue"
 
 const route = useRoute();
 const router = useRouter();
@@ -355,16 +354,9 @@ onMounted(() => {
 .chat-system {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 10px);
-  margin: 5px;
+  height: 100%;
   border-radius: 5px;
   overflow: hidden;
-}
-
-.non-header {
-  display: flex;
-  height: calc(100% - 60px);
-  flex-direction: row;
 }
 
 .main-content {
@@ -394,12 +386,12 @@ onMounted(() => {
 }
 
 .headbar {
-  margin: 10px;
+  margin: 20px 10px;
   display: flex;
   flex-direction: row;
   position: relative;
   width: 100%;
-  height: 10%;
+  min-height: 60px;
   align-items: center;
 }
 
@@ -459,7 +451,7 @@ onMounted(() => {
 }
 
 .message {
-  background: #2e2e4d;
+  background: rgba(173,216,230,0.05);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -507,10 +499,10 @@ onMounted(() => {
   bottom: 0; /* 固定在底部 */
   display: flex;
   align-items: center;
-  background-color: #0e0d27;
-  border-top: 1px solid #34345f;
+  background: transparent;
+/*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
-  height: 15%;
+  height: 10%;
 }
 
 .input-area input {
@@ -518,29 +510,32 @@ onMounted(() => {
   padding: 10px;
   border: none;
   border-radius: 5px;
+/*   margin-left: 10px; */
   margin-right: 10px;
-  background-color: #1e1e3f;
+  background-color: rgba(255,255,255,0.1);
   color: #d3d3d3;
-  height: 50%;
+  height: 50px;
+  font-family: 'Consolas',monospace;
+  font-size: 15px;
 }
 
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: #007bff;
+  background-color: rgba(0,123,255,0.1);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+height: 50px;
 }
-
 .input-area button:hover {
   background-color: #0056b3;
 }
 
 .history-section {
   flex: 1;
-  background-color: #232343;
+  background-color:rgba(128,128,128,0.05);
   padding: 10px;
   border-radius: 5px;
 }
@@ -563,7 +558,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #34345f;
+  background-color: rgba(60,63,87,0.65);
   padding: 8px;
   border-radius: 4px;
   color: #d3d3d3;

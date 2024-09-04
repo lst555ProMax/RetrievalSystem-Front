@@ -78,7 +78,7 @@
             </a>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item" @click ="GoToLogin">
             <a href="#">
               <i class="fa fa-right-from-bracket nav-icon"></i>
               <span class="nav-text">Logout</span>
@@ -95,6 +95,28 @@
     </main>
   </body>
 </template>
+
+<script setup>
+import { useRoute, useRouter } from "vue-router";
+import { ref, computed } from 'vue';
+
+const router = useRouter();
+const route = useRoute();
+
+// 定义一个函数，判断当前路由是否匹配
+const isActive = (path) => {
+  return route.path === path;
+};
+
+const GoToLogin=()=>{
+    router.push("/");
+}
+
+// 定义一个导航函数
+const navigateTo = (path) => {
+  router.push(path);
+};
+</script>
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&family=Roboto:wght@300;400;500;700&display=swap");
@@ -323,20 +345,3 @@ main {
 }
 </style>
 
-<script setup>
-import { useRoute, useRouter } from "vue-router";
-import { ref, computed } from 'vue';
-
-const router = useRouter();
-const route = useRoute();
-
-// 定义一个函数，判断当前路由是否匹配
-const isActive = (path) => {
-  return route.path === path;
-};
-
-// 定义一个导航函数
-const navigateTo = (path) => {
-  router.push(path);
-};
-</script>

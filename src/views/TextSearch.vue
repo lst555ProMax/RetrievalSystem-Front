@@ -388,7 +388,7 @@ onMounted(() => {
   flex-direction: row;
   position: relative;
   width: 100%;
-  height: 10%;
+  height: 60px;
   align-items: center;
 }
 

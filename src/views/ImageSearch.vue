@@ -66,7 +66,7 @@
               @change="onFileChange"
               ref="fileInput"
             />
-            <button @click="sendImage">上传图片</button>
+            <button @click="sendImage">➤</button>
           </div>
         </div>
 
@@ -331,16 +331,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin: 5px;
   border-radius: 5px;
   overflow: hidden;
 }
 
-.non-header {
-  display: flex;
-  height: calc(100% - 60px);
-  flex-direction: row;
-}
 
 .main-content {
   display: flex;
@@ -369,14 +363,15 @@ onMounted(() => {
 }
 
 .headbar {
-  margin: 10px;
+  margin: 20px 10px;
   display: flex;
   flex-direction: row;
   position: relative;
   width: 100%;
-  height: 10%;
+  min-height: 60px;
   align-items: center;
 }
+
 
 .text {
   position: absolute;
@@ -420,7 +415,7 @@ onMounted(() => {
 }
 
 .message {
-  background: #2e2e4d;
+  background: rgba(173,216,230,0.05);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -474,39 +469,40 @@ onMounted(() => {
   bottom: 0; /* 固定在底部 */
   display: flex;
   align-items: center;
-  background-color: #0e0d27;
-  border-top: 1px solid #34345f;
+  background: transparent;
+/*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
-  height: 15%;
+  height: 10%;
 }
 
 .input-area input {
-  flex: 10;
+  flex: 30;
   padding: 10px;
   border: none;
   border-radius: 5px;
+/*   margin-left: 10px; */
   margin-right: 10px;
-  background-color: #1e1e3f;
+  background-color: rgba(255,255,255,0.1);
   color: #d3d3d3;
-  height: 50%;
-  align-items: center;
-  justify-content: center;
+  height: 50px;
+  font-family: 'Consolas',monospace;
+  font-size: 15px;
 }
 
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: #007bff;
+  background-color: rgba(0,123,255,0.1);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  height: 48.16px;
+height: 50px;
 }
 
 .history-section {
   flex: 1;
-  background-color: #232343;
+  background-color:rgba(128,128,128,0.05);
   padding: 10px;
   border-radius: 5px;
 }
@@ -528,7 +524,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #34345f;
+  background-color: rgba(60,63,87,0.65);
   padding: 8px;
   border-radius: 4px;
   color: #d3d3d3;
