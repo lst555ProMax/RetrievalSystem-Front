@@ -1,88 +1,80 @@
 <template>
   <Starfield />
-  <div class="userManagement">
-    <HeadbarAdmin></HeadbarAdmin>
-    <div class="non-header">
-      <SidebarAdmin></SidebarAdmin>
-      <div class="main-content">
-        <h2>用户管理</h2>
-        <table class="user-table">
-          <thead>
-            <tr>
-              <th>用户名</th>
-              <th>密码</th>
-              <th>邮箱</th>
-              <th>昵称</th>
-              <th>生日</th>
-              <th>性别</th>
-              <th>描述</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(user, index) in users" :key="index">
-              <td v-if="editingIndex === index">
-                <input v-model="editUserData.username" />
-              </td>
-              <td v-else>{{ user.username }}</td>
 
-              <td v-if="editingIndex === index">
-                <input
-                  v-model="editUserData.password"
-                  placeholder="暂时无密码"
-                  disabled
-                />
-              </td>
-              <td v-else>{{ user.password || "N/A" }}</td>
+  <Dashboard>
+    <template #left-content>
+      <div class="userManagement">
+        <div class="non-header">
+          <div class="main-content">
+            <h2>用户管理</h2>
+            <table class="user-table">
+              <thead>
+                <tr>
+                  <th>用户名</th>
+                  <th>密码</th>
+                  <th>邮箱</th>
+                  <th>昵称</th>
+                  <th>生日</th>
+                  <th>性别</th>
+                  <th>描述</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(user, index) in users" :key="index">
+                  <td v-if="editingIndex === index">
+                    <input v-model="editUserData.username" />
+                  </td>
+                  <td v-else>{{ user.username }}</td>
 
-              <td v-if="editingIndex === index">
-                <input v-model="editUserData.email" />
-              </td>
-              <td v-else>{{ user.email }}</td>
+                  <td v-if="editingIndex === index">
+                    <input v-model="editUserData.password" placeholder="暂时无密码" disabled />
+                  </td>
+                  <td v-else>{{ user.password || "N/A" }}</td>
 
-              <td v-if="editingIndex === index">
-                <input v-model="editUserData.nickname" />
-              </td>
-              <td v-else>{{ user.nickname || "N/A" }}</td>
+                  <td v-if="editingIndex === index">
+                    <input v-model="editUserData.email" />
+                  </td>
+                  <td v-else>{{ user.email }}</td>
 
-              <td v-if="editingIndex === index">
-                <input type="date" v-model="editUserData.birthday" />
-              </td>
-              <td v-else>{{ formatDate(user.birthday) || "N/A" }}</td>
+                  <td v-if="editingIndex === index">
+                    <input v-model="editUserData.nickname" />
+                  </td>
+                  <td v-else>{{ user.nickname || "N/A" }}</td>
 
-              <td v-if="editingIndex === index">
-                <input
-                  v-model="editUserData.sex"
-                  placeholder="暂时无性别"
-                  disabled
-                />
-              </td>
-              <td v-else>{{ user.sex || "N/A" }}</td>
+                  <td v-if="editingIndex === index">
+                    <input type="date" v-model="editUserData.birthday" />
+                  </td>
+                  <td v-else>{{ formatDate(user.birthday) || "N/A" }}</td>
 
-              <td v-if="editingIndex === index">
-                <input v-model="editUserData.description" />
-              </td>
-              <td v-else>{{ user.description || "N/A" }}</td>
+                  <td v-if="editingIndex === index">
+                    <input v-model="editUserData.sex" placeholder="暂时无性别" disabled />
+                  </td>
+                  <td v-else>{{ user.sex || "N/A" }}</td>
 
-              <td>
-                <button v-if="editingIndex === index" @click="saveUser(index)">
-                  保存
-                </button>
-                <button v-else @click="editUser(index)">修改</button>
-                <button @click="deleteUser(index)">删除</button>
-                <button
-                  v-if="editingIndex === index"
-                  @click="cancelEdit(index)"
-                >
-                  取消
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <td v-if="editingIndex === index">
+                    <input v-model="editUserData.description" />
+                  </td>
+                  <td v-else>{{ user.description || "N/A" }}</td>
+
+                  <td>
+                    <button v-if="editingIndex === index" @click="saveUser(index)">
+                      保存
+                    </button>
+                    <button v-else @click="editUser(index)">修改</button>
+                    <button @click="deleteUser(index)">删除</button>
+                    <button v-if="editingIndex === index" @click="cancelEdit(index)">
+                      取消
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </Dashboard>
 </template>
 
 <script setup>
@@ -90,14 +82,10 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios"; // 引入axios用于发送请求
 
-import SidebarAdmin from "../../components/SidebarAdmin.vue";
-import HeadbarAdmin from "../../components/HeadbarAdmin.vue";
 import Starfield from "@/components/Starfield.vue";
-import {getUsername} from "@/utils/Auth";
+import { getUsername } from "@/utils/Auth";
 import { API_ENDPOINTS } from "../../config/apiConfig";
-
-/* import request from "../../utils/Request" */
-
+import Dashboard from "@/components/DashboardAdmin.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -122,8 +110,8 @@ const editUserData = ref({
 
 const api = {
   get_user_info: API_ENDPOINTS.get_user_info,
-  edit_user_info:API_ENDPOINTS.edit_user_info,
-  delete_user:API_ENDPOINTS.delete_user,
+  edit_user_info: API_ENDPOINTS.edit_user_info,
+  delete_user: API_ENDPOINTS.delete_user,
 };
 
 let url = ref(api.get_user_info);
@@ -155,7 +143,7 @@ const editUser = (index) => {
   editUserData.value = { ...users.value[index] };
 };
 
-let url2=api.edit_user_info;
+let url2 = api.edit_user_info;
 // 保存用户信息
 const saveUser = async (index) => {
   if (editingIndex.value !== null) {
@@ -165,47 +153,47 @@ const saveUser = async (index) => {
 
     console.log(Object.entries(users.value[index]).toString())
 
-    try{
-    const response = await fetch(url2, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: urlEncodedParams.toString(),
-    });
+    try {
+      const response = await fetch(url2, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: urlEncodedParams.toString(),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (response.ok) {
-      console.log("修改成功", result);
-      console.log(urlEncodedParams.toString());
-      editingIndex.value = null;
-    alert("用户信息已更新！");
-    } else {
-      console.error("修改失败", result.message);
+      if (response.ok) {
+        console.log("修改成功", result);
+        console.log(urlEncodedParams.toString());
+        editingIndex.value = null;
+        alert("用户信息已更新！");
+      } else {
+        console.error("修改失败", result.message);
+      }
+    }
+    catch (error) {
+      console.error("请求失败", error);
     }
   }
-  catch (error){
-    console.error("请求失败", error);
-  }
-}
 };
 
 let url3 = api.delete_user;
 // 删除用户
 const deleteUser = async (index) => {
   if (confirm("确定要删除这个用户吗？")) {
-     alert("用户已删除！");
-     if (editingIndex.value === index) {
-       editingIndex.value = null;
-       editUserData.value = {};
+    alert("用户已删除！");
+    if (editingIndex.value === index) {
+      editingIndex.value = null;
+      editUserData.value = {};
     }
   }
 
   const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
 
-  try{
+  try {
     const response = await fetch(url3, {
       method: "POST",
       headers: {
@@ -227,7 +215,7 @@ const deleteUser = async (index) => {
       console.error("修改失败", result.message);
     }
   }
-  catch (error){
+  catch (error) {
     console.error("请求失败", error);
   }
 };
@@ -264,7 +252,6 @@ onMounted(() => {
 body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
-  background-color: #001f3f;
   color: #d3d3d3;
   display: flex;
   flex-direction: column;

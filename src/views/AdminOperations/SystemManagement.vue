@@ -1,15 +1,16 @@
 <template>
   <Starfield />
 
-    <div class="systemManagement">
-      <HeadbarAdmin></HeadbarAdmin>
-      <div class="non-header">
-        <SidebarAdmin></SidebarAdmin>
-  
+  <Dashboard>
+    <template #left-content>
+      <div class="systemManagement">
+      <div class="non-header">  
         <div class="main-content">
         </div>
       </div>
     </div>
+    </template>
+  </Dashboard>
   </template>
   
   <script setup>
@@ -20,6 +21,7 @@
   import HeadbarAdmin from "../../components/HeadbarAdmin.vue";
   import Starfield from "@/components/Starfield.vue"
   import {getUsername} from "@/utils/Auth";
+  import Dashboard from "@/components/DashboardAdmin.vue";
 
   const router = useRouter();
   const route = useRoute();
@@ -49,7 +51,6 @@
   body {
     margin: 0;
     font-family: "Montserrat", sans-serif;
-    background-color: #001f3f;
     color: #d3d3d3;
     display: flex;
     flex-direction: column;
