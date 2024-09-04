@@ -135,7 +135,7 @@ function handleFileChange(event, index) {
 }
 
 const api = {
-  edit: "http://172.20.10.7:8000/user/feedback",
+  edit: "http://192.168.156.28:8000/user/feedback",
 };
 
 let url = api.edit;

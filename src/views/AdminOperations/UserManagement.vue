@@ -120,9 +120,9 @@ const editUserData = ref({
 });
 
 const api = {
-  get: "http://172.20.10.7:8000/admin/get_user_info",
-  edit:"http://172.20.10.7:8000/admin/edit_user_info",
-  delete:"http://172.20.10.7:8000/admin/delete_user",
+  get: "http://192.168.156.28:8000/admin/get_user_info",
+  edit:"http://192.168.156.28:8000/admin/edit_user_info",
+  delete:"http://192.168.156.28:8000/admin/delete_user",
 };
 
 let url = ref(api.get);

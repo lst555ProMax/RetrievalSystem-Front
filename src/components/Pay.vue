@@ -49,7 +49,7 @@
 
 
 <script setup>
-import { ref, onMounted } from "vue";
+/* import { ref, onMounted } from "vue";
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
@@ -89,34 +89,26 @@ const basicPurchase = async () => {
 
 // 在mounted阶段查询DOM
 onMounted(() => {
-  cardsContainer.value = document.querySelector(".cards");
-  const cardsContainerInner = document.querySelector(".cards__inner");
-  cards.value = Array.from(document.querySelectorAll(".card"));
-  overlay.value = document.querySelector(".overlay");
-
-  // 定义鼠标跟随动画的函数
+  // 监听 pointermove 事件
   const applyOverlayMask = (e) => {
+    // 在使用前检查是否已正确获取
+    if (!cardsContainer.value || !overlay.value) return;
+
     const x = e.pageX - cardsContainer.value.offsetLeft;
     const y = e.pageY - cardsContainer.value.offsetTop;
-
+    
     overlay.value.style = `--opacity: 1; --x: ${x}px; --y:${y}px;`;
   };
 
-  const createOverlayCta = (overlayCard, ctaEl) => {
-    const overlayCta = document.createElement("div");
-    overlayCta.classList.add("cta");
-    overlayCta.textContent = ctaEl.textContent;
-    overlayCta.setAttribute("aria-hidden", true);
-    overlayCard.append(overlayCta);
-  };
+  // 在 mounted 时获取所有 .card 元素并初始化 overlay
+  cards.value = Array.from(cardsContainer.value.querySelectorAll(".card"));
+  overlay.value = document.querySelector(".overlay");
 
   const observer = new ResizeObserver((entries) => {
     entries.forEach((entry) => {
       const cardIndex = cards.value.indexOf(entry.target);
-      let width = entry.borderBoxSize[0].inlineSize;
-      let height = entry.borderBoxSize[0].blockSize;
-
       if (cardIndex >= 0) {
+        const { inlineSize: width, blockSize: height } = entry.borderBoxSize[0];
         overlay.value.children[cardIndex].style.width = `${width}px`;
         overlay.value.children[cardIndex].style.height = `${height}px`;
       }
@@ -126,15 +118,17 @@ onMounted(() => {
   const initOverlayCard = (cardEl) => {
     const overlayCard = document.createElement("div");
     overlayCard.classList.add("card");
-    createOverlayCta(overlayCard, cardEl.lastElementChild);
+    overlayCard.textContent = cardEl.querySelector(".cta").textContent;
     overlay.value.append(overlayCard);
     observer.observe(cardEl);
   };
 
   cards.value.forEach(initOverlayCard);
+
+  // 绑定事件监听器，确保在获取元素后才进行
   document.body.addEventListener("pointermove", applyOverlayMask);
 });
-
+ */
 </script>
 
 

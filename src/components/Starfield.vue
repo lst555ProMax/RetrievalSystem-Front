@@ -38,7 +38,13 @@ export default {
     document.removeEventListener('mouseleave', this.onMouseLeave);
   },
   methods: {
-    initialize() {
+    async initialize() {
+      await this.$nextTick(); // 等待 DOM 渲染完成后再初始化
+      if (!this.$refs.canvas) {
+        console.error('Canvas element is not found');
+        return;
+      }
+
       this.generate();
       this.resize();
       this.step();
@@ -59,7 +65,7 @@ export default {
     recycleStar(star) {
       let direction = 'z';
       let vx = Math.abs(this.velocity.x),
-          vy = Math.abs(this.velocity.y);
+        vy = Math.abs(this.velocity.y);
 
       if (vx > 1 || vy > 1) {
         let axis;
@@ -102,15 +108,27 @@ export default {
       this.height = window.innerHeight * this.scale;
 
       const canvas = this.$refs.canvas;
-      canvas.width = this.width;
-      canvas.height = this.height;
+      if (canvas) {
+        canvas.width = this.width;
+        canvas.height = this.height;
+      }
 
       this.stars.forEach(this.placeStar);
     },
     step() {
-      const context = this.$refs.canvas.getContext('2d');
-      context.clearRect(0, 0, this.width, this.height);
+      const canvas = this.$refs.canvas;
+      if (!canvas) {
+        console.error('Canvas element is not found');
+        return;
+      }
 
+      const context = canvas.getContext('2d');
+      if (!context) {
+        console.error('Failed to get 2D context');
+        return;
+      }
+
+      context.clearRect(0, 0, this.width, this.height);
       this.update();
       this.render();
 
@@ -143,7 +161,12 @@ export default {
       });
     },
     render() {
-      const context = this.$refs.canvas.getContext('2d');
+      const canvas = this.$refs.canvas;
+      if (!canvas) return;
+
+      const context = canvas.getContext('2d');
+      if (!context) return;
+
       this.stars.forEach((star) => {
         context.beginPath();
         context.lineCap = 'round';
@@ -151,25 +174,23 @@ export default {
         context.globalAlpha = 0.5 + 0.5 * Math.random();
         context.strokeStyle = this.STAR_COLOR;
 
-        context.beginPath();
         context.moveTo(star.x, star.y);
 
         let tailX = this.velocity.x * 2,
-            tailY = this.velocity.y * 2;
+          tailY = this.velocity.y * 2;
 
-        // stroke() wont work on an invisible line
+        // stroke() won't work on an invisible line
         if (Math.abs(tailX) < 0.1) tailX = 0.5;
         if (Math.abs(tailY) < 0.1) tailY = 0.5;
 
         context.lineTo(star.x + tailX, star.y + tailY);
-
         context.stroke();
       });
     },
     movePointer(x, y) {
       if (typeof this.pointerX === 'number' && typeof this.pointerY === 'number') {
         let ox = x - this.pointerX,
-            oy = y - this.pointerY;
+          oy = y - this.pointerY;
 
         this.velocity.tx = this.velocity.tx + (ox / (8 * this.scale)) * (this.touchInput ? 1 : -1);
         this.velocity.ty = this.velocity.ty + (oy / (8 * this.scale)) * (this.touchInput ? 1 : -1);

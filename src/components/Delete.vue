@@ -93,7 +93,7 @@ const form = ref({
 });
 
 const api = {
-  delete: "http://172.20.10.7:8000/user/delete",
+  delete: "http://192.168.156.28:8000/user/delete",
 };
 
 let url = api.delete;

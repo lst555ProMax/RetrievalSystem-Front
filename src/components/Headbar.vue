@@ -1,3 +1,4 @@
+<!-- 无法实现一点击顶边栏搜索框就执行搜索逻辑 -->
 <template>
   <div class="header-bar">
     <div class="header-content">
@@ -6,12 +7,18 @@
         <span>Turing AI 创作平台</span>
       </div>
 
-
-        <div class="search-container">
-      <span>AI搜索</span>
-      <input type="text" placeholder="AI搜索，只给你有用的结果" class="search-input" v-model="question" />
-      <el-button class="search-button" @click="GoToDialogue">搜一搜</el-button>
-    </div>
+      <div class="search-container">
+        <span>AI搜索</span>
+        <input
+          type="text"
+          placeholder="AI搜索，只给你有用的结果"
+          class="search-input"
+          v-model="question"
+        />
+        <el-button class="search-button" @click="handleSearch"
+          >搜一搜</el-button
+        >
+      </div>
 
       <div class="icon-container">
         <el-button class="gradient-button" @click="GoToPay">充值</el-button>
@@ -63,9 +70,10 @@
     </div>
   </div>
   <Edit :isVisible="isEditVisible" @update:isVisible="isEditVisible = $event" />
-  <Answer     
+  <Answer
     :isVisible="isAnswerVisible"
-    @update:isVisible="isAnswerVisible = $event"></Answer>
+    @update:isVisible="isAnswerVisible = $event"
+  ></Answer>
   <FeedBack
     :isVisible="isFeedBackVisible"
     @update:isVisible="isFeedBackVisible = $event"
@@ -75,8 +83,8 @@
     @update:isVisible="isPayVisible = $event"
   ></Pay>
   <Delete
-  :isVisible="isDeleteVisible"
-  @update:isVisible="isDeleteVisible = $event"
+    :isVisible="isDeleteVisible"
+    @update:isVisible="isDeleteVisible = $event"
   ></Delete>
 </template>
 
@@ -88,14 +96,14 @@ import Edit from "../components/Edit.vue";
 import FeedBack from "../components/FeedBack.vue";
 import Pay from "../components/Pay.vue";
 import Settings from "../components/Settings.vue";
-import Delete from "../components/Delete.vue"
-import Answer from "../components/Answer.vue"
+import Delete from "../components/Delete.vue";
+import Answer from "../components/Answer.vue";
 
 import { defineEmits } from "vue";
 
 const emit = defineEmits(["search"]);
 
-const question=ref();
+const question = ref();
 
 const router = useRouter();
 const goHome = () => router.push("/home");
@@ -108,11 +116,11 @@ const form3 = ref({});
 
 const isFormVisible = ref(false);
 const isEditVisible = ref(false);
-const isAnswerVisible=ref(false);
+const isAnswerVisible = ref(false);
 const isFeedBackVisible = ref(false);
 const currentTab = ref("score");
 const isPayVisible = ref(false);
-const isDeleteVisible =ref(false);
+const isDeleteVisible = ref(false);
 
 const hideTimers = ref({});
 
@@ -147,15 +155,22 @@ const startHideTimer = (formName) => {
   }, 100);
 };
 
-const GoToDialogue=()=>{
-  router.push("/dialogue");
-  emit("search",question.value);
+const handleSearch = () => {
 
-}
+      // 先触发搜索事件
+      emit("search", question.value);
 
-const GoToPay=()=>{
-  isPayVisible.value=true;
-}
+  // 路由跳转放在事件触发后
+  setTimeout(() => {
+    router.push("/dialogue");
+  }, 100); // 加入一个延迟，确保事件处理完成后再跳转
+
+
+};
+
+const GoToPay = () => {
+  isPayVisible.value = true;
+};
 
 const handleToggleForm = () => {
   // 关闭 form3Vision
@@ -164,12 +179,12 @@ const handleToggleForm = () => {
   isEditVisible.value = true;
 };
 
-const handleAnswer =()=>{
-    // 关闭 form3Vision
-    document.querySelector(".form3Vision").style.display = "none";
-   // 显示 Edit 组件
-   isAnswerVisible.value = true;
-}
+const handleAnswer = () => {
+  // 关闭 form3Vision
+  document.querySelector(".form3Vision").style.display = "none";
+  // 显示 Edit 组件
+  isAnswerVisible.value = true;
+};
 const handleFeedBack = () => {
   // 关闭 form3Vision
   document.querySelector(".form3Vision").style.display = "none";
@@ -199,10 +214,10 @@ const handlePay = () => {
   isPayVisible.value = true;
 };
 
-const handleDelete =()=>{
+const handleDelete = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isDeleteVisible.value = true;
-}
+};
 </script>
 
 <style scoped>
@@ -231,7 +246,6 @@ const handleDelete =()=>{
   color: #fff;
 }
 
-
 .header-content i {
   font-size: 24px;
   color: #901bf5;
@@ -244,10 +258,10 @@ const handleDelete =()=>{
   background-color: transparent;
   padding: 10px 10px;
   height: 200%; /* 使得搜索框达到 header-bar 的高度 */
-/*   box-sizing: border-box; /* 确保 padding 不影响总高度 */ 
+  /*   box-sizing: border-box; /* 确保 padding 不影响总高度 */
 }
 
-.search-container span{
+.search-container span {
   text-align: center;
   align-items: center;
   font-style: italic;
@@ -265,7 +279,7 @@ const handleDelete =()=>{
   outline: none;
   font-size: 14px;
   height: 38px;
-  width:350px ;
+  width: 350px;
 }
 
 .search-button {

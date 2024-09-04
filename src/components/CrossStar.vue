@@ -144,8 +144,8 @@ function move() {
     cameraDepth = modulo(cameraDepth + velocity);
   }
 
-  const dx = tX - cX;
-  const dy = tY - cY;
+  let dx = tX - cX;
+  let dy = tY - cY;
   let dist = Math.sqrt(dx * dx + dy * dy);
 
   if (dist != 0) {
