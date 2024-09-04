@@ -8,7 +8,7 @@ import { onMounted, ref } from 'vue';
 const canvas = ref(null);
 let context;
 let alpha = 6.0;
-let cX, cY, tX, tY, mouseX, mouseY, density;
+let cX, cY, tX, tY, density;
 let stars = [];
 let cameraDepth = 0;
 let enterWarp = false, warpStartDepth, warpTime = 0, velocity;
@@ -18,7 +18,6 @@ const starCount = 1024;
 let initVelocity = -1.0;
 let termVelocity = -10.0;
 const topleft = 0;
-const trackMouse = 1;
 const focalPoint = 256;
 const sparcity = 1.0;
 const tailLength = 20;
@@ -192,6 +191,6 @@ canvas {
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: 2;
+  z-index: -2;
 }
 </style>
