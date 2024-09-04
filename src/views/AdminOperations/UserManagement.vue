@@ -94,6 +94,7 @@ import SidebarAdmin from "../../components/SidebarAdmin.vue";
 import HeadbarAdmin from "../../components/HeadbarAdmin.vue";
 import Starfield from "@/components/Starfield.vue";
 import {getUsername} from "@/utils/Auth";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 
 /* import request from "../../utils/Request" */
 
@@ -120,17 +121,17 @@ const editUserData = ref({
 });
 
 const api = {
-  get: "http://192.168.156.28:8000/admin/get_user_info",
-  edit:"http://192.168.156.28:8000/admin/edit_user_info",
-  delete:"http://192.168.156.28:8000/admin/delete_user",
+  get_user_info: API_ENDPOINTS.get_user_info,
+  edit_user_info:API_ENDPOINTS.edit_user_info,
+  delete_user:API_ENDPOINTS.delete_user,
 };
 
-let url = ref(api.get);
+let url = ref(api.get_user_info);
+const token = localStorage.getItem('jwtToken'); // 从 localStorage 获取 JWT 令牌
 
 // 从后端获取用户数据
 const fetchUsers = async () => {
   try {
-    const token = localStorage.getItem('jwtToken'); // 从 localStorage 获取 JWT 令牌
     const response = await axios.get(url.value, {
       headers: {
         'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
@@ -154,7 +155,7 @@ const editUser = (index) => {
   editUserData.value = { ...users.value[index] };
 };
 
-let url2=api.edit;
+let url2=api.edit_user_info;
 // 保存用户信息
 const saveUser = async (index) => {
   if (editingIndex.value !== null) {
@@ -168,6 +169,7 @@ const saveUser = async (index) => {
     const response = await fetch(url2, {
       method: "POST",
       headers: {
+        'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: urlEncodedParams.toString(),
@@ -190,7 +192,7 @@ const saveUser = async (index) => {
 }
 };
 
-let url3 = api.delete;
+let url3 = api.delete_user;
 // 删除用户
 const deleteUser = async (index) => {
   if (confirm("确定要删除这个用户吗？")) {
@@ -207,6 +209,7 @@ const deleteUser = async (index) => {
     const response = await fetch(url3, {
       method: "POST",
       headers: {
+        'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: urlEncodedParams.toString(),

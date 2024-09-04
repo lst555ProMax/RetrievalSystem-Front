@@ -44,6 +44,7 @@
 import { ref,onMounted} from "vue";
 import { defineProps, defineEmits } from "vue";
 import { getUsername } from "../utils/Auth"
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 import Request from "../utils/Request";
 
@@ -135,45 +136,12 @@ function handleFileChange(event, index) {
 }
 
 const api = {
-  edit: "http://192.168.156.28:8000/user/feedback",
+  feedback: API_ENDPOINTS.feedback,
 };
 
-let url = api.edit;
-// // 提交反馈
-// async function submitFeedback() {
-//   // 构建表单数据
-//   const formData = new FormData();
-// /*   console.log(feedbackContent.value);
-//   console.log(getUsername()) */
-//   formData.append("username", getUsername())
-//   formData.append("content", feedbackContent.value);
+let url = api.feedback;
 
-//   const token = localStorage.getItem('jwtToken');
-
-//   try {
-//     const response = await Request(url, {
-//       method: "POST",
-// /*       headers:{
-//         'Authorization':`Bearer ${token}`,
-//       }, */
-//       body: formData,
-//     });
-
-//     if (!response.ok) throw new Error("提交失败");
-
-//     const result = await response.json();
-//     // 更新反馈次数
-//   feedbackCount.value += 1;
-
-//     if (response.ok) {
-//       localStorage.setItem('feedbackCount', feedbackCount.value);
-//       alert("提交成功！");
-//       close();
-//     }
-//   } catch (error) {
-//     console.error("提交失败", error);
-//   }
-// }
+const token = localStorage.getItem("jwtToken");
 
 async function submitFeedback() {
   const formData = new FormData();
@@ -181,18 +149,17 @@ async function submitFeedback() {
   formData.append("content", feedbackContent.value);
 
   try {
-    const response = await Request({
-      url: url,  // 替换成实际的接口地址
-      params: {
-        username: getUsername(),
-        content: feedbackContent.value
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      dataType: 'form',  // 表单数据
-      showLoading: true,
-      responseType: 'json',
+      body: formData, // 使用 FormData 作为请求体
     });
 
-    if (response.code === 0) {
+    const result = await response.json();
+
+    if (result.code === 0) {
       feedbackCount.value += 1;
       localStorage.setItem('feedbackCount', feedbackCount.value.toString());
       alert("提交成功！");

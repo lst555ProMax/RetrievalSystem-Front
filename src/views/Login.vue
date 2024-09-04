@@ -267,7 +267,8 @@ import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import BackgroundAnimation from "../components/BackgroundAnimation.vue";
 import { useUserStore } from "../stores/userStore"; // 引入 Store
-import { saveUsername } from "../utils/Auth"
+import { saveUsername } from "../utils/Auth";
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -275,12 +276,9 @@ const route = useRoute();
 
 const data = ref("");
 const api = {
-  /*   checkCode: "http://172.20.10.7:8000/user/api/checkCode",
-  sendEmailCode: "http://172.20.10.7:8000/user/sendEmailCode", */
-  register: "http://192.168.156.28:8000/user/register",
-  login: "http://192.168.156.28:8000/user/login",
-  resetPwd: "http://192.168.156.28:8000/user/edit",
-  /*   qqlogin: "/qqlogin", */
+  register: API_ENDPOINTS.register,
+  login: API_ENDPOINTS.login,
+  resetPwd: API_ENDPOINTS.resetPwd,
 };
 
 //0:注册 1:登录 2:重置密码
@@ -473,56 +471,78 @@ const doSubmit = () => {
       }  */
     }
     let url = null;
-    if (opType.value == 0) {
-      url = api.register;
-    } else if (opType.value == 1) {
-      url = api.login;
+
+    if (opType.value == 0 || opType.value == 1) {
+      if (opType.value == 0) {
+        url = api.register;
+      } else if (opType.value == 1) {
+        url = api.login;
+      }
+
+      // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
+      const urlEncodedParams = new URLSearchParams(params);
+
+      try {
+        // 发送请求
+        const result = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded", // 确保内容类型为表单数据
+          },
+          body: urlEncodedParams.toString(), // 传递参数
+        });
+
+        // 解析响应
+        // 解析响应
+        const response = await result.json();
+        data.value = response; // 更新数据
+
+        // 输出消息
+        console.log(response.message);
+
+        // 处理成功操作
+        if (response.code === 0) {
+          // 存储 JWT 令牌
+          localStorage.setItem("jwtToken", response.access_token); // 假设 token 是返回的 JWT 令牌字段名
+          /*   console.log(localStorage.getItem('jwtToken')); */
+          alert("操作成功");
+          if (response.data.permission_level === 1) {
+            router.push("/framework");
+          } else if (response.data.permission_level === 0) {
+            router.push("/userManagement");
+          }
+
+          emitUsername();
+          saveUsername(params.username);
+        } else {
+          alert("操作失败：" + response.message);
+        }
+      } catch (error) {
+        console.error("请求失败", error);
+        alert("请求失败，请检查网络或稍后再试");
+      }
     } else if (opType.value == 2) {
       url = api.resetPwd;
-    }
+      const formData2 = new FormData();
+      formData2.append("username", params.username);
+      formData2.append("password", params.password);
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          body: formData2, // 使用 FormData 作为请求体
+        });
 
-    // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
-    const urlEncodedParams = new URLSearchParams(params);
-
-    try {
-      // 发送请求
-      const result = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded", // 确保内容类型为表单数据
-        },
-        body: urlEncodedParams.toString(), // 传递参数
-      });
-
-      // 解析响应
-     // 解析响应
-const response = await result.json();
-data.value = response; // 更新数据
-
-// 输出消息
-console.log(response.message);
-
-// 处理成功操作
-if (response.code === 0) {
-  // 存储 JWT 令牌
-  localStorage.setItem('jwtToken', response.access_token); // 假设 token 是返回的 JWT 令牌字段名
-/*   console.log(localStorage.getItem('jwtToken')); */
-  alert("操作成功");
-  if(response.data.permission_level===1)
-  {  router.push("/framework");}
-  else if(response.data.permission_level===0)
-  {
-    router.push("/userManagement");
-  }
-
-  emitUsername();
-  saveUsername(params.username);
-} else {
-  alert("操作失败：" + response.message);
-}
-    } catch (error) {
-      console.error("请求失败", error);
-      alert("请求失败，请检查网络或稍后再试");
+        const result = await response.json();
+        if (result.code === 0) {
+          alert("密码修改成功！");
+          opType.value=1;
+          resetForm();
+        } else {
+          console.error("修改失败", result.message);
+        }
+      } catch (error) {
+        console.error("请求失败", error);
+      }
     }
   });
 };

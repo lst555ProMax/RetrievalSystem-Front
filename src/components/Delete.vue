@@ -13,7 +13,7 @@
           <!-- 用户名 -->
           <div class="form-group">
             <label for="username">用户名</label>
-            <input type="text" id="username" :value="form.username" :placeholder="username" disabled />
+            <input type="text" id="username" :placeholder=username disabled />
           </div>
 
           <!-- 密码 -->
@@ -66,65 +66,65 @@
 <script setup>
 import { ref } from "vue";
 import { defineEmits } from "vue";
-/* import { useUserStore } from "../stores/userStore";
-
-const userStore = useUserStore();
-const { username } = userStore; */
-
-/* import { usePasswordStore } from "../stores/passwordStore";
-
-const passwordStore = usePasswordStore();
-const { password } = passwordStore; */
-
-const username =ref("lst555");
+import { getUsername } from "../utils/Auth"
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 
 const props = defineProps({
   isVisible: Boolean,
 });
 
+const username=getUsername();
+
 const emit=defineEmits(["update:isVisible"]);
 
 const form = ref({
-  username: username, // 从Store中获取用户名
   password: "",
   reason: "",
   agreement: false,
 });
 
 const api = {
-  delete: "http://192.168.156.28:8000/user/delete",
+  delete: API_ENDPOINTS.delete,
 };
 
 let url = api.delete;
 
-const Delete = async () => {
-  // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
-  const urlEncodedParams = new URLSearchParams(form.value);
+const token = localStorage.getItem("jwtToken");
 
+const Delete = async () => {
+
+  
   if(!form.value.password){
     alert("请输入密码");
     return;
   }
+
   if (!form.value.agreement) {
     alert("请勾选同意协议");
     return;
   }
+
+
+  const formData = new FormData();
+  formData.append("username", username);
+  formData.append("password", form.value.password);
+
   const response = await fetch(url, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Bearer ${token}`,
     },
-    body: urlEncodedParams.toString(),
+    body: formData,
   });
 
   const result = await response.json();
-  if (response.ok) {
-    console.log("注销成功", result);
-    console.log(urlEncodedParams.toString());
+  if (result.code === 0) {
+/*     alert("注销成功"); */
+/*     stop(); */
     router.push("/");
   } else {
-    console.error("注销失败", result.message);
+    alert("注销失败");
   }
 };
 

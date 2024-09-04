@@ -158,6 +158,7 @@ import assert from "assert";
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Verify from "../utils/verify"
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 import { useUserStore } from "../stores/userStore"; // 引入 Store
 
@@ -221,7 +222,7 @@ const rules = {
 const selectedGender = ref("secret");
 
 const api = {
-  edit: "http://192.168.156.28:8000/user/edit",
+  edit: API_ENDPOINTS.edit,
 };
 
 let url = api.edit;
@@ -257,8 +258,8 @@ const submitForm = async () => {
     });
 
     const result = await response.json();
-    if (response.ok) {
-      console.log("修改成功", result);
+    if (result.code=== 0) {
+      alert("修改成功");
       emit("update:isVisible", false);
     } else {
       console.error("修改失败", result.message);
