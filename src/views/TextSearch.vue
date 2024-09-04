@@ -122,8 +122,6 @@
 <script setup>
 import { ref, watch, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
-import sidebar from "../components/Sidebar.vue";
-import headbar from "../components/Headbar.vue";
 import Starfield from "../components/Starfield.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue"

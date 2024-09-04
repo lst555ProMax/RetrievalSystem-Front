@@ -1,16 +1,5 @@
 <template>
   <starfield />
-<!-- 
-  <div class="image-upload-system">
-    <headbar></headbar>
-    <div class="non-header">
-      <sidebar></sidebar>
-
-      <div class="main-content">
-        <div v-html="htmlContent"></div>
-      </div>
-    </div>
-  </div> -->
 <dashboard > 
   <template #left-content>
     <div v-html="htmlContent"></div>
@@ -25,8 +14,6 @@ import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import dashboard from "../components/Dashboard.vue"
 
-import sidebar from "../components/Sidebar.vue";
-import headbar from "../components/Headbar.vue";
 import Starfield from "@/components/Starfield.vue"
 import { getUsername } from "@/utils/Auth"
 

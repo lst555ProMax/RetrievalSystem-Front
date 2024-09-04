@@ -1,11 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import login from '../views/Login.vue'
 import framework from '../views/Framework.vue'
-import help from '../views/Help.vue'
 import textSearch from '../views/TextSearch.vue'
 import imageSearch from '../views/ImageSearch.vue'
-import userCenter from '../views/UserCenter.vue'
-import result from '../views/Result.vue'
 import dialogue from '../views/dialogue.vue'
 import others from '../views/Others.vue'
 import userManagement from '../views/AdminOperations/UserManagement.vue'
@@ -26,11 +23,6 @@ const router = createRouter({
       component:framework
     },
     {
-      path:'/help',
-      name:'help',
-      component:help
-    },
-    {
       path:'/textSearch',
       name:'textSearch',
       component:textSearch
@@ -39,16 +31,6 @@ const router = createRouter({
       path:'/imageSearch',
       name:'imageSearch',
       component:imageSearch
-    },
-    {
-      path:'/userCenter',
-      name:'userCenter',
-      component:userCenter
-    },
-    {
-      path:'/result',
-      name:'result',
-      component:result
     },
     {
       path:'/dialogue',

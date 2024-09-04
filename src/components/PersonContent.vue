@@ -21,8 +21,8 @@
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs4">
     <div class="tab4-item">
-      <i class="fa-solid fa-house" @click="GotoUserCenter"></i>
-      <span @click="GotoUserCenter">个人主页</span>
+      <i class="fa-solid fa-gear" ></i>
+      <span >个性化设置</span>
     </div>
     <div class="tab4-item">
       <i class="fa-solid fa-list-check" @click="GoToAnswer"></i>
@@ -73,7 +73,6 @@ const edit = () => {
   emit("toggleForm"); // 触发关闭事件
 };
 
-const GotoUserCenter = () => router.push("/userCenter");
 
 const GoToAnswer=()=>{
   emit("answer");
@@ -162,7 +161,13 @@ const GotoDelete =()=>{
 .tab4-item i {
   font-size: 25px;
   margin-bottom: 5px; /* 图标和文字之间的间距 */
+  display: -ms-inline-flexbox;
 }
+
+.tab4-item i:hover {
+background-color: #3e3e5f;
+}
+
 
 .tab4-item span {
   font-size: 15px; /* 根据需要调整文字大小 */
@@ -177,8 +182,13 @@ const GotoDelete =()=>{
 
 .tabs5-button {
   flex-grow: 1; /* 让按钮在 Flex 布局中占满空间 */
-  --el-button-bg-color: #252738; /* 设置按钮背景颜色 */
+  --el-button-bg-color: rgba(30, 30, 63, 0.2); /* 设置按钮背景颜色 */
   --el-button-border-color: #252738; /* 设置按钮边框颜色 */
+}
+
+.tabs5-button:hover {
+  --el-button-hover-bg-color: #3e3e5f; /* 悬浮时的背景颜色 */
+  --el-button-hover-border-color: #3e3e5f; /* 悬浮时的边框颜色 */
 }
 
 /* --------------------------------------------------------------------------------------------------- */

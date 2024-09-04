@@ -49,7 +49,7 @@
 
 
 <script setup>
-import { ref, onMounted } from "vue";
+/* import { ref, onMounted } from "vue";
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
@@ -136,7 +136,7 @@ onMounted(() => {
   cards.value.forEach(initOverlayCard);
   document.body.addEventListener("pointermove", applyOverlayMask);
 });
-
+ */
 </script>
 
 

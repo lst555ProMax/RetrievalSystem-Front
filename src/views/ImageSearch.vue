@@ -93,8 +93,6 @@
 import { ref, watch, nextTick, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import Starfield from "../components/Starfield.vue";
-import sidebar from "../components/Sidebar.vue";
-import headbar from "../components/Headbar.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";

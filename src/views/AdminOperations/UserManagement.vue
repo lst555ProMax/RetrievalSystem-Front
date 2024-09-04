@@ -123,7 +123,6 @@ const fetchUsers = async () => {
     const response = await axios.get(url.value, {
       headers: {
         'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
-        'Content-Type': 'application/json', // 设置请求头的 Content-Type
       }
     });
 
@@ -158,7 +157,6 @@ const saveUser = async (index) => {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
-          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: urlEncodedParams.toString(),
       });
