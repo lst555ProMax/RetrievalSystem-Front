@@ -1,19 +1,10 @@
 <template>
   <starfield />
-
-  <div class="admin-panel">
-    <!-- 左侧侧边栏 -->
-
-    <headbar @toggleForm="handleToggleForm"></headbar>
-    <div class="non-header">
-      <sidebar></sidebar>
-
-      <!-- 右侧主内容区域 -->
-      <div class="main-content">
-        <slider />
-      </div>
-    </div>
-  </div>
+  <dashboard>
+    <template #left-content>
+      <slider />
+    </template>
+  </dashboard>
 </template>
 
 <script setup>
@@ -24,6 +15,7 @@ import headbar from "../components/Headbar.vue";
 import Starfield from "@/components/Starfield.vue";
 import Slider from "@/components/Slider.vue";
 import {getUsername} from "@/utils/Auth";
+import Dashboard from "@/components/Dashboard.vue";
 
 
 const router = useRouter();
@@ -53,7 +45,6 @@ onMounted(() => {
 body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
-  background-color: #001f3f;
   color: #d3d3d3;
   display: flex;
   flex-direction: column;
