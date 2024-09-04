@@ -42,13 +42,6 @@
               </a>
             </li>
   
-            <li class="nav-item">
-              <a href="#">
-                <i class="fa fa-gear nav-icon"></i>
-                <span class="nav-text">Settings</span>
-              </a>
-            </li>
-  
             <li class="nav-item" @click ="GoToLogin">
               <a href="#">
                 <i class="fa fa-right-from-bracket nav-icon"></i>
