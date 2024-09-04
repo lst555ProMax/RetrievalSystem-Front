@@ -1,6 +1,6 @@
 <template>
   <starfield />
-
+<!-- 
   <div class="image-upload-system">
     <headbar></headbar>
     <div class="non-header">
@@ -10,13 +10,20 @@
         <div v-html="htmlContent"></div>
       </div>
     </div>
-  </div>
+  </div> -->
+<dashboard > 
+  <template #left-content>
+    <div v-html="htmlContent"></div>
+  </template>
+</dashboard>
+
 </template>
   
 <script setup>
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
+import dashboard from "../components/Dashboard.vue"
 
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
@@ -27,7 +34,9 @@ const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
 
+
 const htmlContent = ref("")
+
 
 onMounted(async () => {
   const username = getUsername();
