@@ -177,11 +177,25 @@ watch(messages, async () => {
 // 存储上传的文件
 const selectedFile = ref(null);
 
-// 处理文件改变事件
+/* // 处理文件改变事件
 const onFileChange = (event) => {
   const files = event.target.files;
   if (files && files[0]) {
     selectedFile.value = files[0]; // 将选择的文件赋值给 selectedFile
+  }
+}; */
+
+// 处理文件改变事件
+const onFileChange = (event) => {
+  const files = event.target.files;
+  if (files && files[0]) {
+    const file = files[0];
+    if (file.type.startsWith("image/")) {
+      selectedFile.value = file; // 确保是图片文件
+    } else {
+      alert("请选择图片文件！");
+      selectedFile.value = null;
+    }
   }
 };
 
@@ -205,12 +219,11 @@ const uploadImageFromList = (index) => {
 const token = localStorage.getItem("jwtToken");
 
 const api = {
-  search: "http://172.20.10.7:8000/search/text",
+  search: "http://192.168.156.28:8000/search/image",
 };
 
 let url = api.search;
 
-// 发送上传的图像
 const sendImage = async () => {
   if (!selectedFile.value) {
     alert("请先选择一张图片！");
@@ -229,7 +242,7 @@ const sendImage = async () => {
 
   const formData = new FormData();
   formData.append("username", getUsername());
-  formData.append("file", selectedFile.value);
+  formData.append("image_file", selectedFile.value);
 
   try {
     console.log("开始发送请求...");
@@ -257,20 +270,20 @@ const sendImage = async () => {
     const response = await result.json();
     const responseTime = new Date().toLocaleTimeString();
 
-    if (response.code === "0") {
+    if (response.code === 0) {
       console.log(response);
 
       if (response.text_list && response.text_list.length > 0) {
         response.text_list.forEach((text) => {
           messages.value.push({
-            text,
+            text:text.content,
             time: responseTime,
             isResponse: true,
           });
         });
       } else {
         messages.value.push({
-          text: response.message || "这是系统给出的回答。",
+          text: response.text_list || "这是系统给出的回答。",
           time: responseTime,
           isResponse: true,
         });

@@ -221,34 +221,44 @@ const rules = {
 const selectedGender = ref("secret");
 
 const api = {
-  edit: "http://172.20.10.7:8000/user/edit",
+  edit: "http://192.168.156.28:8000/user/edit",
 };
 
 let url = api.edit;
+
+const token = localStorage.getItem("jwtToken");
 // 提交表单的方法
 const submitForm = async () => {
   // 更新 form 对象中的性别值
   form.value.gender = selectedGender.value;
 
-  delete form.value.rePassword;
+  // 使用 FormData 构造表单数据
+  const formData = new FormData();
+  formData.append("username", form.value.username);
+  formData.append("nickname", form.value.nickname);
+  formData.append("email", form.value.email);
+  formData.append("password", form.value.password);
+  formData.append("gender", form.value.gender);
+  formData.append("description", form.value.description);
+  formData.append("birthday", form.value.birthday);
 
-  // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
-  const urlEncodedParams = new URLSearchParams(form.value);
+  // 如果有头像上传，添加头像到 formData
+  if (form.value.avatar) {
+    formData.append("avatar", form.value.avatar);
+  }
 
-  //发送请求到后端
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${token}`,
       },
-      body: urlEncodedParams.toString(),
+      body: formData, // 使用 FormData 作为请求体
     });
 
     const result = await response.json();
     if (response.ok) {
       console.log("修改成功", result);
-      console.log(urlEncodedParams.toString());
       emit("update:isVisible", false);
     } else {
       console.error("修改失败", result.message);

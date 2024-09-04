@@ -277,9 +277,9 @@ const data = ref("");
 const api = {
   /*   checkCode: "http://172.20.10.7:8000/user/api/checkCode",
   sendEmailCode: "http://172.20.10.7:8000/user/sendEmailCode", */
-  register: "http://172.20.10.7:8000/user/register",
-  login: "http://172.20.10.7:8000/user/login",
-  resetPwd: "http://172.20.10.7:8000/user/edit",
+  register: "http://192.168.156.28:8000/user/register",
+  login: "http://192.168.156.28:8000/user/login",
+  resetPwd: "http://192.168.156.28:8000/user/edit",
   /*   qqlogin: "/qqlogin", */
 };
 

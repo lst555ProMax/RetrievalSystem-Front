@@ -187,7 +187,7 @@ const chatHistory = ref(null);
 const token = localStorage.getItem("jwtToken");
 
 const api = {
-  search: "http://172.20.10.7:8000/search/image",
+  search: "http://192.168.156.28:8000/search/text",
 };
 
 let url = api.search;
