@@ -1,12 +1,9 @@
 <!-- 目前用户上传图片之后消息处显示的是文字 -->
 <template>
   <starfield />
-
+  <dashboard> 
+  <template #left-content>
   <div class="imageToText-system">
-    <headbar></headbar>
-
-    <div class="non-header">
-      <sidebar></sidebar>
 
       <div class="main-content">
         <div class="up-down">
@@ -84,7 +81,8 @@
         </div>
       </div>
     </div>
-  </div>
+  </template>
+</dashboard>
 </template>
 
 <script setup>
@@ -94,6 +92,7 @@ import Starfield from "../components/Starfield.vue";
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
 import { getUsername } from "../utils/Auth";
+import dashboard from "../components/Dashboard.vue"
 
 import img1 from "../assets/image_example/1.jpg";
 import img2 from "../assets/image_example/2.jpg";
@@ -331,7 +330,7 @@ onMounted(() => {
 .imageToText-system {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 10px);
+  height: 100%;
   margin: 5px;
   border-radius: 5px;
   overflow: hidden;

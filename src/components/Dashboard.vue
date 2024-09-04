@@ -229,7 +229,7 @@ main {
 /* LEFT CONTENT */
 
 .left-content {
-  padding: 30px 20px;
+  padding: 10px 30px;
   color: #e5e5e5;
 }
 

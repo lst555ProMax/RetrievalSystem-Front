@@ -1,13 +1,10 @@
 <template>
   <starfield />
 
-  <div class="textToImage-system">
-    <headbar></headbar>
-
+  <dashboard> 
+  <template #left-content>
     <div class="non-header">
-      <sidebar></sidebar>
-
-      <div class="main-content">
+    <div class="main-content">
         <div class="up-down">
           <!-- 推荐搜索----------------------------------------------------------------------------- -->
           <div v-if="!uiChange" :key="1">
@@ -22,32 +19,32 @@
               <div class="question-list">
                 <button
                   class="question-button"
-                  @click="sendMessageIndex(0 + 6 * questionSelection)"
+                  @click="sendMessageIndex(0 + 4 * questionSelection)"
                 >
-                  {{ question[0 + 6 * questionSelection] }}
+                  {{ question[0 + 4 * questionSelection] }}
                 </button>
                 <button
                   class="question-button"
-                  @click="sendMessageIndex(1 + 6 * questionSelection)"
+                  @click="sendMessageIndex(1 + 4 * questionSelection)"
                 >
-                  {{ question[1 + 6 * questionSelection] }}
+                  {{ question[1 + 4 * questionSelection] }}
                 </button>
               </div>
               <div class="question-list">
                 <button
                   class="question-button"
-                  @click="sendMessageIndex(2 + 6 * questionSelection)"
+                  @click="sendMessageIndex(2 + 4 * questionSelection)"
                 >
-                  {{ question[2 + 6 * questionSelection] }}
+                  {{ question[2 + 4 * questionSelection] }}
                 </button>
                 <button
                   class="question-button"
-                  @click="sendMessageIndex(3 + 6 * questionSelection)"
+                  @click="sendMessageIndex(3 + 4 * questionSelection)"
                 >
-                  {{ question[3 + 6 * questionSelection] }}
+                  {{ question[3 + 4 * questionSelection] }}
                 </button>
               </div>
-              <div class="question-list">
+<!--               <div class="question-list">
                 <button
                   class="question-button"
                   @click="sendMessageIndex(4 + 6 * questionSelection)"
@@ -60,7 +57,7 @@
                 >
                   {{ question[5 + 6 * questionSelection] }}
                 </button>
-              </div>
+              </div> -->
             </div>
           </div>
           <!-- 搜索界面-------------------------------------------------------------------------------------- -->
@@ -114,7 +111,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </template>
+</dashboard>
+
+    
 </template>
 
 <script setup>
@@ -124,6 +124,7 @@ import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
 import Starfield from "../components/Starfield.vue";
 import { getUsername } from "../utils/Auth";
+import dashboard from "../components/Dashboard.vue"
 
 const router = useRouter();
 
@@ -157,8 +158,6 @@ const question = ref([
   "A teenager playing on a rope net.",
   "An elderly man climbing on blue roping.",
   "A boy in red climbs a rope bridge at the park.",
-  "A small girl grips onto the blue ropes at the playground.",
-  "The small boy climbs on blue ropes on a playground.",
 ]);
 
 const questionSelection = ref(0);
@@ -166,7 +165,7 @@ const uiChange = ref(0);
 
 const changeSelection = () => {
   questionSelection.value++;
-  questionSelection.value = questionSelection.value % 5;
+  questionSelection.value = questionSelection.value % 7;
 };
 
 const removeHistory = (index) => {
@@ -353,7 +352,7 @@ onMounted(() => {
 
 .non-header {
   display: flex;
-  height: calc(100% - 60px);
+  height: calc(100% );
   flex-direction: row;
 }
 
@@ -384,7 +383,7 @@ onMounted(() => {
 }
 
 .headbar {
-  margin: 10px;
+  margin: 20px 10px;
   display: flex;
   flex-direction: row;
   position: relative;
@@ -417,7 +416,7 @@ onMounted(() => {
   justify-content: space-around;
   align-items: stretch;
   width: 100%;
-  margin: 10px;
+  margin: 20px 10px;
   height: 12%;
 }
 
@@ -429,14 +428,15 @@ onMounted(() => {
   border-radius: 25px;
   cursor: pointer;
   text-align: center;
-  width: 45%;
+  width: 35%;
   height: 85%;
   box-shadow: 20px 20px 25px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  font-family: 'Consolas',monospace;
 }
 
 .question-button:hover {
-  background-color: #3e3e5f;
+  background-color: rgba(173,216,230,0.5);
 }
 
 .chat-history {
@@ -449,7 +449,7 @@ onMounted(() => {
 }
 
 .message {
-  background: #2e2e4d;
+  background: rgba(173,216,230,0.05);;
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -504,10 +504,10 @@ onMounted(() => {
   bottom: 0; /* 固定在底部 */
   display: flex;
   align-items: center;
-  background-color: #0e0d27;
-  border-top: 1px solid #34345f;
+  background: transparent;
+/*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
-  height: 15%;
+  height: 10%;
 }
 
 .input-area input {
@@ -515,20 +515,24 @@ onMounted(() => {
   padding: 10px;
   border: none;
   border-radius: 5px;
+/*   margin-left: 10px; */
   margin-right: 10px;
-  background-color: #1e1e3f;
+  background-color: rgba(255,255,255,0.1);
   color: #d3d3d3;
-  height: 50%;
+  height: 50px;
+  font-family: 'Consolas',monospace;
+  font-size: 15px;
 }
 
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: #007bff;
+  background-color: rgba(0,123,255,0.1);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+height: 50px;
 }
 
 .input-area button:hover {
@@ -537,7 +541,7 @@ onMounted(() => {
 
 .history-section {
   flex: 1;
-  background-color: #232343;
+  background-color:rgba(128,128,128,0.05);
   padding: 10px;
   border-radius: 5px;
 }
@@ -560,7 +564,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #34345f;
+  background-color: rgba(60,63,87,0.65);
   padding: 8px;
   border-radius: 4px;
   color: #d3d3d3;
