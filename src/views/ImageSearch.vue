@@ -1,88 +1,92 @@
 <!-- 目前用户上传图片之后消息处显示的是文字 -->
 <template>
   <starfield />
-  <dashboard> 
-  <template #left-content>
-  <div class="imageToText-system">
-
-      <div class="main-content">
-        <div class="up-down">
-          <div v-if="!uiChange" :key="1">
-            <div class="recommendations">
-              <div class="headbar">
-                <div class="text">你可以这样向我提问</div>
-                <div class="icon" @click="changeSelection">
-                  <div>换一批</div>
-                  <i class="fa-solid fa-rotate"></i>
+  <dashboard>
+    <template #left-content>
+      <div class="imageToText-system">
+        <div class="main-content">
+          <div class="up-down">
+            <div v-if="!uiChange" :key="1">
+              <div class="recommendations">
+                <div class="headbar">
+                  <div class="text">你可以这样向我提问</div>
+                  <div class="icon" @click="changeSelection">
+                    <div>换一批</div>
+                    <i class="fa-solid fa-rotate"></i>
+                  </div>
+                </div>
+                <div class="image-list">
+                  <img
+                    :src="images[0 + 2 * questionSelection]"
+                    alt="Gallery Image"
+                    class="image-class"
+                    @click="uploadImageFromList(0 + 2 * questionSelection)"
+                  />
+                  <img
+                    :src="images[1 + 2 * questionSelection]"
+                    alt="Gallery Image"
+                    class="image-class"
+                    @click="uploadImageFromList(1 + 2 * questionSelection)"
+                  />
                 </div>
               </div>
-              <div class="image-list">
-                <img
-                  :src="images[0 + 2 * questionSelection]"
-                  alt="Gallery Image"
-                  class="image-class"
-                  @click="uploadImageFromList(0 + 2 * questionSelection)"
-                />
-                <img
-                  :src="images[1 + 2 * questionSelection]"
-                  alt="Gallery Image"
-                  class="image-class"
-                  @click="uploadImageFromList(1 + 2 * questionSelection)"
-                />
+            </div>
+            <div v-if="messages.length" class="chat-history" ref="chatHistory">
+              <div
+                v-for="(message, index) in messages"
+                :key="index"
+                class="message"
+              >
+                <div class="message-header">
+                  <span class="message-time">{{ message.time }}</span>
+                </div>
+                <div
+                  class="message-content"
+                >
+                  <p>{{ message.text }}</p>
+                  <img
+                    v-if="!message.isResponse"
+                    :src="message.imageUrl"
+                    alt="Uploaded Image"
+                    class="uploaded-image"
+                  />
+                </div>
+
+                <div v-if="message.isResponse" class="response">
+                  <button v-if="!isLoading" @click="retryResponse(index)">
+                    重新回答
+                  </button>
+                  <button v-if="!isLoading" @click="copyResponse(index)">
+                    复制
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          <div v-if="messages.length" class="chat-history" ref="chatHistory">
-            <div
-              v-for="(message, index) in messages"
-              :key="index"
-              class="message"
-            >
-              <div class="message-header">
-                <span class="message-time">{{ message.time }}</span>
-              </div>
-              <div class="message-content">
-                <p>{{ message.text }}</p>
-                <!-- 图片渲染逻辑 -->
-                <img
-                  v-if="message.imageUrl"
-                  :src="message.imageUrl"
-                  alt="生成的图像"
-                  class="generated-image"
-                />
-              </div>
-              <div v-if="message.isResponse" class="response">
-                <p>{{ responseText }}</p>
-                <button @click="retryResponse(index)">重新回答</button>
-                <button @click="copyResponse(index)">复制</button>
-              </div>
+
+            <div class="input-area">
+              <input
+                type="file"
+                accept="image/*"
+                @change="onFileChange"
+                ref="fileInput"
+              />
+              <button @click="sendImage">➤</button>
             </div>
           </div>
 
-          <div class="input-area">
-            <input
-              type="file"
-              accept="image/*"
-              @change="onFileChange"
-              ref="fileInput"
-            />
-            <button @click="sendImage">➤</button>
+          <div class="history-section">
+            <h4>历史记录</h4>
+            <ul class="history-list">
+              <li v-for="(item, index) in history" :key="index">
+                <span>你好</span>
+                <button @click="removeHistory(index)">✖</button>
+              </li>
+            </ul>
           </div>
-        </div>
-
-        <div class="history-section">
-          <h4>历史记录</h4>
-          <ul class="history-list">
-            <li v-for="(item, index) in history" :key="index">
-              <span>你好</span>
-              <button @click="removeHistory(index)">✖</button>
-            </li>
-          </ul>
         </div>
       </div>
-    </div>
-  </template>
-</dashboard>
+    </template>
+  </dashboard>
 </template>
 
 <script setup>
@@ -92,7 +96,8 @@ import Starfield from "../components/Starfield.vue";
 import sidebar from "../components/Sidebar.vue";
 import headbar from "../components/Headbar.vue";
 import { getUsername } from "../utils/Auth";
-import dashboard from "../components/Dashboard.vue"
+import dashboard from "../components/Dashboard.vue";
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 import img1 from "../assets/image_example/1.jpg";
 import img2 from "../assets/image_example/2.jpg";
@@ -158,8 +163,7 @@ const messages = ref([]);
 const userInput = ref("");
 const userInput2 = ref("");
 
-// 模拟回答的文本
-const responseText = "这是系统给出的示例回答内容。";
+const isLoading = ref(false);
 
 // 绑定 chat-history 的 DOM 元素
 const chatHistory = ref(null);
@@ -218,38 +222,61 @@ const uploadImageFromList = (index) => {
 const token = localStorage.getItem("jwtToken");
 
 const api = {
-  search: "http://192.168.156.28:8000/search/image",
+  image: API_ENDPOINTS.image,
 };
 
-let url = api.search;
+let url = api.image;
 
-const sendImage = async () => {
+const sendImage = async (isRetry = false, index = -1) => {
   if (!selectedFile.value) {
     alert("请先选择一张图片！");
     return;
   }
 
   uiChange.value = 1;
-  const currentTime = new Date().toLocaleTimeString();
+  let currentTime = new Date().toLocaleTimeString();
+  let pendingMessageIndex = -1;
 
-  // 添加用户的上传消息到消息列表
-  messages.value.push({
-    text: "用户上传了一张图片。",
-    time: currentTime,
-    isResponse: false,
-  });
+  // 创建图片 URL
+  const imageUrl = URL.createObjectURL(selectedFile.value);
+
+  // 设置加载状态
+  isLoading.value = true;
+
+  // 如果是重新回答，需要处理特定的消息
+  if (isRetry && index >= 0) {
+    messages.value[index].text = "系统正在重新响应请求...";
+    currentTime = new Date().toLocaleTimeString();
+    pendingMessageIndex = index;
+  } else {
+    // 添加用户上传图片的消息
+    messages.value.push({
+      text: "用户上传了一张图片。",
+      time: currentTime,
+      isResponse: false,
+      imageUrl, // 新增的字段，保存图片 URL
+    });
+
+    // 添加系统正在响应请求的提示
+    messages.value.push({
+      text: "系统正在响应请求...",
+      time: currentTime,
+      isResponse: false,
+    });
+  }
+
+  console.log(messages.value);
 
   const formData = new FormData();
   formData.append("username", getUsername());
   formData.append("image_file", selectedFile.value);
 
   try {
-    console.log("开始发送请求...");
-
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
       handleError("缺少身份验证令牌，请重新登录。");
+      isLoading.value = false;
       return;
     }
 
@@ -263,38 +290,41 @@ const sendImage = async () => {
 
     if (!result.ok) {
       handleError(`请求失败，状态码：${result.status}`);
+      isLoading.value = false;
       return;
     }
 
     const response = await result.json();
     const responseTime = new Date().toLocaleTimeString();
 
-    if (response.code === 0) {
-      console.log(response);
-
-      if (response.text_list && response.text_list.length > 0) {
-        response.text_list.forEach((text) => {
-          messages.value.push({
-            text:text.content,
-            time: responseTime,
-            isResponse: true,
-          });
-        });
-      } else {
-        messages.value.push({
-          text: response.text_list || "这是系统给出的回答。",
-          time: responseTime,
-          isResponse: true,
-        });
-      }
+    // 移除系统正在响应的提示
+    if (pendingMessageIndex !== -1) {
+      messages.value[pendingMessageIndex].text = response.text_list
+        ? response.text_list.map((text) => text.content).join('\n')
+        : "这是系统给出的回答。";
+      messages.value[pendingMessageIndex].isResponse = true;
     } else {
-      handleError("后端返回错误：" + (response.message || "未知错误"));
+      if (messages.value.length > 0 && messages.value[messages.value.length - 1].text === "系统正在响应请求...") {
+        messages.value.pop(); // 移除最后一个"系统正在响应请求..."的消息
+      }
+
+      messages.value.push({
+        text: response.text_list
+          ? response.text_list.map((text) => text.content).join('\n')
+          : "这是系统给出的回答。",
+        time: responseTime,
+        isResponse: true,
+      });
     }
   } catch (error) {
     handleError("请求失败，请稍后重试");
     console.error("提交失败", error);
+  } finally {
+    // 请求完成，显示按钮
+    isLoading.value = false;
   }
 };
+
 
 // 错误处理函数
 const handleError = (errorMessage) => {
@@ -307,14 +337,25 @@ const handleError = (errorMessage) => {
 };
 
 // 重新回答功能
-const retryResponse = (index) => {
-  messages.value[index].text = "系统正在重新回答...";
+const retryResponse = async (index) => {
+  try {
+    await sendImage(true, index);
+  } catch (error) {
+    messages.value[index].text = "请求失败，请稍后重试。";
+  }
 };
 
 // 复制功能
 const copyResponse = (index) => {
-  navigator.clipboard.writeText(responseText);
-  alert("回答已复制到剪贴板！");
+  const textToCopy = messages.value[index].text;
+  navigator.clipboard
+    .writeText(textToCopy)
+    .then(() => {
+      alert("回答已复制到剪贴板！");
+    })
+    .catch(() => {
+      alert("复制失败，请重试！");
+    });
 };
 
 onMounted(() => {
@@ -334,7 +375,6 @@ onMounted(() => {
   border-radius: 5px;
   overflow: hidden;
 }
-
 
 .main-content {
   display: flex;
@@ -371,7 +411,6 @@ onMounted(() => {
   min-height: 60px;
   align-items: center;
 }
-
 
 .text {
   position: absolute;
@@ -415,7 +454,7 @@ onMounted(() => {
 }
 
 .message {
-  background: rgba(173,216,230,0.05);
+  background: rgba(173, 216, 230, 0.05);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -441,36 +480,46 @@ onMounted(() => {
 
 .message-content {
   color: #fff;
+  white-space: pre-wrap;
+  font-family: "Consolas", monospace;
+  gap: 0px;
+  line-height: 1.8;
 }
 
-.response-image {
-  max-width: 100%;
-  height: auto;
-  margin-top: 10px;
-  border-radius: 5px;
+.message-content p {
+  margin: 5px 0px;
+}
+
+.uploaded-image{
+  height:150px;
+  width:150px;
 }
 
 .response {
   margin-top: 10px;
   display: flex;
-  gap: 10px;
+  gap: 5px;
+  height: 30px;
 }
 
 .response button {
-  background-color: #007bff;
+  background-color: #2e3140;
   color: white;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+  width: 75px;
+  margin-right: 5px;
 }
+
 .input-area {
   position: absolute; /* 绝对定位 */
   bottom: 0; /* 固定在底部 */
   display: flex;
   align-items: center;
   background: transparent;
-/*   border-top: 1px solid #e0dde7bb; */
+  /*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
   height: 10%;
 }
@@ -480,29 +529,29 @@ onMounted(() => {
   padding: 10px;
   border: none;
   border-radius: 5px;
-/*   margin-left: 10px; */
+  /*   margin-left: 10px; */
   margin-right: 10px;
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #d3d3d3;
   height: 50px;
-  font-family: 'Consolas',monospace;
+  font-family: "Consolas", monospace;
   font-size: 15px;
 }
 
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: rgba(0,123,255,0.1);
+  background-color: rgba(0, 123, 255, 0.1);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-height: 50px;
+  height: 50px;
 }
 
 .history-section {
   flex: 1;
-  background-color:rgba(128,128,128,0.05);
+  background-color: rgba(128, 128, 128, 0.05);
   padding: 10px;
   border-radius: 5px;
 }
@@ -524,7 +573,7 @@ height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(60,63,87,0.65);
+  background-color: rgba(60, 63, 87, 0.65);
   padding: 8px;
   border-radius: 4px;
   color: #d3d3d3;

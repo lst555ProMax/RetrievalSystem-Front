@@ -73,17 +73,19 @@
               <div class="message-content">
                 <p>{{ message.text }}</p>
                 <!-- 判断并显示图片 -->
+                <div class="image-container">
                 <img
-                  v-if="message.imageUrl"
-                  :src="message.imageUrl"
+                v-for="(imageUrl, index) in message.imageurls"
+                  :key="index"
+                  :src="imageUrl"
                   alt="图片"
                   class="response-image"
                 />
               </div>
+              </div>
               <div v-if="message.isResponse" class="response">
-                <p>{{ responseText }}</p>
                 <button @click="retryResponse(index)">重新回答</button>
-                <button @click="copyResponse(index)">复制</button>
+  <button @click="copyResponse(index)">复制</button>
               </div>
             </div>
           </div>
@@ -125,12 +127,13 @@ import headbar from "../components/Headbar.vue";
 import Starfield from "../components/Starfield.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue"
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 const router = useRouter();
 
 const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
 const question = ref([
-  "A child in a blue shirt is climbing up a set of stairs .",
+  "A girl going into a wooden building",
   "An elderly woman going into a stone building.",
   "A boy climbing into a colorful playhouse.",
   "A toddler climbing the stairs to her treehouse.",
@@ -177,8 +180,8 @@ const messages = ref([]);
 const userInput = ref("");
 const userInput2 = ref("");
 
-// 模拟回答的文本
-const responseText = "这是系统给出的示例回答内容。";
+const currentQuestion =ref();
+let isReResponce = ref(false);
 
 // 绑定 chat-history 的 DOM 元素
 const chatHistory = ref(null);
@@ -186,10 +189,10 @@ const chatHistory = ref(null);
 const token = localStorage.getItem("jwtToken");
 
 const api = {
-  search: "http://192.168.156.28:8000/search/text",
+  text: API_ENDPOINTS.text,
 };
 
-let url = api.search;
+let url = api.text;
 
 // 发送用户消息和请求后端接口
 const sendMessage = async () => {
@@ -204,6 +207,8 @@ const sendMessage = async () => {
       time: currentTime,
       isResponse: false,
     });
+
+    currentQuestion.value=userInput.value;
 
     // 调用后端接口
     await sendToBackend(userInput.value);
@@ -227,8 +232,9 @@ const sendMessageIndex = async (index) => {
       isResponse: false,
     });
 
+    currentQuestion.value=question.value[index];
     // 调用后端接口
-    await sendToBackend(userInput2.value);
+    await sendToBackend(userInput2.value,index);
 
     // 清空
     userInput2.value = "";
@@ -236,15 +242,14 @@ const sendMessageIndex = async (index) => {
 };
 
 // 发送请求到后端
-const sendToBackend = async (inputText) => {
+const sendToBackend = async (inputText,index) => {
   const formData = new FormData();
-  formData.append("username", getUsername()); // 假设 getUsername() 函数返回当前的用户名
-  formData.append("keywords", inputText); // 添加关键词到表单数据中
+  formData.append("username", getUsername());
+  formData.append("keywords", inputText);
 
   try {
     console.log("开始发送请求...");
 
-    // 获取 JWT Token，假设 token 存储在 localStorage 中
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
@@ -252,39 +257,48 @@ const sendToBackend = async (inputText) => {
       return;
     }
 
-    // 发送请求
     const result = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`, // 设置 Authorization 头部
+        Authorization: `Bearer ${token}`,
       },
-      body: formData, // 使用 FormData 发送请求体
+      body: formData,
     });
 
-    // 检查响应状态码
     if (!result.ok) {
       handleError(`请求失败，状态码：${result.status}`);
       return;
     }
 
-    const response = await result.json(); // 将响应解析为 JSON
+    const response = await result.json();
 
     if (response.code === 0) {
       const responseTime = new Date().toLocaleTimeString();
       console.log(response);
 
+      // 初始化一个数组，用于存储所有图片的 URL
+      const imageUrls = [];
+
       // 检查是否包含 data 数据
       if (response.data) {
-        // 将 base64 字符串数组转换为可用于 img 标签的 URL
+        // 将 base64 字符串数组转换为可用于 img 标签的 URL 并存入 imageUrls
         response.data.forEach((imgBase64) => {
           const imgSrc = `data:image/png;base64,${imgBase64}`;
-          messages.value.push({
-            text: "生成的图像如下：", // 可选的描述文本
-            time: responseTime,
-            isResponse: true,
-            imageUrl: imgSrc, // 保存图片 URL 以供渲染
-          });
+          imageUrls.push(imgSrc);
+/*           console.log(imageUrls[0]); */
         });
+        if(isReResponce.value)
+        {messages.value.splice(messages.value.length - 1, 1);
+}
+        // 将所有图片合并到一个消息中
+        messages.value.push({
+          text: "生成的图像如下：", // 可选的描述文本
+          time: responseTime,
+          isResponse: true,
+          imageurls: imageUrls, // 保存所有图片的 URL
+        });
+
+        console.log(messages.value[1]);
       } else {
         // 没有图片的情况下显示普通文本
         messages.value.push({
@@ -301,6 +315,7 @@ const sendToBackend = async (inputText) => {
     console.error("提交失败", error);
   }
 };
+
 
 // 错误处理函数
 const handleError = (errorMessage) => {
@@ -321,14 +336,38 @@ watch(messages, async () => {
 });
 
 // 重新回答功能
-const retryResponse = (index) => {
+const retryResponse = async (index) => {
+  const messageText = currentQuestion.value;
+  
   messages.value[index].text = "系统正在重新回答...";
+  messages.value[index].isResponse = false;
+
+  // Optionally, remove any images in case of retry
+  if (messages.value[index].imageurls) {
+    messages.value[index].imageurls = [];
+  }
+
+  isReResponce.value=true;
+
+  // Send the original message text to the backend again
+  await sendToBackend(messageText,index);
+
+  isReResponce.value=false;
 };
 
 // 复制功能
+// 复制功能
 const copyResponse = (index) => {
-  navigator.clipboard.writeText(responseText);
-  alert("回答已复制到剪贴板！");
+  const responseText = messages.value[index].text;
+
+  navigator.clipboard.writeText(responseText)
+    .then(() => {
+      alert("回答已复制到剪贴板！");
+    })
+    .catch((err) => {
+      console.error("复制失败", err);
+      alert("复制失败，请重试！");
+    });
 };
 
 onMounted(() => {
@@ -477,26 +516,38 @@ onMounted(() => {
   color: #fff;
 }
 
+.image-container {
+  display: flex; 
+  gap: 30px; 
+  justify-content: left;
+  flex-wrap: wrap; /* 超过容器宽度时自动换行 */
+  overflow-x: hidden; /* 防止水平滚动 */
+}
+
 .response-image {
-  max-width: 100%;
-  height: auto;
+  width:150px;
+  height:150px;
   margin-top: 10px;
   border-radius: 5px;
+  object-fit: cover; /* 图片内容适应框 */
 }
 
 .response {
   margin-top: 10px;
   display: flex;
-  gap: 10px;
+  gap: 5px;
+  height: 30px;
 }
 
 .response button {
-  background-color: #007bff;
+  background-color: #2e3140;
   color: white;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+  width: 75px;
+  margin-right: 5px;
 }
 
 .input-area {
