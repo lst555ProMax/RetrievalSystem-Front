@@ -64,17 +64,12 @@
         </div>
 
         <ul>
-          <li class="nav-item">
+          <li class="nav-item"
+          :class="{ active: isActive('/profile') }"
+          @click="navigateTo('/profile')">
             <a href="#">
               <i class="fa fa-user nav-icon"></i>
               <span class="nav-text">Profile</span>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="#">
-              <i class="fa fa-gear nav-icon"></i>
-              <span class="nav-text">Settings</span>
             </a>
           </li>
 

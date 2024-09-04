@@ -10,6 +10,7 @@ import dialogue from '../views/dialogue.vue'
 import others from '../views/Others.vue'
 import userManagement from '../views/AdminOperations/UserManagement.vue'
 import systemManagement from '../views/AdminOperations/SystemManagement.vue'
+import profile from "../views/Profile.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +69,11 @@ const router = createRouter({
       path:'/systemManagement',
       name:'systemManagement',
       component:systemManagement
+    },
+    {
+      path:"/profile",
+      name:"profile",
+      component:profile
     }
   ]
 })
