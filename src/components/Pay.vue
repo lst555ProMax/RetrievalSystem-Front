@@ -96,8 +96,10 @@ onMounted(() => {
 
   // 定义鼠标跟随动画的函数
   const applyOverlayMask = (e) => {
-    const x = e.pageX - cardsContainer.value.offsetLeft;
-    const y = e.pageY - cardsContainer.value.offsetTop;
+    if (!overlay.value) return;
+
+    const x = e.pageX;
+    const y = e.pageY;
 
     overlay.value.style = `--opacity: 1; --x: ${x}px; --y:${y}px;`;
   };

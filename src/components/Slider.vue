@@ -65,6 +65,7 @@ document.addEventListener('click',activate,false);
 
 body {
   height: 100vh;
+  width: 100%;
   display: grid;
   place-items: center;
   overflow: hidden;
