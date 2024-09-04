@@ -13,8 +13,8 @@
           <ul>
             <li
               class="nav-item"
-              :class="{ active: isActive1 }"
-              @click="setActive1"
+              :class="{ active: isActive('/framework') }"
+              @click="navigateTo('/framework')"
             >
               <a href="#">
                 <i class="fa fa-map nav-icon"></i>
@@ -22,21 +22,28 @@
               </a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item"
+            :class="{ active: isActive('/textSearch') }"
+              @click="navigateTo('/textSearch')"
+              >
               <a href="#">
                 <i class="fa fa-arrow-trend-up nav-icon"></i>
                 <span class="nav-text">Image</span>
               </a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item"
+            :class="{ active: isActive('/imageSearch') }"
+              @click="navigateTo('/imageSearch')">
               <a href="#">
                 <i class="fa fa-compact-disc nav-icon"></i>
                 <span class="nav-text">Text</span>
               </a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item"
+            :class="{ active: isActive('/dialogue') }"
+              @click="navigateTo('/dialogue')">
               <a href="#">
                 <i class="fa fa-circle-play nav-icon"></i>
                 <span class="nav-text">Dialog</span>
@@ -45,6 +52,8 @@
 
             <li
               class="nav-item"
+              :class="{ active: isActive('/others') }"
+              @click="navigateTo('/others')"
             >
               <a href="#">
                 <i class="fa fa-heart nav-icon"></i>
@@ -315,16 +324,19 @@ main {
 </style>
 
 <script setup>
-import { useRoute,useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { ref, computed } from 'vue';
 
-    const router = useRouter();
-    const route =useRoute();
+const router = useRouter();
+const route = useRoute();
 
-    const navItems = document.querySelectorAll(".nav-item");
-    
-    if (route.path === '/framework') {
-        console.log(navItems.item[0]);
-         navItems[0].className = "nav-item.active"
-         
-    }
+// 定义一个函数，判断当前路由是否匹配
+const isActive = (path) => {
+  return route.path === path;
+};
+
+// 定义一个导航函数
+const navigateTo = (path) => {
+  router.push(path);
+};
 </script>
