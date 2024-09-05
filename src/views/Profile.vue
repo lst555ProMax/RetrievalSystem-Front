@@ -221,7 +221,8 @@ const startHideTimer = (formName) => {
   }, 100);
 };
 
-const GoToPay = () => {
+const handlePay = () => {
+  document.querySelector(".form3Vision").style.display = "none";
   isPayVisible.value = true;
 };
 
@@ -303,6 +304,15 @@ ul li a {
   text-decoration: none;
 }
 
+ul li a i{
+  display: -ms-inline-flexbox;
+  color:#ffffffd0;
+}
+
+ul li a i:hover{
+  color: #3e3e5f;
+}
+
 .icon-count {
   background-color: #ff0000;
   color: #fff;
@@ -319,12 +329,13 @@ ul li a {
 }
 
 .form1Vision {
+  border: 0.1px solid #ffffff58;
   width: 800px;
   height: 400px;
   display: none;
   background-color: rgba(128, 128, 128, 0.05);
   padding: 30px;
-  border-radius: 5px;
+  border-radius: 18px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
   position: absolute;
   top: 200%; /* 将元素的顶部边缘定位在其包含块的顶部边缘以下 200% 的位置 */
@@ -343,7 +354,6 @@ ul li a {
   /*   box-shadow: 1px 1px 8px 0 rgb(199, 199, 199); */
   border-radius: 18px;
   padding: 30px;
-  border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
   position: absolute;
   top: 200%; /* 将元素的顶部边缘定位在其包含块的顶部边缘以下 200% 的位置 */
@@ -368,7 +378,7 @@ flex:10; */
 }
 
 .main h2 {
-  color: #333;
+  color: rgba(255, 255, 255, 0.8);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 24px;
   margin-bottom: 50px;
@@ -382,6 +392,7 @@ flex:10; */
   margin-bottom: 20px;
   padding: 20px 0 20px 50px;
   width: 60%;
+  color:rgba(255, 255, 255, 0.8);
 }
 
 .main .card table {

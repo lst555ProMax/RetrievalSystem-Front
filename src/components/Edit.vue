@@ -9,7 +9,7 @@
 
       <!-- 表单内容 -->
       <div class="edit-body">
-        <form>
+        <form class="form">
           <!-- 昵称 -->
           <div class="form-group">
             <label for="nickname">昵称</label>
@@ -265,6 +265,7 @@ const submitForm = async () => {
     if (result.code === 0) {
       alert("修改成功");
       emit("update:isVisible", false);
+      avatarPreview.value = null;
     } else {
       console.error("修改失败", result.message);
     }
@@ -277,6 +278,7 @@ const emit = defineEmits(["update:isVisible"]);
 
 const close = () => {
   emit("update:isVisible", false);
+  avatarPreview.value = null; // 清除图片预览
 };
 </script>
 
@@ -288,7 +290,6 @@ const close = () => {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  /* background: transparent; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -297,20 +298,17 @@ const close = () => {
 
 .edit-content {
   background-color: rgba(26, 28, 45, 0.35);
-  /*   background: transparent; */
+
   border-radius: 20px;
   width: 400px;
   padding: 20px 30px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
   height: 80%;
   border: 1px solid rgba(202, 202, 208, 0.35);
 }
 
-.edit-content::-webkit-scrollbar {
-  display: none;
-}
+
 
 .edit-header {
   display: flex;
@@ -334,12 +332,24 @@ const close = () => {
 
 .edit-body {
   margin-bottom: 20px;
+
 }
 
+.form{
+  overflow-y: scroll;
+  max-height: 450px;
+}
+
+.form::-webkit-scrollbar {
+  display: none;
+}
 .form-group {
   margin-bottom: 15px;
   height: 100%;
+
 }
+
+
 
 .form-group label {
   display: block;
@@ -364,7 +374,7 @@ const close = () => {
 }
 
 .avatar {
-  width: 100px; /* 可以根据需要调整大小 */
+  width: 100px; 
   height: 100px;
   border-radius: 50%;
   object-fit: cover;

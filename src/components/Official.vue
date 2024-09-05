@@ -8,7 +8,7 @@
       </div>
       <div class="company-info">
         <p>Team: "图灵不灵" from SEU</p>
-        <p>Context: 17314409632  15046948929</p>
+        <p>Contact: 17314409632  15046948929</p>
         <p>Github: https://github.com/lst555ProMax/RetrievalSystem-Front</p>
       </div>
     </div>

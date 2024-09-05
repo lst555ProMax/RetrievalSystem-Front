@@ -214,6 +214,16 @@ main {
   border-radius: 5px;
 }
 
+
+.nav-item a i{
+  display: -ms-inline-flexbox;
+  color:#ffffffd0;
+}
+
+.nav-item a i:hover{
+  color: #3e3e5f;
+}
+
 .nav-item.active a {
   background: rgba(106, 109, 155, 0.5);
   text-decoration: none;

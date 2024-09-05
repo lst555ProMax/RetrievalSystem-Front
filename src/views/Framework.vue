@@ -14,6 +14,7 @@ import Starfield from "@/components/Starfield.vue";
 import Slider from "@/components/Slider.vue";
 import {getUsername} from "@/utils/Auth";
 import Dashboard from "@/components/Dashboard.vue";
+import Neural from "../components/Neural.vue"
 
 
 const router = useRouter();

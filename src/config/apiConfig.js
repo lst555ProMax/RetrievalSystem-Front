@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
   edit: `${API_BASE_URL}/user/edit`, /* 用户信息编辑 */
   feedback: `${API_BASE_URL}/user/feedback`, /* 提交反馈与建议 */
   delete: `${API_BASE_URL}/user/delete`, /* 账户注销 */
+  personal: `${API_BASE_URL}/user/personal`, /* 个性化界面设置 */     
 
   text: `${API_BASE_URL}/search/text`, /* 文本检索 */
   image: `${API_BASE_URL}/search/image`, /* 图片检索 */
@@ -27,20 +28,17 @@ export const API_ENDPOINTS = {
 
 /* -----未实现----------------------------------------------------------------- */
 
-  charge: `${API_BASE_URL}/user/charge`, /* 账户充值 */
-  personal: `${API_BASE_URL}/user/personal`, /* 个性化界面设置 */
-  history: `${API_BASE_URL}/user/history`, /* 检索历史 */
-  sort: `${API_BASE_URL}/user/sort`, /* 检索结果排序 */
-
-
-  get_user_balance: `${API_BASE_URL}/user/get_user_balance`, /* 获取用户余额 */
-  set_user_balance: `${API_BASE_URL}/user/set_user_balance`, /* 更改用户余额 */
   record: `${API_BASE_URL}/search_history/record`, /* 记录检索历史 */
-  result_record: `${API_BASE_URL}/search_history/result_record`, /* 记录检索历史组 */
   list: `${API_BASE_URL}/search_history/list`, /* 获取用户检索历史一组对话 */
-  results: `${API_BASE_URL}/search_history/results`, /* 获取用户检索历史详情（全篇对话） */
-  notify: `${API_BASE_URL}/alipay/notify`, /* 支付回调 */
-
+  
+  //history: `${API_BASE_URL}/user/history`, /* 检索历史 */
+  //result_record: `${API_BASE_URL}/search_history/result_record`, /* 记录检索历史组 */
+  //get_user_balance: `${API_BASE_URL}/user/get_user_balance`, /* 获取用户余额 */
+  //set_user_balance: `${API_BASE_URL}/user/set_user_balance`, /* 更改用户余额 */
+  //results: `${API_BASE_URL}/search_history/results`, /* 获取用户检索历史详情（全篇对话） */
+  //charge: `${API_BASE_URL}/user/charge`, /* 账户充值 */
+  //sort: `${API_BASE_URL}/user/sort`, /* 检索结果排序 */
+  // notify: `${API_BASE_URL}/alipay/notify`, /* 支付回调 */
   // get_feedback_history: `${API_BASE_URL}/user/get_feedback_history`, /* 用户获取反馈记录 */
   //download: `${API_BASE_URL}/user/download`, /* 下载图片 */
 };

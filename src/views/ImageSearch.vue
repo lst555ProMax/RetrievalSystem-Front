@@ -96,6 +96,8 @@ import Starfield from "../components/Starfield.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
+import Neural from "../components/Neural.vue"
+import CrossStar from "../components/CrossStar.vue"
 
 import img1 from "../assets/image_example/1.jpg";
 import img2 from "../assets/image_example/2.jpg";

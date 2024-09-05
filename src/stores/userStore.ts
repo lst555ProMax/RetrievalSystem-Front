@@ -14,3 +14,16 @@ export const useUserStore = defineStore('user', () => {
 
   return { username, setUsername };
 });
+
+export const useAvatarStore = defineStore('avatar', ()=>{
+
+    // 定义状态
+  const userAvatar = ref('');
+    // 设置用户名的函数
+  const setUserAvatar = (newUserAvatar: string) => {
+    userAvatar.value = newUserAvatar;
+    console.log('设置的用户名:', newUserAvatar); // 调试输出
+  };
+
+  return { userAvatar, setUserAvatar };
+});

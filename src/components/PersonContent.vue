@@ -4,7 +4,7 @@
   <img :src="images[0]" alt="QR Code" class="image-class" />
   <div class="content-class">
     <span class="username">{{username}}
-      <i class="fa-regular fa-pen-to-square edit-icon" @click="edit" style="color: #d1cbcb;"></i>
+      <i class="fa-regular fa-pen-to-square edit-icon" @click="edit" ></i>
     </span>
     <span class="comment">这个人很个性，什么都没留下</span>
   </div>
@@ -150,6 +150,12 @@ const GotoDelete =()=>{
   margin-right: 20px;
   font-size: 20px;
   margin-left:20px;
+  display: -ms-inline-flexbox;
+  color:#ffffffd0;
+}
+
+.username i:hover{
+  color: #3e3e5f;
 }
 
 .comment {

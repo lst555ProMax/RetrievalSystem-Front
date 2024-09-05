@@ -9,7 +9,7 @@
 
       <!-- 表单内容 -->
       <div class="personal-body">
-        <form>
+        <form class="form">
           <!-- 主题 -->
           <div class="form-group">
             <label for="theme">主题</label>
@@ -36,7 +36,7 @@
           <div class="form-group">
             <label>图片上传</label>
             <div class="image-upload">
-              <input type="file" id="image" @change="handleFileChange" accept="image/*" />
+              <input type="file" id="imgUrl" @change="handleFileChange" accept="image/*" />
               <img v-if="avatarPreview" :src="avatarPreview" alt="预览图片" class="preview-image" />
             </div>
           </div>
@@ -68,10 +68,9 @@ const props = defineProps({
 });
 
 const form = ref({
-  username: username,
   theme: "Slider",
   font: "Arial",
-  imgurl: null,
+  imgUrl:null ,
 });
 
 const api = {
@@ -89,7 +88,7 @@ const handleFileChange = (event) => {
       avatarPreview.value = e.target.result;
     };
     reader.readAsDataURL(file);
-    form.value.imgurl = file; // 保存文件到 form 对象
+    form.imgUrl = file; // 保存文件到 form 对象
   }
 };
 
@@ -97,14 +96,21 @@ const token = localStorage.getItem("jwtToken");
 // 提交表单的方法
 const submitForm = async () => {
   const formData = new FormData();
-  formData.append("username", form.value.username);
+  formData.append("username", username);
   formData.append("theme", form.value.theme);
   formData.append("font", form.value.font);
 
-  // 如果有头像上传，添加头像到 formData
-  if (form.value.imgurl) {
-    formData.append("imgurl", form.value.imgurl);
+    // 如果有头像上传，添加头像到 formData
+    if (form.avatar) {
+    formData.append("imgUrl", form.imgUrl);
   }
+
+   // 如果有头像上传，添加头像到 formData
+  if (form.value.avatar) {
+    formData.append("imgUrl", form.value.imgUrl);
+  }
+
+  console.log("filenane="+formData.get('imgUrl'));
 
   try {
     const response = await fetch(url, {
@@ -116,11 +122,12 @@ const submitForm = async () => {
     });
 
     const result = await response.json();
-    if (result.data.code === 0) {
+    if (result.code === 0) {
       alert("修改成功");
       emit("update:isVisible", false);
+      avatarPreview.value = null;
     } else {
-      console.error("修改失败", result.data.message);
+      console.error("修改失败", result.message);
     }
   } catch (error) {
     console.error("请求失败", error);
@@ -131,6 +138,7 @@ const emit = defineEmits(["update:isVisible"]);
 
 const close = () => {
   emit("update:isVisible", false);
+  avatarPreview.value = null;
 };
 </script>
 
@@ -155,10 +163,10 @@ const close = () => {
   padding: 20px 30px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
   height: 50%;
   border: 1px solid rgba(202, 202, 208, 0.35);
 }
+
 
 .personal-header {
   display: flex;
@@ -182,6 +190,14 @@ const close = () => {
 
 .personal-body {
   margin-bottom: 20px;
+  overflow: scroll;
+  max-height: 230px;
+}
+.personal-body::-webkit-scrollbar {
+  display: none;
+}
+.form{
+
 }
 
 .form-group {
@@ -206,15 +222,14 @@ const close = () => {
 
 .image-upload {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 10px;
 }
 
 .preview-image {
-  margin-top: 10px;
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 100px; 
+  height: 100px;
+  border-radius: 50%;
   object-fit: cover;
 }
 
