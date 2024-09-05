@@ -10,12 +10,6 @@
       <!-- 表单内容 -->
       <div class="edit-body">
         <form>
-          <!-- 用户名 -->
-          <!--           <div class="form-group1">
-            <label for="username">用户名 *</label>
-            <input type="text" id="username" placeholder="请修改用户名" />
-          </div>
- -->
           <!-- 昵称 -->
           <div class="form-group">
             <label for="nickname">昵称</label>
@@ -37,10 +31,8 @@
               v-model="form.email"
               clearable
               maxLength="150"
-            />                      
+            />
           </div>
-
-
 
           <!-- 新密码 -->
           <div class="form-group" prop="password">
@@ -65,12 +57,6 @@
           </div>
 
           <!-- 用户头像 -->
-          <!--           <div class="form-group">
-            <label>用户头像</label>
-            <div class="avatar-upload">
-              <div class="upload-area">点击上传或拖拽图片到此处</div>
-            </div>
-          </div> -->
           <div class="form-group">
             <label>用户头像</label>
             <div class="avatar-upload">
@@ -157,14 +143,14 @@
 import assert from "assert";
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import Verify from "../utils/verify"
+import Verify from "../utils/verify";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
 import { useUserStore } from "../stores/userStore"; // 引入 Store
 
 const userStore = useUserStore(); // 使用 Store
 
-// 从 Store 中获取 username
+const avatarPreview = ref(null);
 const { username } = userStore;
 
 const { proxy } = getCurrentInstance();
@@ -184,6 +170,7 @@ const form = ref({
   birthday: "",
   gender: "secret",
   description: "",
+  avatar: null, // 新增头像字段
 });
 
 /* 检查密码的再次修改 */
@@ -216,13 +203,25 @@ const rules = {
   ],
 };
 
-
-
 // 定义性别选择的数据绑定
 const selectedGender = ref("secret");
 
 const api = {
   edit: API_ENDPOINTS.edit,
+};
+
+// 处理文件选择
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // 设置文件预览
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      avatarPreview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    form.avatar = file; // 保存文件到 form 对象
+  }
 };
 
 let url = api.edit;
@@ -244,6 +243,11 @@ const submitForm = async () => {
   formData.append("birthday", form.value.birthday);
 
   // 如果有头像上传，添加头像到 formData
+  if (form.avatar) {
+    formData.append("avatar", form.avatar);
+  }
+
+  // 如果有头像上传，添加头像到 formData
   if (form.value.avatar) {
     formData.append("avatar", form.value.avatar);
   }
@@ -258,7 +262,7 @@ const submitForm = async () => {
     });
 
     const result = await response.json();
-    if (result.code=== 0) {
+    if (result.code === 0) {
       alert("修改成功");
       emit("update:isVisible", false);
     } else {
@@ -284,22 +288,24 @@ const close = () => {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+  /* background: transparent; */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-
 }
 
 .edit-content {
-  background-color: #1a1c2d;
-  border-radius: 8px;
+  background-color: rgba(26, 28, 45, 0.35);
+  /*   background: transparent; */
+  border-radius: 20px;
   width: 400px;
-  padding: 20px;
+  padding: 20px 30px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  overflow-y: auto; 
+  overflow-y: auto;
   height: 80%;
+  border: 1px solid rgba(202, 202, 208, 0.35);
 }
 
 .edit-content::-webkit-scrollbar {
@@ -330,12 +336,10 @@ const close = () => {
   margin-bottom: 20px;
 }
 
-
 .form-group {
   margin-bottom: 15px;
-  height:100%;
+  height: 100%;
 }
-
 
 .form-group label {
   display: block;
@@ -348,7 +352,7 @@ const close = () => {
   width: 100%;
   padding: 8px;
   border: 1px solid #333;
-  border-radius: 4px;
+  border-radius: 10px;
   background-color: #2b2e3e;
   color: #ffffff;
 }
@@ -360,9 +364,10 @@ const close = () => {
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 100px; /* 可以根据需要调整大小 */
+  height: 100px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .gender-options {
@@ -376,17 +381,17 @@ const close = () => {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;;
+  justify-content: space-between;
 }
 
-.gender-option-label{
-display: flex;
-flex:6;
-}
-
-.gender-option-input{
+.gender-option-label {
   display: flex;
-flex:1;
+  flex: 6;
+}
+
+.gender-option-input {
+  display: flex;
+  flex: 1;
 }
 
 .edit-footer {

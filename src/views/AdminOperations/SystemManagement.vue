@@ -58,7 +58,7 @@
             </table>
 
             <!-- 备份按钮 -->
-            <button @click="createBackup" class="btn backup-btn">备份</button>
+            <button @click="Backup" class="btn backup-btn">备份</button>
           </div>
         </div>
       </div>
@@ -165,6 +165,7 @@ const getRecord = async () => {
       backupRecords.value.forEach((record) => {
         record.admin = response.data.admin_name;
       });
+/*       alert("备份记录更新成功！"); */
     } else {
       console.error("获取管理员备份记录失败:", response.data.message);
     }
@@ -173,8 +174,8 @@ const getRecord = async () => {
   }
 };
 
-// 管理员进行备份
-const createBackup = async () => {
+
+const Backup = async () => {
   try {
     const response = await axios.get(api.create_backup, {
       headers: {
@@ -184,6 +185,7 @@ const createBackup = async () => {
 
     if (response.data.code === 0) {
       alert("备份顺利进行！");
+      getRecord();
     } else {
       console.error("备份失败:", response.data.message);
     }
@@ -191,6 +193,7 @@ const createBackup = async () => {
     console.error("请求失败:", error);
   }
 };
+
 
 onMounted(() => {
   const username = getUsername();

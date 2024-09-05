@@ -1,11 +1,16 @@
 <template>
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs1">
-    <i class="fa-solid fa-dragon fa-bounce"></i>
-    <div>
-      <i class="fa-regular fa-pen-to-square" @click="edit"></i>
-    </div>
+  <img :src="images[0]" alt="QR Code" class="image-class" />
+  <div class="content-class">
+    <span class="username">{{username}}
+      <i class="fa-regular fa-pen-to-square edit-icon" @click="edit" style="color: #d1cbcb;"></i>
+    </span>
+    <span class="comment">这个人很个性，什么都没留下</span>
   </div>
+
+</div>
+
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs2">
     <i class="fa-solid fa-coins" >
@@ -21,8 +26,8 @@
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs4">
     <div class="tab4-item">
-      <i class="fa-solid fa-gear" ></i>
-      <span >个性化设置</span>
+      <i class="fa-solid fa-gear" @click="GoToPersonalization" ></i>
+      <span @click="GoToPersonalization">个性化设置 </span>
     </div>
     <div class="tab4-item">
       <i class="fa-solid fa-list-check" @click="GoToAnswer"></i>
@@ -54,9 +59,13 @@
 <script setup>
 import { ref, } from "vue";
 import { useRouter } from "vue-router";
+import image from "../assets/avatar/lst.jpg";
+const images = ref([image]);
+import { getUsername } from "../utils/Auth";
 
 const credits = ref(32);
 const router = useRouter();
+const username =getUsername();
 
 /* 关闭父表单 */
 import { defineEmits } from "vue";
@@ -66,7 +75,8 @@ const emit = defineEmits(
   ["feedBack"],
   ["pay"],
   ["delete"],
-  ["answer"]
+  ["answer"],
+  ["personalization"],
 );
 
 const edit = () => {
@@ -86,6 +96,10 @@ const GoToPay = () => {
   emit("pay");
 };
 
+const GoToPersonalization=()=>{
+emit("personalization");
+}
+
 const Return = () => {
   router.push("/");
 };
@@ -98,16 +112,62 @@ const GotoDelete =()=>{
 <style scoped>
 /* --------------------------------------------------------------------------------------------------- */
 .tabs1 {
-  height: 20%;
+  height: 80px;
   margin-bottom: 10px;
   display: flex;
-  justify-content: space-between;
-  /*border-bottom: 2px solid #007bff; /* 添加下划线 */
+  align-items: center;
+  padding: 10px;
+  background-color:transparent;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
-.tabs1 i {
-  margin-right: 20px;
+
+
+
+.image-class {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.content-class {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  color: #d1cbcb;
+}
+
+.username {
+  font-weight: bold;
+  margin-bottom: 5px;
   font-size: 20px;
 }
+
+.username i{
+  margin-right: 20px;
+  font-size: 20px;
+  margin-left:20px;
+}
+
+.comment {
+  color: #a5a5a5;
+  font-size: 14px;
+}
+
+.edit-icon {
+  margin-left: auto;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.edit-icon:hover {
+  color: #ffffff;
+}
+
 
 /* --------------------------------------------------------------------------------------------------- */
 

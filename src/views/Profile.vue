@@ -24,38 +24,34 @@
 
           <ul>
             <li
-            @mouseover="showForm('form1Vision')"
+              @mouseover="showForm('form1Vision')"
               @mouseleave="startHideTimer('form1Vision')"
             >
               <a href="#message">
                 <i class="fa fa-envelope fa-2x"></i>
               </a>
               <div class="form1Vision">
-              <Official
-                  :isVisible="isForm1Visible"
-                ></Official>
+                <Official :isVisible="isForm1Visible"></Official>
               </div>
             </li>
             <li
               @mouseover="showForm('form2Vision')"
               @mouseleave="startHideTimer('form2Vision')"
-              >
+            >
               <a href="#notification">
                 <i class="fa fa-bell fa-2x"> </i>
               </a>
               <div class="form2Vision">
-                <Activity
-                  :isVisible="isForm2Visible"
-                ></Activity>
+                <Activity :isVisible="isForm2Visible"></Activity>
               </div>
             </li>
             <li
               @mouseover="showForm('form3Vision')"
               @mouseleave="startHideTimer('form3Vision')"
             >
-            <a href="#edit">
-              <i class="fa fa-pen fa-2x "> </i>
-            </a>
+              <a href="#edit">
+                <i class="fa fa-pen fa-2x"> </i>
+              </a>
               <div class="form3Vision">
                 <PersonContent
                   :isVisible="isForm3Visible"
@@ -65,6 +61,7 @@
                   @feedBack="handleFeedBack"
                   @pay="handlePay"
                   @delete="handleDelete"
+                  @personalization="handlePersonalization"
                 ></PersonContent>
               </div>
             </li>
@@ -87,11 +84,13 @@
                     <td>Nickname</td>
                     <td>:</td>
                     <td>ImDezCode001</td>
-                  </tr>                  <tr>
+                  </tr>
+                  <tr>
                     <td>Sex</td>
                     <td>:</td>
                     <td>Female</td>
-                  </tr>                  <tr>
+                  </tr>
+                  <tr>
                     <td>Birthday</td>
                     <td>:</td>
                     <td>The Code Day</td>
@@ -142,6 +141,11 @@
     :isVisible="isPayVisible"
     @update:isVisible="isPayVisible = $event"
   ></Pay>
+  <Personalization
+    :isVisible="isPersonalizationVisible"
+    @update:isVisible="isPersonalizationVisible = $event"
+  >
+  </Personalization>
   <Delete
     :isVisible="isDeleteVisible"
     @update:isVisible="isDeleteVisible = $event"
@@ -153,7 +157,7 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import PersonContent from "../components/PersonContent.vue";
 import Activity from "../components/Activity.vue";
-import Official from "../components/Official.vue"
+import Official from "../components/Official.vue";
 import Edit from "../components/Edit.vue";
 import FeedBack from "../components/FeedBack.vue";
 import Pay from "../components/Pay.vue";
@@ -161,6 +165,7 @@ import Delete from "../components/Delete.vue";
 import Answer from "../components/Answer.vue";
 import Starfield from "../components/Starfield.vue";
 import Dashboard from "../components/Dashboard.vue";
+import Personalization from "../components/Personalizaion.vue";
 
 import { defineEmits } from "vue";
 import StarfieldVue from "../components/Starfield.vue";
@@ -176,14 +181,14 @@ const isAnswerVisible = ref(false);
 const isFeedBackVisible = ref(false);
 const isPayVisible = ref(false);
 const isDeleteVisible = ref(false);
+const isPersonalizationVisible = ref(false);
 
 const hideTimers = ref({});
 const showForm = (formName) => {
   clearTimeout(hideTimers.value[formName]);
   if (formName === "form1Vision") {
     document.querySelector(".form1Vision").style.display = "block";
-  } 
- else if (formName === "form2Vision") {
+  } else if (formName === "form2Vision") {
     document.querySelector(".form2Vision").style.display = "block";
   } else if (formName === "form3Vision") {
     document.querySelector(".form3Vision").style.display = "block";
@@ -193,9 +198,8 @@ const showForm = (formName) => {
 const hideForm = (formName) => {
   hideTimers.value[formName] = setTimeout(() => {
     if (formName === "form1Vision") {
-    document.querySelector(".form1Vision").style.display = "none";
-  } 
-   else if (formName === "form2Vision") {
+      document.querySelector(".form1Vision").style.display = "none";
+    } else if (formName === "form2Vision") {
       document.querySelector(".form2Vision").style.display = "none";
     }
     if (formName === "form3Vision") {
@@ -208,8 +212,7 @@ const startHideTimer = (formName) => {
   hideTimers.value[formName] = setTimeout(() => {
     if (formName === "form1Vision") {
       document.querySelector(".form1Vision").style.display = "none";
-    }
-   else if (formName === "form2Vision") {
+    } else if (formName === "form2Vision") {
       document.querySelector(".form2Vision").style.display = "none";
     }
     if (formName === "form3Vision") {
@@ -230,6 +233,11 @@ const handleToggleForm = () => {
 const handleAnswer = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isAnswerVisible.value = true;
+};
+
+const handlePersonalization = () => {
+  document.querySelector(".form3Vision").style.display = "none";
+  isPersonalizationVisible.value = true;
 };
 const handleFeedBack = () => {
   document.querySelector(".form3Vision").style.display = "none";
@@ -259,19 +267,19 @@ body {
 
 .navbar-top {
   width: 100%;
-  background:transparent;
+  background: transparent;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 5px 20px;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  height:80px;
+  height: 80px;
   display: flex;
 }
 
 .title {
   font-family: "Dancing Script", cursive;
-/*   padding-top: 15px; */
+  /*   padding-top: 15px; */
   color: #fff;
   align-items: center;
 }
@@ -310,11 +318,11 @@ ul li a {
   display: inline-block;
 }
 
-.form1Vision{
-    width: 800px;
+.form1Vision {
+  width: 800px;
   height: 400px;
   display: none;
-  background-color: rgba(128,128,128,0.05);
+  background-color: rgba(128, 128, 128, 0.05);
   padding: 30px;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
@@ -325,14 +333,15 @@ ul li a {
   z-index: 10; /* 设置元素的堆叠顺序，值越大，元素越位于其他元素之上 */
 }
 
-
 .form2Vision,
 .form3Vision {
-  border:1px solid #ffffff42;
+  border: 0.1px solid #ffffff58;
   width: 400px;
   height: 400px;
   display: none;
-  background-color: rgba(128,128,128,0.05);
+  background-color: rgba(128, 128, 128, 0.05);
+  /*   box-shadow: 1px 1px 8px 0 rgb(199, 199, 199); */
+  border-radius: 18px;
   padding: 30px;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
@@ -347,14 +356,14 @@ ul li a {
 
 /* Main */
 .main {
-/*   margin-top: 2%;
+  /*   margin-top: 2%;
   margin-left: 29%; */
   font-size: 28px;
   padding: 100px 10px;
   width: auto;
-  height:636px;
+  height: 636px;
   align-items: center;
-/* display: flex;
+  /* display: flex;
 flex:10; */
 }
 
@@ -363,7 +372,7 @@ flex:10; */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 24px;
   margin-bottom: 50px;
-  width:80%;
+  width: 80%;
 }
 
 .main .card {
@@ -372,7 +381,7 @@ flex:10; */
   height: 85%;
   margin-bottom: 20px;
   padding: 20px 0 20px 50px;
-  width:60%;
+  width: 60%;
 }
 
 .main .card table {

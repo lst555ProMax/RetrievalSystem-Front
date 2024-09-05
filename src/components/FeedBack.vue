@@ -186,200 +186,141 @@ function dataURLtoFile(dataurl, filename) {
 </script>
 
 <style scoped>
-  .feedback-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .feedback-container {
-    width: 800px;
-    background-color: #1a1c2d;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-/*     padding: 20px; */
-  }
-  
-  .feedback-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #262938;
-    border-bottom: 1px solid #2c2f45;
-  }
-  
-  .feedback-header h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #fff;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    color: #ccc;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
-  .feedback-content {
-    padding: 20px;
-    color: #fff;
-  }
-  
-  .message {
-    font-size: 14px;
-    color: #aaa;
-    margin-bottom: 20px;
-  }
-
-  .problem-type ,
-  .feedback-content,
-  .image-upload-section,
-  .contact-section 
-  .feedback-text
-  .feedback-footer{
-margin-bottom:10px;
-  }
-
-  .feedback-count {
-  font-size: 14px;
-  color: #fff;
-  background-color: #2a2c3d;
-}
-  
-  .problem-type label,
-  .feedback-content label,
-  .image-upload-section label,
-  .contact-section label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #fff;
-  }
-  
-  .problem-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .problem-buttons button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    background-color: #2a2c3e;
-    color: #aaa;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .problem-buttons button.active {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .feedback-text textarea {
-    width: 100%;
-    border: 1px solid #333;
-    background-color: #2a2c3e;
-    color: #ddd;
-    border-radius: 4px;
-    padding: 10px;
-  }
-  
-  .image-upload-container {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
- 
-  .upload-slot {
-  width: 80px;
-  height: 80px;
+.feedback-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #2a2c3e;
-  border: 1px dashed #555;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
+  z-index: 1000;
 }
 
-.upload-slot img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 4px;
+.feedback-container {
+  width: 480px;
+  height:600px;
+  background-color: rgba(26, 28, 45, 0.35);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(202, 202, 208, 0.35);
+  overflow: hidden;
 }
-  
-.upload-slot button {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-  }
-  
-  .hint {
-    font-size: 12px;
-    color: #777;
-    margin-top: 5px;
-  }
-  
-  .contact-section input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #333;
-    background-color: #2a2c3e;
-    color: #ddd;
-    border-radius: 4px;
-  }
-  
-  .feedback-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding:15px 20px;
-    background-color: #262938;
-    border-top: 1px solid #2c2f45;
-  }
-  
-  .record-button {
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-  }
-  
-  .action-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .cancel-button,
-  .submit-button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .cancel-button {
-    background-color: #444;
-    color: #ccc;
-  }
-  
-  .submit-button {
-    background-color: #007bff;
-    color: #fff;
-  }
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(202, 202, 208, 0.35);
+}
+
+.feedback-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.feedback-content {
+  margin-top: 25px; 
+  color: #ffffff;
+}
+
+.message {
+  font-size: 14px;
+  color: #ddd;
+  margin-bottom: 25px;
+}
+
+.problem-type label,
+.feedback-text label {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.problem-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.problem-buttons button {
+  padding: 8px 16px;
+  border: 1px solid rgba(202, 202, 208, 0.35);
+  background-color: #2b2e3e;
+  color: #aaa;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.problem-buttons button.active {
+  background-color: #1e90ff;
+  color: #ffffff;
+}
+
+.feedback-text textarea {
+  width: 100%;
+  border: 1px solid rgba(202, 202, 208, 0.35);
+  background-color: #2b2e3e;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  resize: none;
+  min-height: 200px;
+  margin-bottom: 20px;
+}
+
+.feedback-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: bottom;
+  padding-top: 10px;
+  border-top: 1px solid rgba(202, 202, 208, 0.35);
+}
+
+.feedback-count {
+  font-size: 14px;
+  align-items: bottom;
+  color: #ffffff;
+  background-color:transparent;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #444;
+  color: #ffffff;
+}
+
+.submit-button {
+  background-color: #1e90ff;
+  color: #ffffff;
+}
+
   </style>
