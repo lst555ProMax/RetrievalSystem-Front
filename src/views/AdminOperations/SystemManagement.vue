@@ -10,13 +10,16 @@
             <div class="backup-settings">
               <h3>备份设置</h3>
               <div class="settings-row">
-                <select v-model="backupSettings.frequency" :disabled="!isEditing">
-                  <option value="每周">每周</option>
-                  <option value="每两周">每两周</option>
-                  <option value="每月">每月</option>
-                  <option value="每两月">每两月</option>
-                  <option value="每半年">每半年</option>
-                  <option value="每年">每年</option>
+                <select
+                  v-model="backupSettings.frequency"
+                  :disabled="!isEditing"
+                >
+                  <option value="week">每周</option>
+                  <option value="two weeks">每两周</option>
+                  <option value="month">每月</option>
+                  <option value="two months">每两月</option>
+                  <option value="six mouths">每半年</option>
+                  <option value="year">每年</option>
                 </select>
                 <input
                   v-model="backupSettings.path"
@@ -28,7 +31,9 @@
                 </button>
                 <div v-if="isEditing" class="edit-buttons">
                   <button @click="saveSettings" class="btn">保存</button>
-                  <button @click="cancelEditing" class="btn cancel-btn">取消</button>
+                  <button @click="cancelEditing" class="btn cancel-btn">
+                    取消
+                  </button>
                 </div>
               </div>
             </div>
@@ -40,14 +45,14 @@
                 <tr>
                   <th>备份人员</th>
                   <th>备份时间</th>
-                  <th>备份路径</th>
+                  <th>备份文件名</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(record, index) in backupRecords" :key="index">
                   <td>{{ record.admin }}</td>
-                  <td>{{ record.time }}</td>
-                  <td>{{ record.path }}</td>
+                  <td>{{ record.backup_date }}</td>
+                  <td>{{ record.backup_filename }}</td>
                 </tr>
               </tbody>
             </table>
@@ -75,39 +80,39 @@ const router = useRouter();
 
 // 备份设置
 const backupSettings = ref({
-  frequency: "每周",
+  frequency: "",
   path: "",
 });
 
 // 备份记录示例数据
-const backupRecords = ref([
-  
-]);
+const backupRecords = ref([]);
 
 // 编辑状态
 const isEditing = ref(false);
 
-const token = localStorage.getItem('jwtToken');
+const token = localStorage.getItem("jwtToken");
 
-const api ={
+const api = {
   get_setting: API_ENDPOINTS.get_setting,
-set_setting:API_ENDPOINTS.set_setting,
-get_record:API_ENDPOINTS.get_record,
-create_backup:API_ENDPOINTS.create_backup,
-}
+  set_setting: API_ENDPOINTS.set_setting,
+  get_record: API_ENDPOINTS.get_record,
+  create_backup: API_ENDPOINTS.create_backup,
+};
 
 // 获取管理员备份设置
 const getSetting = async () => {
   try {
     const response = await axios.get(api.get_setting, {
       headers: {
-        'Authorization': `Bearer ${token}`, 
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (response.data.code === 0) {
-      backupSettings.frequency.value = response.data.frequency; 
-      backupSettings.path.value=response.data.value;
+      backupSettings.value = {
+        frequency: response.data.data.backup_frequency,
+        path: response.data.data.backup_path,
+      };
     } else {
       console.error("获取管理员备份数据失败:", response.message);
     }
@@ -118,49 +123,50 @@ const getSetting = async () => {
 
 // 更改管理员备份设置
 const setSetting = async () => {
-
   const formData = new FormData();
-  formData.append("username", username);
   formData.append("backup_frequency", backupSettings.value.frequency);
   formData.append("backup_path", backupSettings.value.path);
- 
-    try {
-      const response = await fetch(api.set_setting, {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
-        },
-        body: formData,
-      });
 
-      const result = await response.json();
+  try {
+    const response = await fetch(api.set_setting, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`, // 添加 Authorization 头部
+      },
+      body: formData,
+    });
 
-      if (response.code === 0) {
-        console.log("修改成功", result);
-        alert("备份设置已修改！");
-      } else {
-        console.error("修改失败", result.message);
-        alert("修改失败！");
-      }
+    const result = await response.json();
+
+    if (result.code === 0) {
+      console.log("修改成功", result);
+      alert("备份设置已修改！");
+    } else {
+      console.error("修改失败", result.message);
+      alert("修改失败！");
     }
-    catch (error) {
-      console.error("请求失败", error);
-    }
+  } catch (error) {
+    console.error("请求失败", error);
   }
+};
 
 // 获取管理员备份记录
 const getRecord = async () => {
   try {
     const response = await axios.get(api.get_record, {
       headers: {
-        'Authorization': `Bearer ${token}`, 
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    if (response.code === 0) {
-      backupRecords.value = response.data.data; 
+
+    if (response.data.code === 0) {
+      backupRecords.value = response.data.data;
+      backupRecords.value.forEach((record) => {
+        record.admin = response.data.admin_name;
+      });
     } else {
-      console.error("获取管理员备份记录失败:", response.message);
+      console.error("获取管理员备份记录失败:", response.data.message);
     }
   } catch (error) {
     console.error("请求失败:", error);
@@ -172,14 +178,14 @@ const createBackup = async () => {
   try {
     const response = await axios.get(api.create_backup, {
       headers: {
-        'Authorization': `Bearer ${token}`, 
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    if (response.code === 0) {
-      alert("备份顺利进行！")
+    if (response.data.code === 0) {
+      alert("备份顺利进行！");
     } else {
-      console.error("备份失败:", response.message);
+      console.error("备份失败:", response.data.message);
     }
   } catch (error) {
     console.error("请求失败:", error);
@@ -190,10 +196,9 @@ onMounted(() => {
   const username = getUsername();
   if (!username) {
     router.push("/");
-  }
-  else {
-  getSetting();
-  getRecord();
+  } else {
+    getSetting();
+    getRecord();
   }
 });
 
@@ -206,7 +211,6 @@ const startEditing = () => {
 const saveSettings = async () => {
   isEditing.value = false;
   await setSetting(); // 调用保存设置的 API
-  alert(`设置已保存: 频率 - ${backupSettings.value.frequency}, 路径 - ${backupSettings.value.path}`);
 };
 
 // 取消编辑

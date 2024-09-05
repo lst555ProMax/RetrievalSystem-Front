@@ -302,6 +302,10 @@ const close = () => {
   height: 80%;
 }
 
+.edit-content::-webkit-scrollbar {
+  display: none;
+}
+
 .edit-header {
   display: flex;
   justify-content: space-between;

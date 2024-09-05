@@ -8,7 +8,7 @@
   </div>
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs2">
-    <i class="fa-solid fa-coins">
+    <i class="fa-solid fa-coins" >
       <span class="small-text">积分 : {{ credits }}</span>
     </i>
     <div>
@@ -120,6 +120,7 @@ const GotoDelete =()=>{
 
 .text2 {
   margin-right: 3px;
+  color:#fff;
 }
 
 .tabs2 i {
@@ -131,7 +132,7 @@ const GotoDelete =()=>{
 .tabs2 ii {
   margin-right: 20px;
   font-size: 13px;
-  color: #656060;
+  color: #d1cbcb;
   transform: translatey(10%);
 }
 
@@ -156,16 +157,18 @@ const GotoDelete =()=>{
   flex-direction: column; /* 垂直排列图标和文字 */
   align-items: center; /* 水平居中 */
   text-align: center;
+  color:#ffffffd0;
 }
 
 .tab4-item i {
   font-size: 25px;
   margin-bottom: 5px; /* 图标和文字之间的间距 */
   display: -ms-inline-flexbox;
+  color:#ffffffd0;
 }
 
 .tab4-item i:hover {
-background-color: #3e3e5f;
+   color: #3e3e5f;
 }
 
 
@@ -183,7 +186,7 @@ background-color: #3e3e5f;
 .tabs5-button {
   flex-grow: 1; /* 让按钮在 Flex 布局中占满空间 */
   --el-button-bg-color: rgba(30, 30, 63, 0.2); /* 设置按钮背景颜色 */
-  --el-button-border-color: #252738; /* 设置按钮边框颜色 */
+  --el-button-border-color: #ffffff6b; /* 设置按钮边框颜色 */
 }
 
 .tabs5-button:hover {

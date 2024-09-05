@@ -328,6 +328,7 @@ ul li a {
 
 .form2Vision,
 .form3Vision {
+  border:1px solid #ffffff42;
   width: 400px;
   height: 400px;
   display: none;

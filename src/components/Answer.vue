@@ -86,7 +86,7 @@
     display: flex;
     background-color: #1a1c2d;
     border-radius: 10px;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.801);
     flex-direction: column;
     overflow: hidden;
   }
@@ -134,6 +134,8 @@
     padding: 10px;
     overflow-y: auto; /* Enable vertical scrolling */
     flex:1;
+
+
   }
 
   /* Hide scrollbar for WebKit browsers */
@@ -151,15 +153,15 @@
   .faq-sidebar li {
     cursor: pointer;
     padding: 15px 5px;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
+    border-bottom: 1px solid #3930b31f;
+    font-size: 13px;
     font-weight: 800;
-    overflow-wrap: break-word;
-    word-break: break-word; 
+  word-wrap: break-word;
+  word-break: break-all;
   }
   
   .faq-sidebar li:hover {
-    background-color: #ddd;
+    background-color: #4b4352;
   }
   
   .faq-content {
