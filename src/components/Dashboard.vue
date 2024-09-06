@@ -5,10 +5,10 @@
         <div>
           <div class="user-info">
             <img
-              src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e"
+              src="../assets/avatar/lst.jpg"
               alt="user"
             />
-            <p>Jane Wilson</p>
+            <p>LST555</p>
           </div>
           <ul>
             <li

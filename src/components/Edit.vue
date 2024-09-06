@@ -146,12 +146,11 @@ import { useRouter, useRoute } from "vue-router";
 import Verify from "../utils/verify";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
-import { useUserStore } from "../stores/userStore"; // 引入 Store
 
-const userStore = useUserStore(); // 使用 Store
+import { getUsername } from "../utils/Auth"
+const username=getUsername();
 
 const avatarPreview = ref(null);
-const { username } = userStore;
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -242,6 +241,7 @@ const submitForm = async () => {
   formData.append("description", form.value.description);
   formData.append("birthday", form.value.birthday);
 
+  console.log("111"+formData.get('username'));
   // 如果有头像上传，添加头像到 formData
   if (form.avatar) {
     formData.append("avatar", form.avatar);

@@ -1,0 +1,90 @@
+Date : 2024-09-06 08:34:44
+Directory : e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src
+Total : 47 files,  8853 codes, 512 comments, 1405 blanks, all 10770 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Vue        |         27 |      6,578 |        453 |      1,044 |      8,075 |
+| HTML       |          1 |        931 |          2 |        130 |      1,063 |
+| CSS        |          2 |        562 |         19 |        127 |        708 |
+| JSON       |          1 |        275 |          0 |          1 |        276 |
+| JavaScript |          8 |        212 |         26 |         39 |        277 |
+| SCSS       |          2 |        165 |          0 |         33 |        198 |
+| TypeScript |          5 |        129 |         12 |         30 |        171 |
+| XML        |          1 |          1 |          0 |          1 |          2 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                   |         47 |      8,853 |        512 |      1,405 |     10,770 |
+| . (Files)                                                                           |          2 |         46 |          4 |         20 |         70 |
+| assets                                                                              |          8 |      1,935 |         21 |        292 |      2,248 |
+| assets (Files)                                                                      |          3 |        166 |          0 |         34 |        200 |
+| assets\icon                                                                         |          5 |      1,769 |         21 |        258 |      2,048 |
+| components                                                                          |         17 |      3,587 |        129 |        591 |      4,307 |
+| config                                                                              |          1 |         21 |         14 |         10 |         45 |
+| router                                                                              |          1 |         61 |          0 |          3 |         64 |
+| stores                                                                              |          3 |         38 |          8 |         14 |         60 |
+| utils                                                                               |          6 |        190 |         12 |         29 |        231 |
+| views                                                                               |          9 |      2,975 |        324 |        446 |      3,745 |
+| views (Files)                                                                       |          7 |      2,405 |        298 |        352 |      3,055 |
+| views\AdminOperations                                                               |          2 |        570 |         26 |         94 |        690 |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                            | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\App.vue                                    | Vue        |         16 |          0 |          7 |         23 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\base.scss                           | SCSS       |         54 |          0 |         11 |         65 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\file.list.scss                      | SCSS       |        111 |          0 |         22 |        133 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\icon\demo.css                       | CSS        |        435 |         19 |         86 |        540 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\icon\demo_index.html                | HTML       |        931 |          2 |        130 |      1,063 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\icon\iconfont.css                   | CSS        |        127 |          0 |         41 |        168 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\icon\iconfont.js                    | JavaScript |          1 |          0 |          0 |          1 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\icon\iconfont.json                  | JSON       |        275 |          0 |          1 |        276 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\logo.svg                            | XML        |          1 |          0 |          1 |          2 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Activity.vue                    | Vue        |        114 |          7 |         19 |        140 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Answer.vue                      | Vue        |        157 |          4 |         20 |        181 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\BackgroundAnimation.vue         | Vue        |        408 |          8 |         48 |        464 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\CrossStar.vue                   | Vue        |        163 |          0 |         34 |        197 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Dashboard.vue                   | Vue        |        290 |          7 |         56 |        353 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\DashboardAdmin.vue              | Vue        |        255 |          7 |         50 |        312 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Delete.vue                      | Vue        |        203 |         10 |         42 |        255 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Edit.vue                        | Vue        |        353 |         22 |         57 |        432 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\FeedBack.vue                    | Vue        |        265 |         15 |         46 |        326 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\MoneyHistory.vue                | Vue        |        187 |          5 |         22 |        214 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Neural.vue                      | Vue        |        185 |          9 |         27 |        221 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Official.vue                    | Vue        |         66 |          0 |         11 |         77 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Pay.vue                         | Vue        |        119 |         10 |         29 |        158 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\PersonContent.vue               | Vue        |        215 |         13 |         44 |        272 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Personalizaion.vue              | Vue        |        212 |         10 |         38 |        260 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Slider.vue                      | Vue        |        190 |          0 |         23 |        213 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Starfield.vue                   | Vue        |        205 |          2 |         25 |        232 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\config\apiConfig.js                        | JavaScript |         21 |         14 |         10 |         45 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\main.ts                                    | TypeScript |         30 |          4 |         13 |         47 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\router\index.ts                            | TypeScript |         61 |          0 |          3 |         64 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\stores\counter.ts                          | TypeScript |         10 |          0 |          3 |         13 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\stores\passwordStore.ts                    | TypeScript |         10 |          3 |          4 |         17 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\stores\userStore.ts                        | TypeScript |         18 |          5 |          7 |         30 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\utils\Auth.js                              | JavaScript |         11 |          1 |          3 |         15 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\utils\Confirm.js                           | JavaScript |         11 |          0 |          6 |         17 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\utils\Message.js                           | JavaScript |         25 |          0 |          3 |         28 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\utils\Request.js                           | JavaScript |         91 |         11 |         15 |        117 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\utils\Utils.js                             | JavaScript |         21 |          0 |          0 |         21 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\utils\verify.js                            | JavaScript |         31 |          0 |          2 |         33 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\AdminOperations\SystemManagement.vue | Vue        |        292 |         15 |         49 |        356 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\AdminOperations\UserManagement.vue   | Vue        |        278 |         11 |         45 |        334 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\Framework.vue                        | Vue        |         67 |          0 |         14 |         81 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\ImageSearch.vue                      | Vue        |        490 |         30 |         73 |        593 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\Login.vue                            | Vue        |        417 |        202 |         56 |        675 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\Profile.vue                          | Vue        |        358 |         13 |         39 |        410 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\TextSearch.vue                       | Vue        |        507 |         45 |         82 |        634 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\dialogue.vue                         | Vue        |        503 |          7 |         73 |        583 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\others.vue                           | Vue        |         63 |          1 |         15 |         79 |
+| Total                                                                               |            |      8,853 |        512 |      1,405 |     10,770 |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

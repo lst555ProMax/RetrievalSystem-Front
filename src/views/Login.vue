@@ -561,13 +561,12 @@ const FastjumpToFrame = () => {
 .body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
-
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   .login-panel {
-    width: 430px;
+    width: 350px;
     margin: calc((100vh - 500px) / 2) auto;
 
     /* 登录注册 */
@@ -579,9 +578,13 @@ const FastjumpToFrame = () => {
       /* 标题 */
       .login-title {
         text-align: center;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
         margin-bottom: 20px;
+      }
+
+      .login-title i{
+        margin-right:10px;
       }
 
       /* 邮箱验证码 */

@@ -3,7 +3,7 @@
   <div class="tabs1">
   <img :src="images[0]" alt="QR Code" class="image-class" />
   <div class="content-class">
-    <span class="username">{{username}}
+    <span class="username">LST555
       <i class="fa-regular fa-pen-to-square edit-icon" @click="edit" ></i>
     </span>
     <span class="comment">这个人很个性，什么都没留下</span>

@@ -68,6 +68,10 @@ import { ref } from "vue";
 import { defineEmits } from "vue";
 import { getUsername } from "../utils/Auth"
 import { API_ENDPOINTS } from "../config/apiConfig";
+import { useRouter, useRoute } from "vue-router";
+
+const router = useRouter();
+const route = useRoute();
 
 
 const props = defineProps({
@@ -94,17 +98,14 @@ const token = localStorage.getItem("jwtToken");
 
 const Delete = async () => {
 
-  
   if(!form.value.password){
     alert("请输入密码");
     return;
   }
-
   if (!form.value.agreement) {
     alert("请勾选同意协议");
     return;
   }
-
 
   const formData = new FormData();
   formData.append("username", username);
@@ -120,8 +121,7 @@ const Delete = async () => {
 
   const result = await response.json();
   if (result.code === 0) {
-/*     alert("注销成功"); */
-/*     stop(); */
+    alert("注销成功");
     router.push("/");
   } else {
     alert("注销失败");

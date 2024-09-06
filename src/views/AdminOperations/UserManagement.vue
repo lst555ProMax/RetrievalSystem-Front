@@ -148,24 +148,36 @@ const saveUser = async (index) => {
   if (editingIndex.value !== null) {
     users.value[index] = { ...editUserData.value };
 
+    
+  const formData =new FormData();
+  formData.append("username", users.value[index].username);
+  formData.append("password", users.value[index].password);
+  formData.append("email", users.value[index].email);
+  formData.append("nickname", users.value[index].nickname);
+  formData.append("sex", users.value[index].sex);
+  formData.append("description", users.value[index].description);
+  formData.append("birthday", users.value[index].birthday);
+
+ 
+  console.log(formData.get('description'));
+/* 
     const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
 
-    console.log(Object.entries(users.value[index]).toString())
-
+    console.log(Object.entries(users.value[index]).toString());
+    console.log(urlEncodedParams.toString());
+ */
     try {
       const response = await fetch(url2, {
         method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
+          Authorization: `Bearer ${token}`, // 添加 Authorization 头部
         },
-        body: urlEncodedParams.toString(),
+        body: formData,
       });
 
       const result = await response.json();
-
-      if (response.ok) {
-        console.log("修改成功", result);
-        console.log(urlEncodedParams.toString());
+console.log("333"+result);
+      if (result.code === 0) {
         editingIndex.value = null;
         alert("用户信息已更新！");
       } else {
