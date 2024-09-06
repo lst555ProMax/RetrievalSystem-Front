@@ -1,122 +1,114 @@
 <template>
   <starfield />
 
-  <dashboard> 
-  <template #left-content>
-    <div class="non-header">
-    <div class="main-content">
-        <div class="up-down">
-          <!-- 推荐搜索----------------------------------------------------------------------------- -->
-          <div v-if="!uiChange" :key="1">
-            <div class="recommendations">
-              <div class="headbar">
-                <div class="text">你可以这样向我提问</div>
-                <div class="icon" @click="changeSelection">
-                  <div>换一批</div>
-                  <i class="fa-solid fa-rotate"></i>
+  <dashboard>
+    <template #left-content>
+      <div class="non-header">
+        <div class="main-content">
+          <div class="up-down">
+            <!-- 推荐搜索 -->
+            <div v-if="!uiChange" :key="1">
+              <div class="recommendations">
+                <div class="headbar">
+                  <div class="text">你可以这样向我提问</div>
+                  <div class="icon" @click="changeSelection">
+                    <div>换一批</div>
+                    <i class="fa-solid fa-rotate"></i>
+                  </div>
+                </div>
+                <div class="question-list">
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(0 + 4 * questionSelection)"
+                  >
+                    {{ question[0 + 4 * questionSelection] }}
+                  </button>
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(1 + 4 * questionSelection)"
+                  >
+                    {{ question[1 + 4 * questionSelection] }}
+                  </button>
+                </div>
+                <div class="question-list">
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(2 + 4 * questionSelection)"
+                  >
+                    {{ question[2 + 4 * questionSelection] }}
+                  </button>
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(3 + 4 * questionSelection)"
+                  >
+                    {{ question[3 + 4 * questionSelection] }}
+                  </button>
                 </div>
               </div>
-              <div class="question-list">
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(0 + 4 * questionSelection)"
-                >
-                  {{ question[0 + 4 * questionSelection] }}
-                </button>
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(1 + 4 * questionSelection)"
-                >
-                  {{ question[1 + 4 * questionSelection] }}
-                </button>
-              </div>
-              <div class="question-list">
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(2 + 4 * questionSelection)"
-                >
-                  {{ question[2 + 4 * questionSelection] }}
-                </button>
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(3 + 4 * questionSelection)"
-                >
-                  {{ question[3 + 4 * questionSelection] }}
-                </button>
-              </div>
-<!--               <div class="question-list">
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(4 + 6 * questionSelection)"
-                >
-                  {{ question[4 + 6 * questionSelection] }}
-                </button>
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(5 + 6 * questionSelection)"
-                >
-                  {{ question[5 + 6 * questionSelection] }}
-                </button>
-              </div> -->
             </div>
-          </div>
-          <!-- 搜索界面-------------------------------------------------------------------------------------- -->
-          <div v-if="messages.length" class="chat-history" ref="chatHistory">
-            <div
-              v-for="(message, index) in messages"
-              :key="index"
-              class="message"
-            >
-              <div class="message-header">
-                <span class="message-time">{{ message.time }}</span>
-              </div>
-              <div class="message-content">
-                <p>{{ message.text }}</p>
-                <!-- 判断并显示图片 -->
-                <div class="image-container">
-                <img
-                v-for="(imageUrl, index) in message.imageurls"
-                  :key="index"
-                  :src="imageUrl"
-                  alt="图片"
-                  class="response-image"
-                />
-              </div>
-              </div>
-              <div v-if="message.isResponse" class="response">
-                <button @click="retryResponse(index)">重新回答</button>
-  <button @click="copyResponse(index)">复制</button>
-              </div>
-            </div>
-          </div>
-          <!-- 输入框---------------------------------------------------------------------- -->
-          <div class="input-area">
-            <input
-              type="text"
-              v-model="userInput"
-              placeholder="请输入文本..."
-              @keyup.enter="sendMessage"
-            />
-            <button @click="sendMessage">➤</button>
-          </div>
-          <!-- ------------------------------------------------------------------------ -->
-        </div>
 
-        <div class="history-section">
-          <h4>历史记录</h4>
-          <ul class="history-list">
-            <li v-for="(item, index) in history" :key="index">
-              <span>你好</span>
-              <button @click="removeHistory(index)">✖</button>
-            </li>
-          </ul>
+            <!-- 搜索界面 -->
+            <div v-if="messages.length" class="chat-history" ref="chatHistory">
+              <div
+                v-for="(message, index) in messages"
+                :key="index"
+                class="message"
+              >
+                <div class="message-header">
+                  <span class="message-time">{{ message.time }}</span>
+                </div>
+                <div class="message-content">
+                  <p>{{ message.text }}</p>
+                  <div class="image-container">
+                    <img
+                      v-for="(imageUrl, index) in message.imageurls"
+                      :key="index"
+                      :src="imageUrl"
+                      alt="图片"
+                      class="response-image"
+                    />
+                  </div>
+                  <div v-if="message.loading" class="loading-icon">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+    </div>
+                </div>
+                <div v-if="message.isResponse" class="response">
+                  <button @click="retryResponse">重新回答</button>
+                  <button @click="downloadAllImages">全部下载</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 输入框 -->
+            <div class="input-area">
+              <input
+                type="text"
+                v-model="userInput"
+                placeholder="请输入文本..."
+                @keyup.enter="sendMessage"
+              />
+              <button @click="sendMessage">➤</button>
+            </div>
+          </div>
+
+          <!-- 历史记录部分 -->
+          <div class="history-section">
+            <h4>历史记录</h4>
+            <ul class="history-list">
+              <li
+                v-for="(item, index) in history"
+                :key="item.id"
+                @click="fetchHistory(item.id)"
+              >
+                <span>{{ item.text }}</span>
+                <button @click.stop="removeHistory(index)">✖</button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </template>
-</dashboard>
-
-    
+    </template>
+  </dashboard>
 </template>
 
 <script setup>
@@ -124,12 +116,12 @@ import { ref, watch, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import Starfield from "../components/Starfield.vue";
 import { getUsername } from "../utils/Auth";
-import dashboard from "../components/Dashboard.vue"
+import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
 const router = useRouter();
 
-const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
+const history = ref([]); // 保存历史记录
 const question = ref([
   "A girl going into a wooden building",
   "An elderly woman going into a stone building.",
@@ -160,9 +152,20 @@ const question = ref([
   "An elderly man climbing on blue roping.",
   "A boy in red climbs a rope bridge at the park.",
 ]);
-
 const questionSelection = ref(0);
 const uiChange = ref(0);
+const messages = ref([]);
+const userInput = ref("");
+const userInput2 = ref("");
+let isReResponce = ref(false);
+const chatHistory = ref(null);
+
+const token = localStorage.getItem("jwtToken");
+
+const api = {
+  text: API_ENDPOINTS.text,
+  fetchHistory: API_ENDPOINTS.list, // 获取历史记录的 API 接口
+};
 
 const changeSelection = () => {
   questionSelection.value++;
@@ -173,40 +176,21 @@ const removeHistory = (index) => {
   history.value.splice(index, 1);
 };
 
-// 示例数据
-const messages = ref([]);
-const userInput = ref("");
-const userInput2 = ref("");
-
-const currentQuestion =ref();
-let isReResponce = ref(false);
-
-// 绑定 chat-history 的 DOM 元素
-const chatHistory = ref(null);
-
-const token = localStorage.getItem("jwtToken");
-
-const api = {
-  text: API_ENDPOINTS.text,
-};
-
-let url = api.text;
-
 // 发送用户消息和请求后端接口
 const sendMessage = async () => {
   if (userInput.value.trim()) {
     const currentTime = new Date().toLocaleTimeString();
 
     uiChange.value = 1;
+    messages.value = [];
 
     // 添加用户的提问到消息列表
     messages.value.push({
       text: userInput.value,
       time: currentTime,
       isResponse: false,
+      loading: true, 
     });
-
-    currentQuestion.value=userInput.value;
 
     // 调用后端接口
     await sendToBackend(userInput.value);
@@ -220,34 +204,28 @@ const sendMessageIndex = async (index) => {
   uiChange.value = 1;
   userInput2.value = question.value[index];
   if (userInput2.value.trim()) {
-    // 获取当前时间
     const currentTime = new Date().toLocaleTimeString();
 
-    // 添加用户的提问到消息列表
     messages.value.push({
       text: userInput2.value,
       time: currentTime,
       isResponse: false,
+      loading: true, 
     });
 
-    currentQuestion.value=question.value[index];
-    // 调用后端接口
-    await sendToBackend(userInput2.value,index);
+    await sendToBackend(userInput2.value, index);
 
-    // 清空
     userInput2.value = "";
   }
 };
 
 // 发送请求到后端
-const sendToBackend = async (inputText,index) => {
+const sendToBackend = async (inputText) => {
   const formData = new FormData();
   formData.append("username", getUsername());
   formData.append("keywords", inputText);
 
   try {
-    console.log("开始发送请求...");
-
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
@@ -255,7 +233,7 @@ const sendToBackend = async (inputText,index) => {
       return;
     }
 
-    const result = await fetch(url, {
+    const response = await fetch(api.text, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -263,56 +241,125 @@ const sendToBackend = async (inputText,index) => {
       body: formData,
     });
 
-    if (!result.ok) {
-      handleError(`请求失败，状态码：${result.status}`);
-      return;
-    }
+    const result = await response.json();
 
-    const response = await result.json();
-
-    if (response.code === 0) {
+    if (result.code === 0) {
       const responseTime = new Date().toLocaleTimeString();
-      console.log(response);
 
-      // 初始化一个数组，用于存储所有图片的 URL
       const imageUrls = [];
-
-      // 检查是否包含 data 数据
-      if (response.data) {
-        // 将 base64 字符串数组转换为可用于 img 标签的 URL 并存入 imageUrls
-        response.data.forEach((imgBase64) => {
+      if (result.data) {
+        result.data.forEach((imgBase64) => {
           const imgSrc = `data:image/png;base64,${imgBase64}`;
           imageUrls.push(imgSrc);
-/*           console.log(imageUrls[0]); */
-        });
-        if(isReResponce.value)
-        {messages.value.splice(messages.value.length - 1, 1);
-}
-        // 将所有图片合并到一个消息中
-        messages.value.push({
-          text: "生成的图像如下：", // 可选的描述文本
-          time: responseTime,
-          isResponse: true,
-          imageurls: imageUrls, // 保存所有图片的 URL
         });
 
-        console.log(messages.value[1]);
-      } else {
-        // 没有图片的情况下显示普通文本
         messages.value.push({
-          text: response.message || "这是系统给出的回答。",
+          text: "生成的图像如下：",
           time: responseTime,
           isResponse: true,
+          imageurls: imageUrls,
+          loading: false,
+        });
+      } else {
+        messages.value.push({
+          text: result.message || "这是系统给出的回答。",
+          time: responseTime,
+          isResponse: true,
+          loading:false,
         });
       }
+
+            // 更新用户消息的loading状态
+            if (messages.value[0]) {
+        messages.value[0].loading = false;
+      }
+
+      // 添加历史记录项，包括获取到的 ID 和文本
+      history.value.push({
+        id: result.search_history_id, 
+        text: inputText,
+      });
     } else {
-      handleError("后端返回错误：" + (response.message || "未知错误"));
+      handleError("后端返回错误：" + (result.message || "未知错误"));
     }
   } catch (error) {
     handleError("请求失败，请稍后重试");
     console.error("提交失败", error);
   }
 };
+
+// 获取历史记录
+const fetchHistory = async (id) => {
+  const formData =new FormData();
+  formData.append("search_history_id",id);
+  try {
+    const response= await fetch(api.fetchHistory, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const result  = await response.json();
+    messages.value = [];
+
+    if (result.code === 0) {
+      messages.value.push({
+      text: result.data.search_text,
+      time: result.data.date,
+      isResponse: false,
+    });
+
+    const imageUrls = [];
+
+    result.data.images.forEach((imgBase64) => {
+          const imgSrc = `data:image/png;base64,${imgBase64}`;
+          imageUrls.push(imgSrc);
+        });
+
+        messages.value.push({
+          text: "生成的图像如下：",
+          time: result.data.date,
+          isResponse: true,
+          imageurls: imageUrls,
+        });
+    } else {
+      handleError("获取历史记录失败：" + (result.message || "未知错误"));
+    }
+  } catch (error) {
+    handleError("请求失败，请稍后重试");
+    console.error("获取历史记录失败", error);
+  }
+};
+
+const retryResponse = async () => {
+
+    messages.value.splice(messages.value.length - 1, 1);
+    messages.value[0].loading = true;
+
+    if (messages.value.length > 0) {
+        const userQuestion = messages.value[messages.value.length - 1].text;
+        await sendToBackend(userQuestion);
+    }
+};
+
+const downloadAllImages = () => {
+  const message = messages.value[1]; 
+  if (message && message.imageurls && message.imageurls.length > 0) {
+    message.imageurls.forEach((imageUrl, imgIndex) => {
+      const link = document.createElement('a');
+      link.href = imageUrl;
+      link.download = `image_${imgIndex}.png`; // 自定义文件名
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  } else {
+    alert("没有图片可以下载");
+  }
+};
+
 
 
 // 错误处理函数
@@ -325,55 +372,10 @@ const handleError = (errorMessage) => {
   });
 };
 
-//界面跟随文本滚动，未实现
-watch(messages, async () => {
-  await nextTick(); // 等待 DOM 更新完成
-  if (chatHistory.value) {
-    chatHistory.value.scrollTop = chatHistory.value.scrollHeight;
-  }
-});
-
-// 重新回答功能
-const retryResponse = async (index) => {
-  const messageText = currentQuestion.value;
-  
-  messages.value[index].text = "系统正在重新回答...";
-  messages.value[index].isResponse = false;
-
-  // Optionally, remove any images in case of retry
-  if (messages.value[index].imageurls) {
-    messages.value[index].imageurls = [];
-  }
-
-  isReResponce.value=true;
-
-  // Send the original message text to the backend again
-  await sendToBackend(messageText,index);
-
-  isReResponce.value=false;
-};
-
-// 复制功能
-// 复制功能
-const copyResponse = (index) => {
-  const responseText = messages.value[index].text;
-
-  navigator.clipboard.writeText(responseText)
-    .then(() => {
-      alert("回答已复制到剪贴板！");
-    })
-    .catch((err) => {
-      console.error("复制失败", err);
-      alert("复制失败，请重试！");
-    });
-};
-
 onMounted(() => {
-  const username = getUsername();
-
-  if (!username) {
-    router.push("/");
-  }
+  nextTick(() => {
+    chatHistory.value.scrollTop = chatHistory.value.scrollHeight;
+  });
 });
 </script>
 
@@ -630,4 +632,3 @@ height: 50px;
   display: none;
 }
 </style>
-、
