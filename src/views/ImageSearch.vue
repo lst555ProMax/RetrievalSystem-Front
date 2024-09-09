@@ -9,9 +9,9 @@
             <div v-if="!uiChange" :key="1">
               <div class="recommendations">
                 <div class="headbar">
-                  <div class="text">你可以这样向我提问</div>
+                  <div class="text">You can ask me like this</div>
                   <div class="icon" @click="changeSelection">
-                    <div>换一批</div>
+                    <div>Switch to another</div>
                     <i class="fa-solid fa-rotate"></i>
                   </div>
                 </div>
@@ -40,9 +40,7 @@
                 <div class="message-header">
                   <span class="message-time">{{ message.time }}</span>
                 </div>
-                <div
-                  class="message-content"
-                >
+                <div class="message-content">
                   <p>{{ message.text }}</p>
                   <img
                     v-if="!message.isResponse"
@@ -52,12 +50,15 @@
                   />
                 </div>
 
-                <div v-if="message.isResponse" class="response">
+                <div
+                  v-if="message.isResponse && !message.fromHistory"
+                  class="response"
+                >
                   <button v-if="!isLoading" @click="retryResponse(index)">
-                    重新回答
+                    Retry the response
                   </button>
                   <button v-if="!isLoading" @click="copyResponse(index)">
-                    复制
+                    Download all
                   </button>
                 </div>
               </div>
@@ -75,11 +76,20 @@
           </div>
 
           <div class="history-section">
-            <h4>历史记录</h4>
+            <h4>History Records</h4>
             <ul class="history-list">
-              <li v-for="(item, index) in history" :key="index">
-                <span>你好</span>
-                <button @click="removeHistory(index)">✖</button>
+              <li
+                v-for="(item, index) in history"
+                :key="item.id"
+                @click="fetchHistory(item.id)"
+              >
+                <img
+                  :src="item.imageUrl"
+                  alt="History images"
+                  class="thumbnail"
+                />
+                <span>{{ item.text }}</span>
+                <button @click.stop="removeHistory(index)">✖</button>
               </li>
             </ul>
           </div>
@@ -96,8 +106,6 @@ import Starfield from "../components/Starfield.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
-import Neural from "../components/Neural.vue"
-import CrossStar from "../components/CrossStar.vue"
 
 import img1 from "../assets/image_example/1.jpg";
 import img2 from "../assets/image_example/2.jpg";
@@ -130,7 +138,7 @@ const imageFiles = [
 
 const router = useRouter();
 
-const history = ref(["你好", "你好", "你好", "你好"]); // 示例数据
+const history = ref([]);
 const images = ref([
   img1,
   img2,
@@ -148,6 +156,11 @@ const images = ref([
 
 const questionSelection = ref(0);
 const uiChange = ref(0);
+const messages = ref([]);
+const userInput = ref("");
+const userInput2 = ref("");
+const isLoading = ref(false);
+const chatHistory = ref(null);
 
 const changeSelection = () => {
   questionSelection.value++;
@@ -157,16 +170,6 @@ const changeSelection = () => {
 const removeHistory = (index) => {
   history.value.splice(index, 1);
 };
-
-// 示例数据
-const messages = ref([]);
-const userInput = ref("");
-const userInput2 = ref("");
-
-const isLoading = ref(false);
-
-// 绑定 chat-history 的 DOM 元素
-const chatHistory = ref(null);
 
 // 监听 messages 数组变化时，触发滚动到底部
 watch(messages, async () => {
@@ -180,14 +183,6 @@ watch(messages, async () => {
 // 存储上传的文件
 const selectedFile = ref(null);
 
-/* // 处理文件改变事件
-const onFileChange = (event) => {
-  const files = event.target.files;
-  if (files && files[0]) {
-    selectedFile.value = files[0]; // 将选择的文件赋值给 selectedFile
-  }
-}; */
-
 // 处理文件改变事件
 const onFileChange = (event) => {
   const files = event.target.files;
@@ -196,76 +191,60 @@ const onFileChange = (event) => {
     if (file.type.startsWith("image/")) {
       selectedFile.value = file; // 确保是图片文件
     } else {
-      alert("请选择图片文件！");
+      alert("Please choose an image file！");
       selectedFile.value = null;
     }
   }
-};
-
-// 上传显示的图片
-const uploadImageFromList = (index) => {
-  const currentTime = new Date().toLocaleTimeString();
-  uiChange.value = 1;
-
-  // 添加用户点击图片上传的消息
-  messages.value.push({
-    text: `用户选择了第 ${index + 1} 张图片进行上传。`,
-    time: currentTime,
-    isResponse: false,
-  });
-
-  // 根据 index 设置所选的文件
-  selectedFile.value = imageFiles[index];
-  sendImage(); // 调用现有的上传逻辑
 };
 
 const token = localStorage.getItem("jwtToken");
 
 const api = {
   image: API_ENDPOINTS.image,
+  fetchHistory: API_ENDPOINTS.list,
 };
 
 let url = api.image;
 
+// 上传显示的图片
+const uploadImageFromList = async (index) => {
+  const response = await fetch(images[index]);
+  const blob = await response.blob();
+  // 设置用户选择的文件
+  selectedFile.value = new File([blob], "1.jpg", { type: "image/jpeg" });
+  console.log(selectedFile.value);
+
+  // 将上传逻辑移动到 sendImage 函数处理
+  await sendImage();
+};
+
 const sendImage = async (isRetry = false, index = -1) => {
   if (!selectedFile.value) {
-    alert("请先选择一张图片！");
+    alert("Please choose an image file！");
     return;
   }
+  console.log(selectedFile.value);
+  let currentTime = new Date().toLocaleTimeString();
 
   uiChange.value = 1;
-  let currentTime = new Date().toLocaleTimeString();
-  let pendingMessageIndex = -1;
+  messages.value = [];
 
   // 创建图片 URL
   const imageUrl = URL.createObjectURL(selectedFile.value);
+  console.log(imageUrl);
 
   // 设置加载状态
   isLoading.value = true;
 
-  // 如果是重新回答，需要处理特定的消息
-  if (isRetry && index >= 0) {
-    messages.value[index].text = "系统正在重新响应请求...";
-    currentTime = new Date().toLocaleTimeString();
-    pendingMessageIndex = index;
-  } else {
-    // 添加用户上传图片的消息
-    messages.value.push({
-      text: "用户上传了一张图片。",
-      time: currentTime,
-      isResponse: false,
-      imageUrl, // 新增的字段，保存图片 URL
-    });
+  // 添加用户上传图片的消息
+  messages.value.push({
+    text: "The user has uploaded an image.",
+    time: currentTime,
+    isResponse: false,
+    imageUrl,
+  });
 
-    // 添加系统正在响应请求的提示
-    messages.value.push({
-      text: "系统正在响应请求...",
-      time: currentTime,
-      isResponse: false,
-    });
-  }
-
-  console.log(messages.value);
+  userInput.value = "";
 
   const formData = new FormData();
   formData.append("username", getUsername());
@@ -275,12 +254,12 @@ const sendImage = async (isRetry = false, index = -1) => {
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
-      handleError("缺少身份验证令牌，请重新登录。");
+      handleError("Request failed. Please try again later.");
       isLoading.value = false;
       return;
     }
 
-    const result = await fetch(url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -288,43 +267,95 @@ const sendImage = async (isRetry = false, index = -1) => {
       body: formData,
     });
 
-    if (!result.ok) {
-      handleError(`请求失败，状态码：${result.status}`);
+    if (!response.ok) {
+      handleError(`Request failed, status code：${response.status}`);
       isLoading.value = false;
       return;
     }
 
-    const response = await result.json();
+    const result = await response.json();
     const responseTime = new Date().toLocaleTimeString();
 
-    // 移除系统正在响应的提示
-    if (pendingMessageIndex !== -1) {
-      messages.value[pendingMessageIndex].text = response.text_list
-        ? response.text_list.map((text) => text.content).join('\n')
-        : "这是系统给出的回答。";
-      messages.value[pendingMessageIndex].isResponse = true;
-    } else {
-      if (messages.value.length > 0 && messages.value[messages.value.length - 1].text === "系统正在响应请求...") {
-        messages.value.pop(); // 移除最后一个"系统正在响应请求..."的消息
-      }
+    messages.value.push({
+      text: result.text_list
+        ? result.text_list.map((text) => text.content).join("\n")
+        : "This is the response provided by the system",
+      time: responseTime,
+      isResponse: true,
+    });
 
-      messages.value.push({
-        text: response.text_list
-          ? response.text_list.map((text) => text.content).join('\n')
-          : "这是系统给出的回答。",
-        time: responseTime,
-        isResponse: true,
-      });
-    }
+    // 添加历史记录项，包括获取到的 ID 和文本
+    history.value.push({
+      id: result.search_history_id, // 替换为实际ID
+      text: `Uploaded on ${currentTime}`, // 可根据需求修改
+      imageUrl, // 存储图像 URL
+    });
   } catch (error) {
-    handleError("请求失败，请稍后重试");
-    console.error("提交失败", error);
+    handleError("Request failed, please try again later");
+    console.error("Submission failed", error);
   } finally {
     // 请求完成，显示按钮
     isLoading.value = false;
   }
 };
 
+//获取历史记录
+const fetchHistory = async (id) => {
+  const formData = new FormData();
+  formData.append("search_history_id", id);
+
+  try {
+    const response = await fetch(api.fetchHistory, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const result = await response.json();
+    messages.value = [];
+
+    if (result.code === 0) {
+      const imageUrl = URL.createObjectURL(selectedFile.value);
+
+      messages.value.push({
+        imageUrl, // 使用从历史记录中获取的 URL
+        time: result.data.date,
+        isResponse: false,
+        fromHistory: true, // 标识为历史记录来源
+      });
+
+      // 检查 search_text 是否为字符串
+      const searchText = result.data.search_text;
+
+      // 使用正则表达式提取所有 'Content' 部分的内容
+      const contentMatches = searchText.match(/Content:\s*([^,]+)/g);
+
+      // 提取并格式化内容为字符串，中间用换行符隔开
+      const responseText = contentMatches
+        ? contentMatches
+            .map((match) => match.replace("Content: ", "").trim())
+            .join("\n")
+        : "This is the response provided by the system."; // 如果没有匹配项，显示默认信息
+
+      messages.value.push({
+        time: result.data.date,
+        isResponse: true,
+        text: responseText,
+        fromHistory: true, // 标识为历史记录来源
+      });
+    } else {
+      handleError(
+        "Failed to retrieve history records" +
+          (result.message || "Unknown error")
+      );
+    }
+  } catch (error) {
+    handleError("Request failed, please try again later");
+    console.error("Failed to retrieve history records", error);
+  }
+};
 
 // 错误处理函数
 const handleError = (errorMessage) => {
@@ -341,7 +372,7 @@ const retryResponse = async (index) => {
   try {
     await sendImage(true, index);
   } catch (error) {
-    messages.value[index].text = "请求失败，请稍后重试。";
+    messages.value[index].text = "Request failed, please try again later.";
   }
 };
 
@@ -351,10 +382,10 @@ const copyResponse = (index) => {
   navigator.clipboard
     .writeText(textToCopy)
     .then(() => {
-      alert("回答已复制到剪贴板！");
+      alert("The response has been copied to the clipboard.");
     })
     .catch(() => {
-      alert("复制失败，请重试！");
+      alert("Copy failed, please try again.");
     });
 };
 
@@ -490,9 +521,9 @@ onMounted(() => {
   margin: 5px 0px;
 }
 
-.uploaded-image{
-  height:150px;
-  width:150px;
+.uploaded-image {
+  height: 150px;
+  width: 150px;
 }
 
 .response {
@@ -584,6 +615,14 @@ onMounted(() => {
   border: none;
   color: #d3d3d3;
   cursor: pointer;
+}
+
+.thumbnail {
+  width: 50px; /* 调整缩略图的宽度 */
+  height: 50px; /* 调整缩略图的高度 */
+  object-fit: cover; /* 保持图像比例裁剪 */
+  margin-right: 8px; /* 调整与文字的间距 */
+  border-radius: 4px; /* 圆角效果，可选 */
 }
 
 .hidden {

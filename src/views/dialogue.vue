@@ -5,112 +5,111 @@
 <!-- 需要引入大模型接口来实现最终的聊天逻辑 -->
 <template>
   <starfield />
-  <dashboard> 
-  <template #left-content>
-  <div class="chat-system">
-
-      <div class="main-content">
-        <div class="up-down">
-          <div v-if="!uiChange" :key="1">
-            <div class="recommendations">
-              <div class="headbar">
-                <div class="text">你可以这样向我提问</div>
-                <div class="icon" @click="changeSelection">
-                  <div>换一批</div>
-                  <i class="fa-solid fa-rotate"></i>
+  <dashboard>
+    <template #left-content>
+      <div class="chat-system">
+        <div class="main-content">
+          <div class="up-down">
+            <div v-if="!uiChange" :key="1">
+              <div class="recommendations">
+                <div class="headbar">
+                  <div class="text">You can ask me like this</div>
+                  <div class="icon" @click="changeSelection">
+                    <div>Switch to another</div>
+                    <i class="fa-solid fa-rotate"></i>
+                  </div>
+                </div>
+                <div class="question-list">
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(0 + 6 * questionSelection)"
+                  >
+                    {{ question[0 + 6 * questionSelection] }}
+                  </button>
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(1 + 6 * questionSelection)"
+                  >
+                    {{ question[1 + 6 * questionSelection] }}
+                  </button>
+                </div>
+                <div class="question-list">
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(2 + 6 * questionSelection)"
+                  >
+                    {{ question[2 + 6 * questionSelection] }}
+                  </button>
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(3 + 6 * questionSelection)"
+                  >
+                    {{ question[3 + 6 * questionSelection] }}
+                  </button>
+                </div>
+                <div class="question-list">
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(4 + 6 * questionSelection)"
+                  >
+                    {{ question[4 + 6 * questionSelection] }}
+                  </button>
+                  <button
+                    class="question-button"
+                    @click="sendMessageIndex(5 + 6 * questionSelection)"
+                  >
+                    {{ question[5 + 6 * questionSelection] }}
+                  </button>
                 </div>
               </div>
-              <div class="question-list">
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(0 + 6 * questionSelection)"
-                >
-                  {{ question[0 + 6 * questionSelection] }}
-                </button>
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(1 + 6 * questionSelection)"
-                >
-                  {{ question[1 + 6 * questionSelection] }}
-                </button>
+            </div>
+
+            <div v-if="messages.length" class="chat-history" ref="chatHistory">
+              <div
+                v-for="(message, index) in messages"
+                :key="index"
+                class="message"
+              >
+                <div class="message-header">
+                  <span class="message-time">{{ message.time }}</span>
+                </div>
+                <div class="message-content">
+                  <p>{{ message.text }}</p>
+                </div>
+                <div v-if="message.isResponse" class="response">
+                  <p>{{ responseText }}</p>
+                  <button @click="retryResponse(index)">Retry the response</button>
+                  <button @click="copyResponse(index)">Download all</button>
+                </div>
               </div>
-              <div class="question-list">
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(2 + 6 * questionSelection)"
-                >
-                  {{ question[2 + 6 * questionSelection] }}
-                </button>
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(3 + 6 * questionSelection)"
-                >
-                  {{ question[3 + 6 * questionSelection] }}
-                </button>
-              </div>
-              <div class="question-list">
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(4 + 6 * questionSelection)"
-                >
-                  {{ question[4 + 6 * questionSelection] }}
-                </button>
-                <button
-                  class="question-button"
-                  @click="sendMessageIndex(5 + 6 * questionSelection)"
-                >
-                  {{ question[5 + 6 * questionSelection] }}
-                </button>
-              </div>
+            </div>
+
+            <div class="input-area">
+              <input
+                type="text"
+                v-model="userInput"
+                placeholder="Please enter text..."
+                @keyup.enter="sendMessage"
+              />
+              <button @click="sendMessage">➤</button>
             </div>
           </div>
 
-          <div v-if="messages.length" class="chat-history" ref="chatHistory">
-            <div
-              v-for="(message, index) in messages"
-              :key="index"
-              class="message"
-            >
-              <div class="message-header">
-                <span class="message-time">{{ message.time }}</span>
-              </div>
-              <div class="message-content">
-                <p>{{ message.text }}</p>
-              </div>
-              <div v-if="message.isResponse" class="response">
-                <p>{{ responseText }}</p>
-                <button @click="retryResponse(index)">重新回答</button>
-                <button @click="copyResponse(index)">复制</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="input-area">
-            <input
-              type="text"
-              v-model="userInput"
-              placeholder="请输入文本..."
-              @keyup.enter="sendMessage"
-            />
-            <button @click="sendMessage">➤</button>
+          <div class="history-section">
+            <h4>History Records</h4>
+            <ul class="history-list">
+              <li v-for="(item, index) in history" :key="index">
+                <span class="history-text" @click="viewHistory(index)">
+                  {{ item.text }}
+                </span>
+                <button @click="removeHistory(index)">✖</button>
+              </li>
+            </ul>
           </div>
         </div>
-
-        <div class="history-section">
-  <h4>历史记录</h4>
-  <ul class="history-list">
-    <li v-for="(item, index) in history" :key="index">
-      <span class="history-text" @click="viewHistory(index)">
-        {{ item.text }}
-      </span>
-      <button @click="removeHistory(index)">✖</button>
-    </li>
-  </ul>
-</div>
       </div>
-    </div>
-</template>
-</dashboard>
+    </template>
+  </dashboard>
 </template>
 
 <script setup>
@@ -118,50 +117,52 @@ import { ref, watch, onMounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Starfield from "@/components/Starfield.vue";
 import { getUsername } from "@/utils/Auth";
-import dashboard from "../components/Dashboard.vue"
+import dashboard from "../components/Dashboard.vue";
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 const route = useRoute();
 const router = useRouter();
 const history = ref([]); // 初始化为空数组
 const question = ref([
-"什么是跨模态学习？",
-  "图像和文本之间的关联如何建立？",
-  "如何评估跨模态检索系统的效果？",
-  "什么是图像文本检索中的多模态融合？",
-  "深度学习在跨模态检索中的作用是什么？",
-  "预训练模型在跨模态任务中的应用有哪些？",
-  "跨模态检索中的对齐技术有什么进展？",
-  "如何处理跨模态数据中的噪声？",
-  "如何利用生成模型改进跨模态检索？",
-  "图像描述生成在跨模态检索中的角色是什么？",
-  "什么是跨模态检索中的零样本学习？",
-  "如何解决跨模态检索中的多样性和模态不平衡问题？",
-  "跨模态学习的主要挑战有哪些？",
-  "多模态神经网络如何在跨模态检索中工作？",
-  "如何优化跨模态检索的效率和精度？",
-  "跨模态检索中的注意力机制是如何应用的？",
-  "跨模态检索与传统检索有何不同？",
-  "生成式对抗网络如何用于跨模态学习？",
-  "如何处理跨模态检索中的数据稀疏性问题？",
-  "跨模态检索中的语义表示如何实现？",
-  "自监督学习在跨模态检索中的应用有哪些？",
-  "如何评价跨模态检索中的检索相关性？",
-  "跨模态嵌入技术的最新进展有哪些？",
-  "跨模态学习中如何进行特征对齐？",
-  "多模态融合策略在跨模态检索中的作用是什么？",
-  "如何应对跨模态检索中的领域偏移问题？",
-  "如何设计跨模态检索的评价指标？",
-  "跨模态检索中的数据增强方法有哪些？",
-  "深度图像-文本对齐技术如何提升检索效果？",
-  "如何通过知识蒸馏改进跨模态检索模型？",
+  "What is cross-modal learning?",
+  "How is the association between images and text established?",
+  "How is the performance of cross-modal retrieval systems evaluated?",
+  "What is multimodal fusion in image-text retrieval?",
+  "What role does deep learning play in cross-modal retrieval?",
+  "What are the applications of pre-trained models in cross-modal tasks?",
+  "What progress has been made in alignment techniques in cross-modal retrieval?",
+  "How to handle noise in cross-modal data?",
+  "How can generative models improve cross-modal retrieval?",
+  "What is the role of image description generation in cross-modal retrieval?",
+  "What is zero-shot learning in cross-modal retrieval?",
+  "How to address diversity and modality imbalance issues in cross-modal retrieval?",
+  "What are the main challenges in cross-modal learning?",
+  "How do multimodal neural networks work in cross-modal retrieval?",
+  "How to optimize the efficiency and accuracy of cross-modal retrieval?",
+  "How are attention mechanisms applied in cross-modal retrieval?",
+  "How does cross-modal retrieval differ from traditional retrieval?",
+  "How are generative adversarial networks used in cross-modal learning?",
+  "How to handle data sparsity issues in cross-modal retrieval?",
+  "How is semantic representation achieved in cross-modal retrieval?",
+  "What are the applications of self-supervised learning in cross-modal retrieval?",
+  "How to evaluate retrieval relevance in cross-modal retrieval?",
+  "What are the latest advancements in cross-modal embedding techniques?",
+  "How to perform feature alignment in cross-modal learning?",
+  "What is the role of multimodal fusion strategies in cross-modal retrieval?",
+  "How to address domain shift issues in cross-modal retrieval?",
+  "How to design evaluation metrics for cross-modal retrieval?",
+  "What data augmentation methods are used in cross-modal retrieval?",
+  "How do deep image-text alignment techniques improve retrieval performance?",
+  "How to improve cross-modal retrieval models through knowledge distillation?",
 ]);
+
 
 const questionSelection = ref(0);
 const uiChange = ref(0);
 const userInput = ref("");
 const userInput2 = ref("");
 const messages = ref([]);
-const responseText = "这是系统给出的示例回答内容。";
+const responseText = "This is a sample response provided by the system.";
 const chatHistory = ref(null);
 
 const changeSelection = () => {
@@ -226,9 +227,8 @@ const sendMessageIndex = async (index) => {
   }
 };
 
-
 const api = {
-  dialogue: "http://172.20.10.7:8000/search/text",
+  dialogue:API_ENDPOINTS.dialogue ,
 };
 
 let url = api.dialogue;
@@ -259,18 +259,17 @@ const handleSearch = async (question) => {
 
 const sendToBackend = async (inputText) => {
   const formData = new FormData();
-  formData.append("username", getUsername());
-  formData.append("keywords", inputText);
+  formData.append("content", inputText); // 传递content字段给后端
 
   try {
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
-      handleError("缺少身份验证令牌，请重新登录。");
+      handleError("Missing authentication token, please log in again.");
       return;
     }
 
-    const result = await fetch(url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -278,74 +277,28 @@ const sendToBackend = async (inputText) => {
       body: formData,
     });
 
-    if (!result.ok) {
-      handleError(`请求失败，状态码：${result.status}`);
+    if (!response.ok) {
+      handleError("Request failed, please try again later.");
       return;
     }
 
-    const response = await result.json();
+    const result = await response.json();
 
-    if (response.code === 0) {
-      const responseTime = new Date().toLocaleTimeString();
-
-      if (response.data) {
-        messages.value.push({
-          text: "生成的图像如下：" + response.data.text,
-          time: responseTime,
-          isResponse: true,
-        });
-      } else {
-        messages.value.push({
-          text: response.message || "这是系统给出的回答。",
-          time: responseTime,
-          isResponse: true,
-        });
-      }
-    } else {
-      handleError("后端返回错误：" + (response.message || "未知错误"));
+    if (result.code===0) {
+      messages.value.push({
+        text: result.message,
+        time: new Date().toLocaleTimeString(),
+        isResponse: true,
+      });
     }
   } catch (error) {
-    handleError("请求失败，请稍后重试");
-    console.error("提交失败", error);
+    handleError(`Request failed ${error.message}`);
   }
 };
 
-const handleError = (errorMessage) => {
-  const errorTime = new Date().toLocaleTimeString();
-  messages.value.push({
-    text: errorMessage,
-    time: errorTime,
-    isResponse: true,
-  });
+const handleError = (message) => {
+  alert(message);
 };
-
-watch(messages, async () => {
-  await nextTick();
-  if (chatHistory.value) {
-    chatHistory.value.scrollTop = chatHistory.value.scrollHeight;
-  }
-});
-
-const retryResponse = (index) => {
-  messages.value[index].text = "系统正在重新回答...";
-};
-
-const copyResponse = (index) => {
-  navigator.clipboard.writeText(responseText);
-  alert("回答已复制到剪贴板！");
-};
-
-onMounted(() => {
-  const username = getUsername();
-
-  if (!username) {
-    router.push("/");
-  }
-
-  if (route.path === "/dialogue" && userInput.value) {
-    handleSearch(userInput.value);
-  }
-});
 </script>
 
 <style scoped>

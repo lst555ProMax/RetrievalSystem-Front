@@ -2,38 +2,38 @@
   <div v-if="isVisible" class="feedback-overlay">
     <div class="feedback-container">
       <header class="feedback-header">
-        <h2>意见反馈</h2>
+        <h2>Feedback</h2>
         <button class="close-button" @click="close">×</button>
       </header>
       <div class="feedback-content">
         <p class="message">
-          您好，很抱歉我们无法为您提供完备的服务，如需帮助请留言，我们将尽快联系并解决您的问题！
+          Hello, I'm sorry we can't provide you with a complete service, if you need help, please leave a message, we will contact and solve your problem as soon as possible!
         </p>
 
         <!-- Problem Type Section -->
         <div class="problem-type">
-          <label>问题类型 *</label>
+          <label>The type of question *</label>
           <div class="problem-buttons">
-            <button :class="{ active: selectedType === 'member' }" @click="selectType('member')">会员问题</button>
-            <button :class="{ active: selectedType === 'product' }" @click="selectType('product')">产品建议</button>
-            <button :class="{ active: selectedType === 'consult' }" @click="selectType('consult')">我要咨询</button>
-            <button :class="{ active: selectedType === 'other' }" @click="selectType('other')">其他问题</button>
+            <button :class="{ active: selectedType === 'member' }" @click="selectType('member')">Inquiries  </button>
+            <button :class="{ active: selectedType === 'product' }" @click="selectType('product')">Problems </button>
+            <button :class="{ active: selectedType === 'consult' }" @click="selectType('consult')">Question </button>
+            <button :class="{ active: selectedType === 'other' }" @click="selectType('other')">Misissue</button>
           </div>
         </div>
 
         <!-- Feedback Content Section -->
         <div class="feedback-text">
-          <label>反馈内容 *</label>
-          <textarea v-model="feedbackContent" placeholder="请填写您的具体描述"></textarea>
+          <label>Feedback content *</label>
+          <textarea v-model="feedbackContent" placeholder="Please fill in your specific description"></textarea>
         </div>
       </div>
 
       <!-- Footer Buttons -->
       <footer class="feedback-footer">
-        <button class="feedback-count">反馈次数: {{ feedbackCount }}</button>
+        <button class="feedback-count">Number of feedbacks: {{ feedbackCount }}</button>
         <div class="action-buttons">
-          <button class="cancel-button" @click="close">取消</button>
-          <button class="submit-button" @click="submitFeedback">提交</button>
+          <button class="cancel-button" @click="close">Cancel</button>
+          <button class="submit-button" @click="submitFeedback">Submit</button>
         </div>
       </footer>
     </div>
@@ -123,7 +123,7 @@ function handleFileChange(event, index) {
 
   // 限制文件大小为2M
   if (file.size > 2 * 1024 * 1024) {
-    alert("图片大小不能超过2M");
+    alert("The size of the image cannot exceed 2M");
     return;
   }
 
@@ -162,11 +162,11 @@ async function submitFeedback() {
     if (result.code === 0) {
       feedbackCount.value += 1;
       localStorage.setItem('feedbackCount', feedbackCount.value.toString());
-      alert("提交成功！");
+      alert("Submitted successfully!");
       close();
     }
   } catch (error) {
-    console.error("提交失败", error);
+    console.error("Submission failed", error);
   }
 }
 

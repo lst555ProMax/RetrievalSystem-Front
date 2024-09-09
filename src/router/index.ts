@@ -8,6 +8,7 @@ import others from '../views/Others.vue'
 import userManagement from '../views/AdminOperations/UserManagement.vue'
 import systemManagement from '../views/AdminOperations/SystemManagement.vue'
 import profile from "../views/Profile.vue"
+import test from "../views/Test.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,11 @@ const router = createRouter({
       path:"/profile",
       name:"profile",
       component:profile
+    },
+    {
+      path:"/test",
+      name:"test",
+      component:test
     }
   ]
 })

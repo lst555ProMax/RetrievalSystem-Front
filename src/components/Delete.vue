@@ -3,7 +3,7 @@
     <div class="delete-content" @click="stop">
       <!-- 头部 -->
       <div class="delete-header">
-        <h2>注销账号</h2>
+        <h2>Cancel your account</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
@@ -12,17 +12,17 @@
         <form>
           <!-- 用户名 -->
           <div class="form-group">
-            <label for="username">用户名</label>
+            <label for="username">Username</label>
             <input type="text" id="username" :placeholder=username disabled />
           </div>
 
           <!-- 密码 -->
           <div class="form-group">
-            <label for="password">密码 *</label>
+            <label for="password">Password *</label>
             <input
               type="password"
               id="password"
-              placeholder="请输入密码"
+              placeholder="Please enter your password"
               v-model="form.password"
               required
             />
@@ -30,24 +30,24 @@
 
           <!-- 注销原因 -->
           <div class="form-group">
-            <label for="reason">注销原因</label>
+            <label for="reason">Reason for logging-out</label>
             <textarea
               id="reason"
-              placeholder="请输入注销原因（选填）"
+              placeholder="Please enter a reason for cancellation (optional)"
               v-model="form.reason"
             ></textarea>
           </div>
 
           <!-- 账号注销协议 -->
           <div class="form-group">
-            <label>账号注销须知</label>
+            <label>Account Cancellation Notice</label>
             <div class="agreement-text">
               <p>
-                注销账号后，您的所有数据将被永久删除且无法恢复。请确保您已备份所需的所有数据。如您继续使用服务需重新注册新账号。注销过程不可逆，请您谨慎操作。
+                After you cancel your account, all your data will be permanently deleted and cannot be recovered. Please make sure that you have backed up all the data you need. If you continue to use the service, you need to register a new account. The logout process is irreversible, please be cautious.
               </p>
             </div>
             <div class="agreement-check">
-              <label for="agreement" class="agreement-label">我已了解并同意</label>
+              <label for="agreement" class="agreement-label">I understand and agree</label>
               <input type="checkbox" id="agreement" v-model="form.agreement" class="agreement-input"/>
             </div>
           </div>
@@ -56,8 +56,8 @@
 
       <!-- 底部按钮 -->
       <div class="delete-footer">
-        <button class="cancel-button" @click="close">取消</button>
-        <button class="confirm-button" @click="Delete">确定</button>
+        <button class="cancel-button" @click="close">Cancel</button>
+        <button class="confirm-button" @click="Delete">Sure</button>
       </div>
     </div>
   </div>
@@ -99,11 +99,11 @@ const token = localStorage.getItem("jwtToken");
 const Delete = async () => {
 
   if(!form.value.password){
-    alert("请输入密码");
+    alert("Please enter your password");
     return;
   }
   if (!form.value.agreement) {
-    alert("请勾选同意协议");
+    alert("Please check the box to agree to the agreement");
     return;
   }
 
@@ -121,10 +121,10 @@ const Delete = async () => {
 
   const result = await response.json();
   if (result.code === 0) {
-    alert("注销成功");
+    alert("The logout is successful");
     router.push("/");
   } else {
-    alert("注销失败");
+    alert("Logout failed");
   }
 };
 

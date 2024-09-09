@@ -4,62 +4,55 @@
   <Dashboard>
     <template #left-content>
       <div class="systemManagement">
-        <div class="non-header">
-          <div class="main-content">
-            <!-- 备份设置框 -->
-            <div class="backup-settings">
-              <h3>备份设置</h3>
-              <div class="settings-row">
-                <select
-                  v-model="backupSettings.frequency"
-                  :disabled="!isEditing"
-                >
-                  <option value="week">每周</option>
-                  <option value="two weeks">每两周</option>
-                  <option value="month">每月</option>
-                  <option value="two months">每两月</option>
-                  <option value="six mouths">每半年</option>
-                  <option value="year">每年</option>
-                </select>
-                <input
-                  v-model="backupSettings.path"
-                  :disabled="!isEditing"
-                  type="text"
-                />
-                <button v-if="!isEditing" @click="startEditing" class="btn">
-                  修改
+        <div class="main-content">
+          <h2>System Management</h2>
+
+          <div class="backup-settings">
+            <h4>Backup settings</h4>
+            <div class="settings-row">
+              <select v-model="backupSettings.frequency" :disabled="!isEditing">
+                <option value="week">week</option>
+                <option value="two weeks">two weeks</option>
+                <option value="month">month</option>
+                <option value="two months">two months</option>
+                <option value="six mouths">six mouths</option>
+                <option value="year">year</option>
+              </select>
+              <input
+                v-model="backupSettings.path"
+                :disabled="!isEditing"
+                type="text"
+              />
+              <button v-if="!isEditing" @click="startEditing" class="btn">
+                Change
+              </button>
+              <div v-if="isEditing" class="edit-buttons">
+                <button @click="saveSettings" class="btn">Ensure</button>
+                <button @click="cancelEditing" class="btn cancel-btn">
+                  Cancel
                 </button>
-                <div v-if="isEditing" class="edit-buttons">
-                  <button @click="saveSettings" class="btn">保存</button>
-                  <button @click="cancelEditing" class="btn cancel-btn">
-                    取消
-                  </button>
-                </div>
               </div>
+              <!-- 备份按钮 -->
+              <button @click="Backup" class="edit-buttons btn">Backup</button>
             </div>
-
-            <!-- 备份记录表 -->
-            <h3>备份记录</h3>
-            <table class="backup-records">
-              <thead>
-                <tr>
-                  <th>备份人员</th>
-                  <th>备份时间</th>
-                  <th>备份文件名</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(record, index) in backupRecords" :key="index">
-                  <td>{{ record.admin }}</td>
-                  <td>{{ record.backup_date }}</td>
-                  <td>{{ record.backup_filename }}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <!-- 备份按钮 -->
-            <button @click="Backup" class="btn backup-btn">备份</button>
           </div>
+
+          <table class="backup-records">
+            <thead>
+              <tr>
+                <th>Backup Personnel</th>
+                <th>Backup Time</th>
+                <th>Backup File Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(record, index) in backupRecords" :key="index">
+                <td>{{ record.admin }}</td>
+                <td>{{ record.backup_date }}</td>
+                <td>{{ record.backup_filename }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </template>
@@ -114,10 +107,13 @@ const getSetting = async () => {
         path: response.data.data.backup_path,
       };
     } else {
-      console.error("获取管理员备份数据失败:", response.message);
+      console.error(
+        "Failed to retrieve administrator backup data:",
+        response.message
+      );
     }
   } catch (error) {
-    console.error("请求失败:", error);
+    console.error("Request failed:", error);
   }
 };
 
@@ -139,14 +135,14 @@ const setSetting = async () => {
     const result = await response.json();
 
     if (result.code === 0) {
-      console.log("修改成功", result);
-      alert("备份设置已修改！");
+      console.log("Modification successful", result);
+      alert("Backup settings have been modified!");
     } else {
-      console.error("修改失败", result.message);
-      alert("修改失败！");
+      console.error("Modification failed", result.message);
+      alert("Modification failed!");
     }
   } catch (error) {
-    console.error("请求失败", error);
+    console.error("Request failed", error);
   }
 };
 
@@ -159,21 +155,22 @@ const getRecord = async () => {
       },
     });
 
-
     if (response.data.code === 0) {
       backupRecords.value = response.data.data;
       backupRecords.value.forEach((record) => {
         record.admin = response.data.admin_name;
       });
-/*       alert("备份记录更新成功！"); */
+      /*       alert("备份记录更新成功！"); */
     } else {
-      console.error("获取管理员备份记录失败:", response.data.message);
+      console.error(
+        "Failed to retrieve administrator backup records:",
+        response.data.message
+      );
     }
   } catch (error) {
-    console.error("请求失败:", error);
+    console.error("Request failed:", error);
   }
 };
-
 
 const Backup = async () => {
   try {
@@ -184,16 +181,15 @@ const Backup = async () => {
     });
 
     if (response.data.code === 0) {
-      alert("备份顺利进行！");
+      alert("Backup completed successfully");
       getRecord();
     } else {
-      console.error("备份失败:", response.data.message);
+      console.error("Backup failed:", response.data.message);
     }
   } catch (error) {
-    console.error("请求失败:", error);
+    console.error("Request failed:", error);
   }
 };
-
 
 onMounted(() => {
   const username = getUsername();
@@ -223,7 +219,7 @@ const cancelEditing = () => {
 
 // 执行备份
 const executeBackup = () => {
-  alert("正在执行备份操作...");
+  alert("Backup operation in progress...");
   // 这里可以添加实际的备份操作逻辑
 };
 </script>
@@ -240,31 +236,26 @@ body {
 
 .systemManagement {
   display: flex;
-  height: calc(100vh - 10px);
+  height: fit-content;
   margin: 5px;
   border-radius: 5px;
   overflow: hidden;
   box-sizing: border-box;
-  flex-direction: column;
-  background: #1c1e26;
-  padding: 20px;
-  border: 1px solid #444;
-}
-
-.non-header {
   display: flex;
-  flex-direction: row;
-  height: 100%;
+  flex-direction: column;  
+  justify-items: center;
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-items: center;
   padding: 10px;
-  flex: 1;
   overflow-y: auto;
   box-sizing: border-box;
+  height: 780px;
+  width:100%;
 }
 
 h3 {
@@ -273,11 +264,16 @@ h3 {
 }
 
 .backup-settings {
+  border-radius: 18px;
+  box-shadow: 1px 1px 8px 0 grey;
   margin-bottom: 20px;
-  padding: 15px;
-  background: #2e3038;
-  border-radius: 5px;
-  width: 100%;
+  padding: 20px 25px 20px 25px;
+  width: 90%;
+  height:22%;
+  color: rgba(255, 255, 255, 0.8);
+  align-items: center;
+  justify-content: center;
+  overflow-y: hidden;
 }
 
 .settings-row {
@@ -289,18 +285,18 @@ h3 {
 select,
 input {
   padding: 8px;
-  border: 1px solid #666;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
-  background: #333;
+  background-color: rgba(62, 62, 95, 0.6);
   color: #fff;
-  flex: 1;
+width:45%;
 }
 
 .btn {
   padding: 8px 15px;
   border: none;
   border-radius: 5px;
-  background: #4a90e2;
+  background-color: #0dbe83;
   color: #fff;
   cursor: pointer;
 }
@@ -323,25 +319,27 @@ input {
 }
 
 .backup-records {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+  border-radius: 18px;
+  box-shadow: 1px 1px 8px 0 grey;
+  height: 90%;
+  margin-bottom: 20px;
+  padding: 20px 25px 20px 25px;
+  width: 90%;
+  color: rgba(255, 255, 255, 0.8);
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
 }
 
 .backup-records th,
 .backup-records td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 10px;
-  border: 1px solid #555;
-  text-align: center;
+  text-align: left;
 }
 
 .backup-records th {
-  background: #333;
-  color: #ddd;
-}
-
-.backup-records td {
-  color: #bbb;
+  background-color: rgba(62, 62, 95, 0.6);
 }
 
 .backup-btn {

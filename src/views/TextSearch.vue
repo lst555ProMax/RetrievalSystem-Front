@@ -6,13 +6,13 @@
       <div class="non-header">
         <div class="main-content">
           <div class="up-down">
-            <!-- 推荐搜索 -->
+            <!-- Recommended Searches -->
             <div v-if="!uiChange" :key="1">
               <div class="recommendations">
                 <div class="headbar">
-                  <div class="text">你可以这样向我提问</div>
+                  <div class="text">You can ask me like this</div>
                   <div class="icon" @click="changeSelection">
-                    <div>换一批</div>
+                    <div>Switch to another</div>
                     <i class="fa-solid fa-rotate"></i>
                   </div>
                 </div>
@@ -47,7 +47,7 @@
               </div>
             </div>
 
-            <!-- 搜索界面 -->
+            <!-- Search Interface -->
             <div v-if="messages.length" class="chat-history" ref="chatHistory">
               <div
                 v-for="(message, index) in messages"
@@ -64,36 +64,39 @@
                       v-for="(imageUrl, index) in message.imageurls"
                       :key="index"
                       :src="imageUrl"
-                      alt="图片"
+                      alt="image"
                       class="response-image"
                     />
                   </div>
                   <div v-if="message.loading" class="loading-icon">
-      <i class="fa-solid fa-spinner fa-spin"></i>
-    </div>
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                  </div>
                 </div>
-                <div v-if="message.isResponse" class="response">
-                  <button @click="retryResponse">重新回答</button>
-                  <button @click="downloadAllImages">全部下载</button>
+                <div
+                  v-if="message.isResponse && !message.fromHistory"
+                  class="response"
+                >
+                  <button @click="retryResponse">Retry the response</button>
+                  <button @click="downloadAllImages">Download all</button>
                 </div>
               </div>
             </div>
 
-            <!-- 输入框 -->
+            <!-- Input Box -->
             <div class="input-area">
               <input
                 type="text"
                 v-model="userInput"
-                placeholder="请输入文本..."
+                placeholder="Please enter text..."
                 @keyup.enter="sendMessage"
               />
               <button @click="sendMessage">➤</button>
             </div>
           </div>
 
-          <!-- 历史记录部分 -->
+          <!-- History Records Section -->
           <div class="history-section">
-            <h4>历史记录</h4>
+            <h4>History Records</h4>
             <ul class="history-list">
               <li
                 v-for="(item, index) in history"
@@ -121,7 +124,7 @@ import { API_ENDPOINTS } from "../config/apiConfig";
 
 const router = useRouter();
 
-const history = ref([]); // 保存历史记录
+const history = ref([]); // Save history records
 const question = ref([
   "A girl going into a wooden building",
   "An elderly woman going into a stone building.",
@@ -164,7 +167,7 @@ const token = localStorage.getItem("jwtToken");
 
 const api = {
   text: API_ENDPOINTS.text,
-  fetchHistory: API_ENDPOINTS.list, // 获取历史记录的 API 接口
+  fetchHistory: API_ENDPOINTS.list, // API endpoint for fetching history records
 };
 
 const changeSelection = () => {
@@ -176,7 +179,7 @@ const removeHistory = (index) => {
   history.value.splice(index, 1);
 };
 
-// 发送用户消息和请求后端接口
+// Send user message and request to backend API
 const sendMessage = async () => {
   if (userInput.value.trim()) {
     const currentTime = new Date().toLocaleTimeString();
@@ -184,18 +187,18 @@ const sendMessage = async () => {
     uiChange.value = 1;
     messages.value = [];
 
-    // 添加用户的提问到消息列表
+    // Add user question to message list
     messages.value.push({
       text: userInput.value,
       time: currentTime,
       isResponse: false,
-      loading: true, 
+      loading: true,
     });
 
-    // 调用后端接口
+    // Call backend API
     await sendToBackend(userInput.value);
 
-    // 清空输入框
+    // Clear input box
     userInput.value = "";
   }
 };
@@ -210,7 +213,7 @@ const sendMessageIndex = async (index) => {
       text: userInput2.value,
       time: currentTime,
       isResponse: false,
-      loading: true, 
+      loading: true,
     });
 
     await sendToBackend(userInput2.value, index);
@@ -219,7 +222,7 @@ const sendMessageIndex = async (index) => {
   }
 };
 
-// 发送请求到后端
+// Send request to backend
 const sendToBackend = async (inputText) => {
   const formData = new FormData();
   formData.append("username", getUsername());
@@ -229,7 +232,7 @@ const sendToBackend = async (inputText) => {
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
-      handleError("缺少身份验证令牌，请重新登录。");
+      handleError("Missing authentication token. Please log in again.");
       return;
     }
 
@@ -254,7 +257,7 @@ const sendToBackend = async (inputText) => {
         });
 
         messages.value.push({
-          text: "生成的图像如下：",
+          text: "Generated images are as follows:",
           time: responseTime,
           isResponse: true,
           imageurls: imageUrls,
@@ -262,38 +265,40 @@ const sendToBackend = async (inputText) => {
         });
       } else {
         messages.value.push({
-          text: result.message || "这是系统给出的回答。",
+          text: result.message || "This is the system's response.",
           time: responseTime,
           isResponse: true,
-          loading:false,
+          loading: false,
         });
       }
 
-            // 更新用户消息的loading状态
-            if (messages.value[0]) {
+      // Update user message loading state
+      if (messages.value[0]) {
         messages.value[0].loading = false;
       }
 
-      // 添加历史记录项，包括获取到的 ID 和文本
+      // Add history record item, including the obtained ID and text
       history.value.push({
-        id: result.search_history_id, 
+        id: result.search_history_id,
         text: inputText,
       });
     } else {
-      handleError("后端返回错误：" + (result.message || "未知错误"));
+      handleError(
+        "Backend returned an error: " + (result.message || "Unknown error")
+      );
     }
   } catch (error) {
-    handleError("请求失败，请稍后重试");
-    console.error("提交失败", error);
+    handleError("Request failed. Please try again later.");
+    console.error("Submission failed", error);
   }
 };
 
-// 获取历史记录
+// Fetch history record
 const fetchHistory = async (id) => {
-  const formData =new FormData();
-  formData.append("search_history_id",id);
+  const formData = new FormData();
+  formData.append("search_history_id", id);
   try {
-    const response= await fetch(api.fetchHistory, {
+    const response = await fetch(api.fetchHistory, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -301,68 +306,69 @@ const fetchHistory = async (id) => {
       body: formData,
     });
 
-    const result  = await response.json();
+    const result = await response.json();
     messages.value = [];
 
     if (result.code === 0) {
       messages.value.push({
-      text: result.data.search_text,
-      time: result.data.date,
-      isResponse: false,
-    });
+        text: result.data.search_text,
+        time: result.data.date,
+        isResponse: false,
+        fromHistory: true, // Mark as coming from history
+      });
 
-    const imageUrls = [];
+      const imageUrls = [];
 
-    result.data.images.forEach((imgBase64) => {
-          const imgSrc = `data:image/png;base64,${imgBase64}`;
-          imageUrls.push(imgSrc);
-        });
+      result.data.images.forEach((imgBase64) => {
+        const imgSrc = `data:image/png;base64,${imgBase64}`;
+        imageUrls.push(imgSrc);
+      });
 
-        messages.value.push({
-          text: "生成的图像如下：",
-          time: result.data.date,
-          isResponse: true,
-          imageurls: imageUrls,
-        });
+      messages.value.push({
+        text: "Generated images are as follows:",
+        time: result.data.date,
+        isResponse: true,
+        imageurls: imageUrls,
+        fromHistory: true, // Mark as coming from history
+      });
     } else {
-      handleError("获取历史记录失败：" + (result.message || "未知错误"));
+      handleError(
+        "Failed to fetch history record: " + (result.message || "Unknown error")
+      );
     }
   } catch (error) {
-    handleError("请求失败，请稍后重试");
-    console.error("获取历史记录失败", error);
+    handleError("Request failed. Please try again later.");
+    console.error("Failed to fetch history record", error);
   }
 };
 
 const retryResponse = async () => {
+  messages.value.splice(messages.value.length - 1, 1);
+  messages.value[0].loading = true;
 
-    messages.value.splice(messages.value.length - 1, 1);
-    messages.value[0].loading = true;
-
-    if (messages.value.length > 0) {
-        const userQuestion = messages.value[messages.value.length - 1].text;
-        await sendToBackend(userQuestion);
-    }
+  if (messages.value.length > 0) {
+    const userQuestion = messages.value[messages.value.length - 1].text;
+    await sendToBackend(userQuestion);
+  }
 };
 
 const downloadAllImages = () => {
-  const message = messages.value[1]; 
+  const message = messages.value[1];
   if (message && message.imageurls && message.imageurls.length > 0) {
     message.imageurls.forEach((imageUrl, imgIndex) => {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = imageUrl;
-      link.download = `image_${imgIndex}.png`; // 自定义文件名
+      link.download = `image_${imgIndex}.png`; // Custom filename
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     });
   } else {
-    alert("没有图片可以下载");
+    alert("No images available to download");
   }
 };
 
-
-
-// 错误处理函数
+// Error handling function
 const handleError = (errorMessage) => {
   const errorTime = new Date().toLocaleTimeString();
   messages.value.push({
@@ -378,7 +384,6 @@ onMounted(() => {
   });
 });
 </script>
-
 <style scoped>
 .textToImage-system {
   display: flex;
@@ -391,7 +396,7 @@ onMounted(() => {
 
 .non-header {
   display: flex;
-  height: calc(100% );
+  height: calc(100%);
   flex-direction: row;
 }
 
@@ -471,11 +476,11 @@ onMounted(() => {
   height: 85%;
   box-shadow: 20px 20px 25px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
-  font-family: 'Consolas',monospace;
+  font-family: "Consolas", monospace;
 }
 
 .question-button:hover {
-  background-color: rgba(173,216,230,0.5);
+  background-color: rgba(173, 216, 230, 0.5);
 }
 
 .chat-history {
@@ -488,7 +493,7 @@ onMounted(() => {
 }
 
 .message {
-  background: rgba(173,216,230,0.05);;
+  background: rgba(173, 216, 230, 0.05);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -517,16 +522,16 @@ onMounted(() => {
 }
 
 .image-container {
-  display: flex; 
-  gap: 30px; 
+  display: flex;
+  gap: 30px;
   justify-content: left;
   flex-wrap: wrap; /* 超过容器宽度时自动换行 */
   overflow-x: hidden; /* 防止水平滚动 */
 }
 
 .response-image {
-  width:150px;
-  height:150px;
+  width: 150px;
+  height: 150px;
   margin-top: 10px;
   border-radius: 5px;
   object-fit: cover; /* 图片内容适应框 */
@@ -556,7 +561,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   background: transparent;
-/*   border-top: 1px solid #e0dde7bb; */
+  /*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
   height: 10%;
 }
@@ -566,24 +571,24 @@ onMounted(() => {
   padding: 10px;
   border: none;
   border-radius: 5px;
-/*   margin-left: 10px; */
+  /*   margin-left: 10px; */
   margin-right: 10px;
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #d3d3d3;
   height: 50px;
-  font-family: 'Consolas',monospace;
+  font-family: "Consolas", monospace;
   font-size: 15px;
 }
 
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: rgba(0,123,255,0.1);
+  background-color: rgba(0, 123, 255, 0.1);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-height: 50px;
+  height: 50px;
 }
 
 .input-area button:hover {
@@ -592,7 +597,7 @@ height: 50px;
 
 .history-section {
   flex: 1;
-  background-color:rgba(128,128,128,0.05);
+  background-color: rgba(128, 128, 128, 0.05);
   padding: 10px;
   border-radius: 5px;
 }
@@ -615,7 +620,7 @@ height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(60,63,87,0.65);
+  background-color: rgba(60, 63, 87, 0.65);
   padding: 8px;
   border-radius: 4px;
   color: #d3d3d3;

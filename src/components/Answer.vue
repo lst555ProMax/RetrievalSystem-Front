@@ -1,23 +1,30 @@
 <template>
+  <!-- 常见问题与解答弹窗，当 isVisible 为 true 时显示 -->
   <div v-if="isVisible" class="faq-overlay">
     <div class="faq-container">
+      <!-- 顶部标题和关闭按钮 -->
       <header class="faq-header">
-        <h2>常见问题与解答</h2>
+        <h2>frequently asked questions</h2>
+        <!-- 关闭按钮，点击时关闭弹窗 -->
         <button class="close-button" @click="close">×</button>
       </header>
+      <!-- 问题与解答内容区域 -->
       <div class="faq-content">
+        <!-- 循环渲染 FAQ 列表中的每个问题 -->
         <div
           v-for="(item, index) in faqList"
           :key="index"
           class="faq-item"
           @click="toggleAnswer(index)"
         >
+          <!-- 问题文本，点击时展开或折叠答案 -->
           <p class="question">
             {{ item.question
             }}<span :class="['arrow', { rotated: activeIndex === index }]"
               >&#9662;</span
             >
           </p>
+          <!-- 答案文本，当前激活索引与问题索引匹配时显示 -->
           <p v-if="activeIndex === index" class="answer">{{ item.answer }}</p>
         </div>
       </div>
@@ -29,64 +36,70 @@
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
 
+// 定义传入的属性，isVisible 控制弹窗的显示与隐藏
 const props = defineProps({
   isVisible: Boolean,
 });
 
+// 定义事件，用于向父组件通知状态更新
 const emit = defineEmits(["update:isVisible"]);
 
+// 关闭弹窗的函数，触发 update:isVisible 事件，将 isVisible 设置为 false
 const close = () => {
   emit("update:isVisible", false);
 };
 
-// 初始化问题与答案列表
+// 初始化常见问题与解答列表，包含问题文本和对应的答案
 const faqList = ref([
   {
-    question: "问题1：什么叫跨模态？",
-    answer: "跨模态指的是在不同模态之间进行信息的关联、转换或融合的技术。模态是指感知、获取或表达信息的方式，比如视觉、听觉、触觉、语言（文本）等。在人工智能和深度学习领域，跨模态技术涉及从一种模态的信息中提取特征，并将其应用于另一种模态，或在多种模态之间建立联系和相互理解。。",
+    question: "Question 1: What is cross-modality?",
+    answer:
+      "Cross-modality refers to the technology of associating, converting, or fusing information between different modalities. Modality refers to the way in which information is perceived, obtained, or expressed, such as sight, hearing, touch, language (text), etc. In the field of artificial intelligence and deep learning, cross-modal techniques involve extracting features from information in one modality and applying them to another, or making connections and mutual understanding between multiple modalities.",
   },
   {
-    question: "问题2：产品的基本功能有哪些？",
-    answer: "我们的产品主要支持文本检索和图片检索的功能，您可以在这里找到满意的答案。",
+    question: "Q2: What are the basic functions of the product?",
+    answer: "Our products mainly support text retrieval and image retrieval functions, you can find satisfactory answers here.",
   },
   {
-    question: "问题3：如何更换绑定的邮箱？",
-    answer: "请在账户的修改个人信息设置中选择修改邮箱。",
+    question: "Q3: How do I change the associated email address?",
+    answer: "Please select Modify email address in the Edit Personal Information setting of your account.",
   },
   {
-    question: "问题4：是否支持多语言界面？",
-    answer: "目前支持中英文界面，其他语言将在后续版本中陆续开放。",
+    question: "Q4: Does it support multi-language interface?",
+    answer: "Currently, the interface is supported in both Chinese and English, and other languages will be opened in subsequent versions.",
   },
   {
-    question: "问题5：怎么查看历史？",
-    answer: "您可以在文图搜索界面的侧边栏页面查看历史记录。",
+    question: "Q5: How can I check my history?",
+    answer: "You can view the history on the sidebar page of the Wentu search interface.",
   },
   {
-    question: "问题6：如何修改密码？",
-    answer: "请在账户的修改个人信息设置中选择修改密码。",
+    question: "Q6: How do I change my password?",
+    answer: "Please select Change Password in the Modify Personal Information setting of your account.",
   },
   {
-    question: "问题7：产品的隐私政策是什么？",
-    answer: "您可以在我们的隐私政策页面详细阅读相关内容。",
+    question: "Q7: What is the privacy policy of the product?",
+    answer: "You can read more about this on our Privacy Policy page.",
   },
   {
-    question: "问题8：如何联系客服？",
-    answer: "您可以点击右上角的最左侧的图标找到我们的联系方式。",
+    question: "Q8: How do I contact customer service?",
+    answer: "You can find our contact details by clicking on the leftmost icon in the top right corner.",
   },
   {
-    question: "问题9：赞助指的是什么？",
-    answer: "如果您对我们的项目的界面设计和功能实现足够满意，并且认为我们具有十足的开发潜力，可以扫描二维码赞助我们。",
+    question: "Q9: What is sponsorship?",
+    answer: "If you are satisfied enough with the interface design and functional implementation of our project, and think that we have full development potential, you can scan the QR code to sponsor us.",
   },
   {
-    question: "问题10：可以申请退款吗？",
-    answer: "如有特殊情况可联系我们进行退款申请。",
+    question: "Q10: Can I apply for a refund?",
+    answer: "If there are special circumstances, you can contact us for a refund application.",
   },
 ]);
 
+// 当前激活的问题索引，控制哪个答案被展开
 const activeIndex = ref(null);
 
-// 展开或折叠答案
+// 切换答案的展开或折叠状态
 const toggleAnswer = (index) => {
+  // 如果当前问题已经是展开状态，则将其折叠，否则展开该问题
   activeIndex.value = activeIndex.value === index ? null : index;
 };
 </script>
@@ -106,7 +119,7 @@ const toggleAnswer = (index) => {
 }
 
 .faq-container {
-  width: 400px;
+  width: 450px;
   max-height: 600px;
   background-color: rgba(26, 28, 45, 0.35);
   border-radius: 20px;
@@ -156,7 +169,7 @@ const toggleAnswer = (index) => {
 
 .question {
   font-size: 14px;
-  color: #aaa;
+  color: #e2e2e2;
 }
 
 /* 下箭头的默认样式 */

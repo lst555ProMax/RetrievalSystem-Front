@@ -4,33 +4,26 @@
   <Dashboard>
     <template #left-content>
       <div class="userManagement">
-        <div class="non-header">
           <div class="main-content">
-            <h2>用户管理</h2>
+            <h2>User Management</h2>
             <table class="user-table">
               <thead>
                 <tr>
-                  <th>用户名</th>
-                  <th>密码</th>
-                  <th>邮箱</th>
-                  <th>昵称</th>
-                  <th>生日</th>
-                  <th>性别</th>
-                  <th>描述</th>
-                  <th>操作</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Nickname</th>
+                  <th>Birthday</th>
+                  <th>Gender</th>
+                  <th>Description</th>
+                  <th>Operation</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(user, index) in users" :key="index">
                   <td v-if="editingIndex === index">
-                    <input v-model="editUserData.username" />
+                    <input v-model="editUserData.username" readonly />
                   </td>
                   <td v-else>{{ user.username }}</td>
-
-                  <td v-if="editingIndex === index">
-                    <input v-model="editUserData.password" placeholder="暂时无密码" disabled />
-                  </td>
-                  <td v-else>{{ user.password || "N/A" }}</td>
 
                   <td v-if="editingIndex === index">
                     <input v-model="editUserData.email" />
@@ -48,9 +41,12 @@
                   <td v-else>{{ formatDate(user.birthday) || "N/A" }}</td>
 
                   <td v-if="editingIndex === index">
-                    <input v-model="editUserData.sex" placeholder="暂时无性别" disabled />
+                    <input
+                      v-model="editUserData.Gender"
+                      placeholder="Gender not specified"
+                    />
                   </td>
-                  <td v-else>{{ user.sex || "N/A" }}</td>
+                  <td v-else>{{ user.Gender || "N/A" }}</td>
 
                   <td v-if="editingIndex === index">
                     <input v-model="editUserData.description" />
@@ -58,13 +54,19 @@
                   <td v-else>{{ user.description || "N/A" }}</td>
 
                   <td>
-                    <button v-if="editingIndex === index" @click="saveUser(index)">
-                      保存
+                    <button
+                      v-if="editingIndex === index"
+                      @click="saveUser(index)"
+                    >
+                      Store
                     </button>
-                    <button v-else @click="editUser(index)">修改</button>
-                    <button @click="deleteUser(index)">删除</button>
-                    <button v-if="editingIndex === index" @click="cancelEdit(index)">
-                      取消
+                    <button v-else @click="editUser(index)">Edit</button>
+                    <button @click="deleteUser(index)">Delete</button>
+                    <button
+                      v-if="editingIndex === index"
+                      @click="cancelEdit(index)"
+                    >
+                      Cancel
                     </button>
                   </td>
                 </tr>
@@ -72,7 +74,6 @@
             </table>
           </div>
         </div>
-      </div>
     </template>
   </Dashboard>
 </template>
@@ -91,8 +92,7 @@ const router = useRouter();
 const route = useRoute();
 
 // 用户数据
-const users = ref([
-]);
+const users = ref([]);
 
 // 当前正在编辑的行索引
 const editingIndex = ref(null);
@@ -100,11 +100,10 @@ const editingIndex = ref(null);
 // 存储编辑的数据
 const editUserData = ref({
   username: "",
-  password: "",
   email: "",
   nickname: "",
   birthday: "",
-  sex: "",
+  Gender: "",
   description: "",
 });
 
@@ -115,15 +114,15 @@ const api = {
 };
 
 let url = ref(api.get_user_info);
-const token = localStorage.getItem('jwtToken'); // 从 localStorage 获取 JWT 令牌
+const token = localStorage.getItem("jwtToken"); // 从 localStorage 获取 JWT 令牌
 
 // 从后端获取用户数据
 const fetchUsers = async () => {
   try {
     const response = await axios.get(url.value, {
       headers: {
-        'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
-      }
+        Authorization: `Bearer ${token}`, // 添加 Authorization 头部
+      },
     });
 
     if (response.data.code === 0) {
@@ -148,24 +147,22 @@ const saveUser = async (index) => {
   if (editingIndex.value !== null) {
     users.value[index] = { ...editUserData.value };
 
-    
-  const formData =new FormData();
-  formData.append("username", users.value[index].username);
-  formData.append("password", users.value[index].password);
-  formData.append("email", users.value[index].email);
-  formData.append("nickname", users.value[index].nickname);
-  formData.append("sex", users.value[index].sex);
-  formData.append("description", users.value[index].description);
-  formData.append("birthday", users.value[index].birthday);
+    const formData = new FormData();
+    formData.append("username", users.value[index].username);
+    formData.append("email", users.value[index].email);
+    formData.append("nickname", users.value[index].nickname);
+    formData.append(
+      "Gender",
+      !users.value[index].Gender ? 3 : users.value[index].Gender
+    );
+    formData.append("description", users.value[index].description);
+    formData.append(
+      "birthday",
+      !users.value[index].birthday ? "2000-01-01" : users.value[index].birthday
+    );
 
- 
-  console.log(formData.get('description'));
-/* 
-    const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
+    console.log(formData.get("birthday"));
 
-    console.log(Object.entries(users.value[index]).toString());
-    console.log(urlEncodedParams.toString());
- */
     try {
       const response = await fetch(url2, {
         method: "POST",
@@ -176,16 +173,15 @@ const saveUser = async (index) => {
       });
 
       const result = await response.json();
-console.log("333"+result);
+      console.log("333" + result);
       if (result.code === 0) {
         editingIndex.value = null;
-        alert("用户信息已更新！");
+        alert("User information has been updated!");
       } else {
-        console.error("修改失败", result.message);
+        console.error("Edit failed", result.message);
       }
-    }
-    catch (error) {
-      console.error("请求失败", error);
+    } catch (error) {
+      console.error("Request failed", error);
     }
   }
 };
@@ -193,46 +189,47 @@ console.log("333"+result);
 let url3 = api.delete_user;
 // 删除用户
 const deleteUser = async (index) => {
-  if (confirm("确定要删除这个用户吗？")) {
-    alert("用户已删除！");
+  if (confirm("Are you sure you want to delete this user?")) {
+    alert("User has been deleted!");
     if (editingIndex.value === index) {
       editingIndex.value = null;
       editUserData.value = {};
     }
-  }
 
-  const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
+    const urlEncodedParams = new URLSearchParams(
+      Object.entries(users.value[index])
+    );
 
-  try {
-    const response = await fetch(url3, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${token}`, // 添加 Authorization 头部
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: urlEncodedParams.toString(),
-    });
+    try {
+      const response = await fetch(url3, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // 添加 Authorization 头部
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: urlEncodedParams.toString(),
+      });
 
-    console.log(urlEncodedParams.toString());
-    const result = await response.json();
-
-    if (response.ok) {
-      console.log("删除成功", result);
       console.log(urlEncodedParams.toString());
-      editingIndex.value = null;
-      fetchUsers();
-    } else {
-      console.error("修改失败", result.message);
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Deletion successful", result);
+        console.log(urlEncodedParams.toString());
+        editingIndex.value = null;
+        fetchUsers();
+      } else {
+        console.error("Edit failed", result.message);
+      }
+    } catch (error) {
+      console.error("Request failed", error);
     }
-  }
-  catch (error) {
-    console.error("请求失败", error);
   }
 };
 
 // 取消编辑
 const cancelEdit = (index) => {
-  if (confirm("确定取消修改吗？")) {
+  if (confirm("Are you sure you want to cancel the modification?")) {
     editingIndex.value = null;
   }
 };
@@ -249,9 +246,8 @@ onMounted(() => {
   const username = getUsername();
 
   if (!username) {
-    router.push("/")
-  }
-  else {
+    router.push("/");
+  } else {
     fetchUsers();
   }
 });
@@ -270,7 +266,7 @@ body {
 
 .userManagement {
   display: flex;
-  height: calc(100vh - 10px);
+  height: fit-content;
   margin: 5px;
   border-radius: 5px;
   overflow: hidden;
@@ -279,39 +275,44 @@ body {
   flex-direction: column;
 }
 
-.non-header {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-}
-
 .main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  flex: 1;
-  overflow-y: auto;
   box-sizing: border-box;
+  height: 780px;
 }
 
 .user-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: #2e2e4d;
-  color: #d3d3d3;
+  border-radius: 18px;
+  box-shadow: 1px 1px 8px 0 grey;
+  height: 90%;
+  margin-bottom: 20px;
+  padding: 20px 25px 20px 25px;
+  width: 90%;
+  color: rgba(255, 255, 255, 0.8);
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
 }
 
 .user-table th,
 .user-table td {
-  border: 1px solid #444;
+  border: 1px solid rgba(255, 255, 255, 0.1);;
   padding: 10px;
   text-align: left;
+
 }
 
 .user-table th {
-  background-color: #3e3e5f;
+  background-color: rgba(62,62,95,0.6);
+}
+
+.user-table th:nth-child(7),
+.user-table td:nth-child(7) {
+  width: 200px; /* 设置 Operation 列的宽度为100px，可以根据需要调整 */
+  text-align: center; /* 使内容居中 */
 }
 
 .user-table button {
@@ -322,7 +323,10 @@ body {
   cursor: pointer;
   color: #fff;
   background-color: #0dbe83;
-  width: 30%;
+  width:40%;
+  height:100%;
+  margin-left: 5px;
+  margin-right:5px;
 }
 
 .user-table button:hover {

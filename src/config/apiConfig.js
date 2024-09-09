@@ -1,5 +1,6 @@
 // src/config/apiConfig.js
-export const API_BASE_URL = "http://172.20.10.7:8000";
+/* export const API_BASE_URL = "http://192.168.229.89:8000"; */
+export const API_BASE_URL = "http://localhost:5000";
 /* "http://192.168.156.89:8000" */
 
 export const API_ENDPOINTS = {
@@ -15,6 +16,7 @@ export const API_ENDPOINTS = {
 
   text: `${API_BASE_URL}/search/text`, /* 文本检索 */
   image: `${API_BASE_URL}/search/image`, /* 图片检索 */
+  dialogue:`${API_BASE_URL}/user/dialog`,/* 对话 */
 
   delete_user: `${API_BASE_URL}/admin/delete_user`, /* 管理员删除用户账号 */
   edit_user_info: `${API_BASE_URL}/admin/edit_user_info`, /* 管理员更改用户信息 */

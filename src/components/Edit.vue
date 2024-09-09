@@ -3,7 +3,7 @@
     <div class="edit-content" @click="stop">
       <!-- 头部 -->
       <div class="edit-header">
-        <h2>资料修改</h2>
+        <h2>Data Modifications</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
@@ -12,22 +12,22 @@
         <form class="form">
           <!-- 昵称 -->
           <div class="form-group">
-            <label for="nickname">昵称</label>
+            <label for="nickname">Nickname</label>
             <input
               type="text"
               id="nickname"
-              placeholder="请修改昵称"
+              placeholder="Please edit your nickname"
               v-model="form.nickname"
             />
           </div>
 
           <!-- 邮箱 -->
           <div class="form-group" prop="email">
-            <label for="email">邮箱</label>
+            <label for="email">email</label>
             <input
               type="email"
               id="email"
-              placeholder="请修改邮箱"
+              placeholder="Please edit your email"
               v-model="form.email"
               clearable
               maxLength="150"
@@ -36,29 +36,29 @@
 
           <!-- 新密码 -->
           <div class="form-group" prop="password">
-            <label for="password">密码</label>
+            <label for="password">password</label>
             <input
               type="password"
               id="password"
-              placeholder="请修改密码"
+              placeholder="Please input your new password"
               v-model="form.password"
             />
           </div>
 
           <!-- 确认新密码 -->
           <div class="form-group" prop="rePassword">
-            <label for="rePassword">确认新密码</label>
+            <label for="rePassword">Confirm the password</label>
             <input
               type="password"
               id="rePassword"
-              placeholder="请确认新密码"
+              placeholder="Please confirm your new password"
               v-model="form.rePassword"
             />
           </div>
 
           <!-- 用户头像 -->
           <div class="form-group">
-            <label>用户头像</label>
+            <label>Avatar</label>
             <div class="avatar-upload">
               <input
                 type="file"
@@ -69,7 +69,7 @@
               <img
                 v-if="avatarPreview"
                 :src="avatarPreview"
-                alt="用户头像"
+                alt="Avatar"
                 class="avatar"
               />
             </div>
@@ -77,16 +77,16 @@
 
           <!-- 生日 -->
           <div class="form-group">
-            <label for="birthday">生日</label>
+            <label for="birthday">Birthday</label>
             <input type="date" id="birthday" v-model="form.birthday" />
           </div>
 
           <!-- 性别选择 -->
           <div class="form-group">
-            <label>性别</label>
+            <label>Sex</label>
             <div class="gender-options">
               <div class="gender-option">
-                <label class="gender-option-label">男</label>
+                <label class="gender-option-label">Male</label>
                 <input
                   type="radio"
                   name="gender"
@@ -96,7 +96,7 @@
                 />
               </div>
               <div class="gender-option">
-                <label class="gender-option-label">女</label>
+                <label class="gender-option-label">Female</label>
                 <input
                   type="radio"
                   name="gender"
@@ -106,7 +106,7 @@
                 />
               </div>
               <div class="gender-option">
-                <label class="gender-option-label">保密</label>
+                <label class="gender-option-label">Secret</label>
                 <input
                   type="radio"
                   name="gender"
@@ -120,10 +120,10 @@
 
           <!-- 个人简介 -->
           <div class="form-group">
-            <label for="bio">个人简介</label>
+            <label for="bio">Biography</label>
             <textarea
               id="bio"
-              placeholder="请修改个人简介"
+              placeholder="Please edit your profile"
               v-model="form.description"
             ></textarea>
           </div>
@@ -132,8 +132,8 @@
 
       <!-- 底部按钮 -->
       <div class="edit-footer">
-        <button class="cancel-button" @click="close">取消</button>
-        <button class="confirm-button" @click="submitForm">确定</button>
+        <button class="cancel-button" @click="close">Close</button>
+        <button class="confirm-button" @click="submitForm">Sure</button>
       </div>
     </div>
   </div>
@@ -160,7 +160,7 @@ const props = defineProps({
   isVisible: Boolean,
 });
 
-const form = ref({
+const initialFormState = {
   username: username,
   nickname: "",
   email: "",
@@ -169,8 +169,10 @@ const form = ref({
   birthday: "",
   gender: "secret",
   description: "",
-  avatar: null, // 新增头像字段
-});
+  avatar: null,
+};
+
+const form = ref({ ...initialFormState });
 
 /* 检查密码的再次修改 */
 const checkRePassword = (rule, value, callback) => {
@@ -183,21 +185,21 @@ const checkRePassword = (rule, value, callback) => {
 
 const rules = {
   email: [
-    { required: true, message: "请修改邮箱" },
-    { validator: proxy.Verify.email, message: "请输入正确的邮箱" },
+    { required: true, message: "Please modify your email address" },
+    { validator: proxy.Verify.email, message: "Please enter a valid email address" },
   ],
   password: [
-    { required: true, message: "请输入密码" },
+    { required: true, message: "Please enter your password" },
     {
       validator: proxy.Verify.password,
-      message: "密码只能是数字，字母，特殊字符 8-18位",
+      message: "The password can only be numbers, letters, special characters 8-18 digits",
     },
   ],
   rePassword: [
-    { required: true, message: "请再次输入密码" },
+    { required: true, message: "Please enter your password again" },
     {
       validator: checkRePassword,
-      message: "两次输入的密码不一致",
+      message: "The password entered twice is inconsistent",
     },
   ],
 };
@@ -263,14 +265,15 @@ const submitForm = async () => {
 
     const result = await response.json();
     if (result.code === 0) {
-      alert("修改成功");
+      alert("The modification was successful");
       emit("update:isVisible", false);
       avatarPreview.value = null;
+      resetForm();
     } else {
-      console.error("修改失败", result.message);
+      console.error("The modification failed", result.message);
     }
   } catch (error) {
-    console.error("请求失败", error);
+    console.error("The request failed", error);
   }
 };
 
@@ -279,7 +282,17 @@ const emit = defineEmits(["update:isVisible"]);
 const close = () => {
   emit("update:isVisible", false);
   avatarPreview.value = null; // 清除图片预览
+  resetForm();
 };
+
+// 重置表单函数
+const resetForm = () => {
+  form.value = { ...initialFormState };
+  avatarPreview.value = null; // 清除头像预览
+  selectedGender.value = "secret"; // 重置性别选择
+};
+
+
 </script>
 
 <style scoped>
@@ -337,7 +350,7 @@ const close = () => {
 
 .form{
   overflow-y: scroll;
-  max-height: 450px;
+  max-height: 540px;
 }
 
 .form::-webkit-scrollbar {
@@ -365,6 +378,7 @@ const close = () => {
   border-radius: 10px;
   background-color: #2b2e3e;
   color: #ffffff;
+  font-size: 16px;
 }
 
 .avatar-upload {

@@ -5,10 +5,10 @@
           <div>
             <div class="user-info">
               <img
-                src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e"
+                src="../assets/avatar/lz.png"
                 alt="user"
               />
-              <p>Jane Wilson</p>
+              <p>Zheng Li</p>
             </div>
             <ul>
               <li
@@ -35,13 +35,6 @@
           </div>
   
           <ul>
-            <li class="nav-item">
-              <a href="#">
-                <i class="fa fa-user nav-icon"></i>
-                <span class="nav-text">Profile</span>
-              </a>
-            </li>
-  
             <li class="nav-item" @click ="GoToLogin">
               <a href="#">
                 <i class="fa fa-right-from-bracket nav-icon"></i>

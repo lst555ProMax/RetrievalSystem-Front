@@ -3,7 +3,7 @@
     <div class="personal-content" @click="stop">
       <!-- 头部 -->
       <div class="personal-header">
-        <h2>个性化设置</h2>
+        <h2>Personalization</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
@@ -12,7 +12,7 @@
         <form class="form">
           <!-- 主题 -->
           <div class="form-group">
-            <label for="theme">主题</label>
+            <label for="theme">Theme</label>
             <select id="theme" v-model="form.theme">
               <option value="Slider">Slider</option>
               <option value="Neural">Neural</option>
@@ -22,7 +22,7 @@
 
           <!-- 字体样式 -->
           <div class="form-group">
-            <label for="font">字体样式</label>
+            <label for="font">Font</label>
             <select id="font" v-model="form.font">
               <option value="Arial">Arial</option>
               <option value="Times New Roman">Times New Roman</option>
@@ -34,10 +34,10 @@
 
           <!-- 图片上传 -->
           <div class="form-group">
-            <label>图片上传</label>
+            <label>Upload</label>
             <div class="image-upload">
               <input type="file" id="imgUrl" @change="handleFileChange" accept="image/*" />
-              <img v-if="avatarPreview" :src="avatarPreview" alt="预览图片" class="preview-image" />
+              <img v-if="avatarPreview" :src="avatarPreview" alt="Preview the image" class="preview-image" />
             </div>
           </div>
         </form>
@@ -45,8 +45,8 @@
 
       <!-- 底部按钮 -->
       <div class="personal-footer">
-        <button class="cancel-button" @click="close">取消</button>
-        <button class="confirm-button" @click="submitForm">确定</button>
+        <button class="cancel-button" @click="close">Cancel</button>
+        <button class="confirm-button" @click="submitForm">Sure</button>
       </div>
     </div>
   </div>
@@ -98,7 +98,7 @@ const submitForm = async () => {
   const formData = new FormData();
   formData.append("username", username);
   formData.append("theme", form.value.theme);
-  formData.append("font", form.value.font);
+  formData.append("font_style", form.value.font);
 
     // 如果有头像上传，添加头像到 formData
     if (form.avatar) {
@@ -123,14 +123,14 @@ const submitForm = async () => {
 
     const result = await response.json();
     if (result.code === 0) {
-      alert("修改成功");
+      alert("The modification was successful");
       emit("update:isVisible", false);
       avatarPreview.value = null;
     } else {
-      console.error("修改失败", result.message);
+      console.error("The modification failed", result.message);
     }
   } catch (error) {
-    console.error("请求失败", error);
+    console.error("Request failed", error);
   }
 };
 
@@ -191,7 +191,7 @@ const close = () => {
 .personal-body {
   margin-bottom: 20px;
   overflow: scroll;
-  max-height: 230px;
+  min-height: 295px;
 }
 .personal-body::-webkit-scrollbar {
   display: none;

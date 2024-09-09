@@ -6,7 +6,7 @@
     <span class="username">LST555
       <i class="fa-regular fa-pen-to-square edit-icon" @click="edit" ></i>
     </span>
-    <span class="comment">这个人很个性，什么都没留下</span>
+    <span class="comment">This person has a lot of personality and leaves nothing behind</span>
   </div>
 
 </div>
@@ -14,10 +14,10 @@
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs2">
     <i class="fa-solid fa-coins" >
-      <span class="small-text">积分 : {{ credits }}</span>
+      <span class="small-text">Integral : {{ credits }}</span>
     </i>
     <div>
-      <span class="text2" @click="GoToPay">去充值 </span>
+      <span class="text2" @click="GoToPay">Go sponsor </span>
       <ii class="fa-solid fa-chevron-right" @click="GoToPay"></ii>
     </div>
   </div>
@@ -27,26 +27,26 @@
   <div class="tabs4">
     <div class="tab4-item">
       <i class="fa-solid fa-gear" @click="GoToPersonalization" ></i>
-      <span @click="GoToPersonalization">个性化设置 </span>
+      <span @click="GoToPersonalization">Personalization </span>
     </div>
     <div class="tab4-item">
       <i class="fa-solid fa-list-check" @click="GoToAnswer"></i>
-      <span @click="GoToAnswer">问题解答</span>
+      <span @click="GoToAnswer">Q&A</span>
     </div>
     <div class="tab4-item">
       <i class="fa-solid fa-comment" @click="GotoFeedback"></i>
-      <span @click="GotoFeedback">意见反馈</span>
+      <span @click="GotoFeedback">Feedback</span>
     </div>
   </div>
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs5">
     <el-button round class="tabs5-button" @click="Return"
       ><i class="fa-solid fa-right-from-bracket" style="margin-right: 5px"></i
-      >退出登录</el-button
+      >Sign out</el-button
     >
     <el-button round class="tabs5-button" @click="GotoDelete"
       ><i class="fa-solid fa-trash" style="margin-right: 5px"></i
-      >注销账号</el-button
+      >Cancel your account</el-button
     >
   </div>
   <!-- -------------------------------------------------------------------------------------- -->

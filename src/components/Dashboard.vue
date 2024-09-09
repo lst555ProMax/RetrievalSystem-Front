@@ -60,6 +60,17 @@
                 <span class="nav-text">About</span>
               </a>
             </li>
+
+<!--             <li
+              class="nav-item"
+              :class="{ active: isActive('/test') }"
+              @click="navigateTo('/test')"
+            >
+              <a href="#">
+                <i class="fa fa-heart nav-icon"></i>
+                <span class="nav-text">About</span>
+              </a>
+            </li> -->
           </ul>
         </div>
 
