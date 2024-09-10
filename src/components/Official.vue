@@ -7,7 +7,7 @@
         </div>
       </div>
       <div class="company-info">
-        <p>Team: "RetrievalSystem" from SEU</p>
+        <p>Team: "Retrieval System" from SEU</p>
         <p>Contact: 17314409632  15046948929</p>
         <p>Github: https://github.com/lst555ProMax/RetrievalSystem-Front</p>
       </div>

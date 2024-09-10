@@ -5,10 +5,10 @@
         <div>
           <div class="user-info">
             <img
-              src="../assets/avatar/lst.jpg"
+              :src="avatarSrc"
               alt="user"
             />
-            <p>LST555</p>
+            <p>{{ username }}</p>
           </div>
           <ul>
             <li
@@ -104,10 +104,22 @@
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, computed } from 'vue';
+import { ref, computed,onMounted } from 'vue';
+import { getUsername } from "../utils/Auth";
 
 const router = useRouter();
 const route = useRoute();
+const username=getUsername();
+
+const avatarSrc = ref('../assets/avatar/lst.jpg'); // 默认头像
+
+onMounted(() => {
+  // 从 localStorage 或其他地方获取头像文件路径
+  const storedAvatar = localStorage.getItem(`avatar_${username}`);
+  if (storedAvatar) {
+    avatarSrc.value = storedAvatar;
+  }
+});
 
 // 定义一个函数，判断当前路由是否匹配
 const isActive = (path) => {
@@ -203,7 +215,7 @@ main {
 
 .user-info p {
   color: #fff;
-  font-size: clamp(0.8rem, 3vw, 1rem);
+  font-size: clamp(0.8rem, 5vw, 1.5rem);
   font-weight: 500;
   text-align: center;
   line-height: 1;

@@ -75,11 +75,13 @@
                 </div>
                 <div class="message-content">
                   <p>{{ message.text }}</p>
+                  <div v-if="message.loading" class="loading-icon">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                  </div>
                 </div>
                 <div v-if="message.isResponse" class="response">
-                  <p>{{ responseText }}</p>
-                  <button @click="retryResponse(index)">Retry the response</button>
-                  <button @click="copyResponse(index)">Download all</button>
+                  <button  @click="retryResponse(index)">Retry</button>
+                  <button  @click="copyResponse(index)">Get</button>
                 </div>
               </div>
             </div>
@@ -162,7 +164,6 @@ const uiChange = ref(0);
 const userInput = ref("");
 const userInput2 = ref("");
 const messages = ref([]);
-const responseText = "This is a sample response provided by the system.";
 const chatHistory = ref(null);
 
 const changeSelection = () => {
@@ -184,11 +185,13 @@ const sendMessage = async () => {
     const currentTime = new Date().toLocaleTimeString();
 
     uiChange.value = 1;
+    messages.value = [];
 
     const newMessage = {
       text: userInput.value,
       time: currentTime,
       isResponse: false,
+      loading: true,
     };
 
     messages.value.push(newMessage);
@@ -213,6 +216,7 @@ const sendMessageIndex = async (index) => {
       text: userInput2.value,
       time: currentTime,
       isResponse: false,
+      loading: true,
     };
 
     messages.value.push(newMessage);
@@ -284,16 +288,44 @@ const sendToBackend = async (inputText) => {
 
     const result = await response.json();
 
-    if (result.code===0) {
+    if (result.code === 0) {
       messages.value.push({
         text: result.message,
         time: new Date().toLocaleTimeString(),
-        isResponse: true,
+        isResponse: true,         
+        loading: false,
       });
+
+            // Update user message loading state
+            if (messages.value[0]) {
+        messages.value[0].loading = false;
+      }
     }
   } catch (error) {
     handleError(`Request failed ${error.message}`);
+  } 
+};
+
+const retryResponse = async () => {
+  messages.value.splice(messages.value.length - 1, 1);
+  messages.value[0].loading = true;
+
+  if (messages.value.length > 0) {
+    const userQuestion = messages.value[messages.value.length - 1].text;
+    await sendToBackend(userQuestion);
   }
+};
+
+const copyResponse = (index) => {
+  const textToCopy = messages.value[index].text;
+  navigator.clipboard
+    .writeText(textToCopy)
+    .then(() => {
+      alert("The response has been copied to the clipboard.");
+    })
+    .catch(() => {
+      alert("Copy failed, please try again.");
+    });
 };
 
 const handleError = (message) => {
@@ -428,6 +460,8 @@ const handleError = (message) => {
 
 .message-content {
   color: #fff;
+  font-size: medium;
+  line-height: 1.2;
 }
 
 .response {
@@ -437,12 +471,14 @@ const handleError = (message) => {
 }
 
 .response button {
-  background-color: #007bff;
+  background-color: #2e3140;
   color: white;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+  width: 75px;
+  margin-right: 5px;
 }
 
 .input-area {

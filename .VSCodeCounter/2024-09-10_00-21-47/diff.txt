@@ -1,0 +1,50 @@
+Date : 2024-09-10 00:21:47
+Directory : e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src
+Total : 16 files,  65 codes, -136 comments, 1 blanks, all -70 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Vue        |         13 |         57 |       -137 |          1 |        -79 |
+| TypeScript |          1 |          6 |          0 |          0 |          6 |
+| JavaScript |          1 |          1 |          1 |          0 |          2 |
+| XML        |          1 |          1 |          0 |          0 |          1 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                   |         16 |         65 |       -136 |          1 |        -70 |
+| assets                                                                              |          1 |          1 |          0 |          0 |          1 |
+| components                                                                          |          6 |        -65 |         36 |          4 |        -25 |
+| config                                                                              |          1 |          1 |          1 |          0 |          2 |
+| router                                                                              |          1 |          6 |          0 |          0 |          6 |
+| views                                                                               |          7 |        122 |       -173 |         -3 |        -54 |
+| views (Files)                                                                       |          5 |        106 |       -165 |          3 |        -56 |
+| views\AdminOperations                                                               |          2 |         16 |         -8 |         -6 |          2 |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                            | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\assets\favicon.svg                         | XML        |          1 |          0 |          0 |          1 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Activity.vue                    | Vue        |        118 |         18 |         22 |        158 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Answer.vue                      | Vue        |          1 |         12 |          0 |         13 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Dashboard.vue                   | Vue        |          0 |         10 |          1 |         11 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\DashboardAdmin.vue              | Vue        |         -6 |          0 |         -1 |         -7 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\Edit.vue                        | Vue        |          9 |          1 |          4 |         14 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\components\MoneyHistory.vue                | Vue        |       -187 |         -5 |        -22 |       -214 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\config\apiConfig.js                        | JavaScript |          1 |          1 |          0 |          2 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\router\index.ts                            | TypeScript |          6 |          0 |          0 |          6 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\AdminOperations\SystemManagement.vue | Vue        |          5 |         -2 |         -5 |         -2 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\AdminOperations\UserManagement.vue   | Vue        |         11 |         -6 |         -1 |          4 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\ImageSearch.vue                      | Vue        |         43 |         -7 |          3 |         39 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\Login.vue                            | Vue        |          5 |       -166 |         -5 |       -166 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\Test.vue                             | Vue        |         73 |          8 |         15 |         96 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\TextSearch.vue                       | Vue        |         24 |          0 |         -2 |         22 |
+| e:\新桌面2.0\图灵不灵\RetrievalSystem_front\src\views\dialogue.vue                         | Vue        |        -39 |          0 |         -8 |        -47 |
+| Total                                                                               |            |         65 |       -136 |          1 |        -70 |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

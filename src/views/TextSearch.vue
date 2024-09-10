@@ -1,6 +1,16 @@
 <template>
   <starfield />
 
+  <div v-if="showModal" class="modal" @click.self="closeModal">
+  <div class="modal-content">
+    <img :src="currentImage" alt="Enlarged Image" class="modal-image" />
+    <div class="modal-buttons">
+    <button @click="downloadImage(currentImage)">Save</button>
+    <button @click="closeModal">Close</button>
+  </div>
+  </div>
+</div>
+
   <dashboard>
     <template #left-content>
       <div class="non-header">
@@ -66,6 +76,7 @@
                       :src="imageUrl"
                       alt="image"
                       class="response-image"
+                      @click="enlargeImage(imageUrl)"
                     />
                   </div>
                   <div v-if="message.loading" class="loading-icon">
@@ -76,8 +87,8 @@
                   v-if="message.isResponse && !message.fromHistory"
                   class="response"
                 >
-                  <button @click="retryResponse">Retry the response</button>
-                  <button @click="downloadAllImages">Download all</button>
+                  <button @click="retryResponse">Retry</button>
+                  <button @click="downloadAllImages">Get</button>
                 </div>
               </div>
             </div>
@@ -160,6 +171,8 @@ const uiChange = ref(0);
 const messages = ref([]);
 const userInput = ref("");
 const userInput2 = ref("");
+const showModal = ref(false);
+const currentImage = ref("");
 let isReResponce = ref(false);
 const chatHistory = ref(null);
 
@@ -168,6 +181,28 @@ const token = localStorage.getItem("jwtToken");
 const api = {
   text: API_ENDPOINTS.text,
   fetchHistory: API_ENDPOINTS.list, // API endpoint for fetching history records
+};
+
+// 放大图片函数
+const enlargeImage = (imageUrl) => {
+  currentImage.value = imageUrl;
+  showModal.value = true;
+};
+
+// 关闭模态框
+const closeModal = () => {
+  showModal.value = false;
+  currentImage.value = "";
+};
+
+// 下载图片函数
+const downloadImage = (imageUrl) => {
+  const link = document.createElement("a");
+  link.href = imageUrl;
+  link.download = `downloaded_image.png`; // 定义下载的文件名
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 const changeSelection = () => {
@@ -384,7 +419,60 @@ onMounted(() => {
   });
 });
 </script>
+
 <style scoped>
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-buttons{
+  width:100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  height:50px;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 80%;
+  border-radius: 8px;
+}
+
+.modal-content button {
+  margin-top: 10px;
+  margin-left:15px;
+  margin-right:15px;
+  padding: 8px 16px;
+  background-color: #2e3140;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  height:80%;
+  width:20%;
+}
+
 .textToImage-system {
   display: flex;
   flex-direction: column;

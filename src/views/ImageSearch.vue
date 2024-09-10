@@ -48,6 +48,9 @@
                     alt="Uploaded Image"
                     class="uploaded-image"
                   />
+                  <div v-if="message.loading" class="loading-icon">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                  </div>
                 </div>
 
                 <div
@@ -55,10 +58,10 @@
                   class="response"
                 >
                   <button v-if="!isLoading" @click="retryResponse(index)">
-                    Retry the response
+                    Retry
                   </button>
                   <button v-if="!isLoading" @click="copyResponse(index)">
-                    Download all
+                    Get
                   </button>
                 </div>
               </div>
@@ -207,16 +210,102 @@ const api = {
 let url = api.image;
 
 // 上传显示的图片
+// 上传显示的图片
 const uploadImageFromList = async (index) => {
-  const response = await fetch(images[index]);
-  const blob = await response.blob();
-  // 设置用户选择的文件
-  selectedFile.value = new File([blob], "1.jpg", { type: "image/jpeg" });
-  console.log(selectedFile.value);
+  try {
+    // 获取选中的图片并转化为 blob 对象
+    const response = await fetch(images.value[index]);
+    const blob = await response.blob();
 
-  // 将上传逻辑移动到 sendImage 函数处理
-  await sendImage();
+    // 创建新的 File 对象
+    selectedFile.value = new File([blob], `image_${index}.jpg`, { type: blob.type });
+    console.log("Selected file:", selectedFile.value);
+
+    if (!selectedFile.value) {
+      alert("Please choose an image file！");
+      return;
+    }
+
+    // 获取当前时间
+    const currentTime = new Date().toLocaleTimeString();
+
+    // 创建图片 URL
+    const imageUrl = URL.createObjectURL(selectedFile.value);
+    console.log("Image URL:", imageUrl);
+
+    // 清空消息并设置加载状态
+    uiChange.value = 1;
+    messages.value = [];
+    isLoading.value = true;
+
+    // 将上传的图片加入消息
+    messages.value.push({
+      text: "The user has uploaded an image.",
+      time: currentTime,
+      isResponse: false,
+      imageUrl,
+      loading: true,
+    });
+
+    // 打印消息对象中的图片 URL，检查是否存储正确
+    console.log("Messages:", messages.value);
+
+    const formData = new FormData();
+    formData.append("username", getUsername());
+    formData.append("image_file", selectedFile.value);
+
+    const token = localStorage.getItem("jwtToken");
+
+    // 检查是否存在 token
+    if (!token) {
+      handleError("Request failed. Please try again later.");
+      isLoading.value = false;
+      return;
+    }
+
+    const responseAPI = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    // 检查请求是否成功
+    if (!responseAPI.ok) {
+      handleError(`Request failed, status code：${responseAPI.status}`);
+      isLoading.value = false;
+      return;
+    }
+
+    const result = await responseAPI.json();
+    const responseTime = new Date().toLocaleTimeString();
+
+    // 添加系统响应消息
+    messages.value.push({
+      text: result.text_list
+        ? result.text_list.map((text) => text.content).join("\n")
+        : "This is the response provided by the system",
+      time: responseTime,
+      isResponse: true,
+    });
+
+    // 添加历史记录项
+    history.value.push({
+      id: result.search_history_id,
+      text: `Uploaded on ${currentTime}`,
+      imageUrl,
+    });
+
+  } catch (error) {
+    handleError("Request failed, please try again later");
+    console.error("Submission failed", error);
+  } finally {
+    // 请求完成，显示按钮
+    isLoading.value = false;
+  }
 };
+
 
 const sendImage = async (isRetry = false, index = -1) => {
   if (!selectedFile.value) {
@@ -242,7 +331,11 @@ const sendImage = async (isRetry = false, index = -1) => {
     time: currentTime,
     isResponse: false,
     imageUrl,
+    loading: true,
   });
+
+
+  console.log(messages.get('imageUrl'));
 
   userInput.value = "";
 
@@ -282,7 +375,13 @@ const sendImage = async (isRetry = false, index = -1) => {
         : "This is the response provided by the system",
       time: responseTime,
       isResponse: true,
+      loading: false,
     });
+
+          // Update user message loading state
+          if (messages.value[0]) {
+        messages.value[0].loading = false;
+      }
 
     // 添加历史记录项，包括获取到的 ID 和文本
     history.value.push({

@@ -219,6 +219,8 @@ const handleFileChange = (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       avatarPreview.value = e.target.result;
+      localStorage.setItem(`avatar_${username}`, e.target.result);
+      console.log(`avatar_${username}`);
     };
     reader.readAsDataURL(file);
     form.avatar = file; // 保存文件到 form 对象
@@ -350,7 +352,7 @@ const resetForm = () => {
 
 .form{
   overflow-y: scroll;
-  max-height: 540px;
+  max-height: 530px;
 }
 
 .form::-webkit-scrollbar {

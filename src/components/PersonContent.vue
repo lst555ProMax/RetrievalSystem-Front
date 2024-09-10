@@ -1,9 +1,9 @@
 <template>
   <!-- -------------------------------------------------------------------------------------- -->
   <div class="tabs1">
-  <img :src="images[0]" alt="QR Code" class="image-class" />
+  <img :src="avatarSrc" alt="QR Code" class="image-class" />
   <div class="content-class">
-    <span class="username">LST555
+    <span class="username">{{ username }}
       <i class="fa-regular fa-pen-to-square edit-icon" @click="edit" ></i>
     </span>
     <span class="comment">This person has a lot of personality and leaves nothing behind</span>
@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref, } from "vue";
+import { ref, onMounted} from "vue";
 import { useRouter } from "vue-router";
 import image from "../assets/avatar/lst.jpg";
 const images = ref([image]);
@@ -66,6 +66,17 @@ import { getUsername } from "../utils/Auth";
 const credits = ref(32);
 const router = useRouter();
 const username =getUsername();
+
+const avatarSrc = ref('../assets/avatar/lst.jpg'); // 默认头像
+
+onMounted(() => {
+  // 从 localStorage 或其他地方获取头像文件路径
+  const storedAvatar = localStorage.getItem(`avatar_${username}`);
+  console.log(storedAvatar);
+  if (storedAvatar) {
+    avatarSrc.value = storedAvatar;
+  }
+});
 
 /* 关闭父表单 */
 import { defineEmits } from "vue";

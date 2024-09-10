@@ -14,9 +14,9 @@
           <div class="form-group">
             <label for="theme">Theme</label>
             <select id="theme" v-model="form.theme">
-              <option value="Slider">Slider</option>
+              <option value="Starfield">Starfield</option>
               <option value="Neural">Neural</option>
-              <option value="CrossStar">CrossStar</option>
+              <option value="Slider">Slider</option>
             </select>
           </div>
 
@@ -56,8 +56,12 @@
 import { ref, getCurrentInstance } from "vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
 import { useUserStore } from "../stores/userStore";
+import { useThemeStore } from "../stores/themeStore"; // 导入主题 store
+import {useFontStore}  from "../stores/FontStore"
 
 const userStore = useUserStore();
+const themeStore = useThemeStore();
+const fontStore =useFontStore();
 
 const avatarPreview = ref(null);
 const { username } = userStore;
@@ -70,7 +74,7 @@ const props = defineProps({
 const form = ref({
   theme: "Slider",
   font: "Arial",
-  imgUrl:null ,
+  imgUrl: null ,
 });
 
 const api = {
@@ -100,17 +104,11 @@ const submitForm = async () => {
   formData.append("theme", form.value.theme);
   formData.append("font_style", form.value.font);
 
-    // 如果有头像上传，添加头像到 formData
-    if (form.avatar) {
+  if (form.imgUrl) {
     formData.append("imgUrl", form.imgUrl);
   }
 
-   // 如果有头像上传，添加头像到 formData
-  if (form.value.avatar) {
-    formData.append("imgUrl", form.value.imgUrl);
-  }
-
-  console.log("filenane="+formData.get('imgUrl'));
+  console.log(formData);
 
   try {
     const response = await fetch(url, {
@@ -126,6 +124,8 @@ const submitForm = async () => {
       alert("The modification was successful");
       emit("update:isVisible", false);
       avatarPreview.value = null;
+      themeStore.setTheme(form.value.theme);
+      fontStore.setFont(form.value.font);
     } else {
       console.error("The modification failed", result.message);
     }
@@ -191,7 +191,7 @@ const close = () => {
 .personal-body {
   margin-bottom: 20px;
   overflow: scroll;
-  min-height: 295px;
+  min-height: 275px;
 }
 .personal-body::-webkit-scrollbar {
   display: none;

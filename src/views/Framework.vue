@@ -1,5 +1,5 @@
 <template>
-  <starfield />
+<Starfield/>
   <dashboard>
     <template #left-content>
       <slider />
@@ -8,13 +8,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref,computed } from "vue";
 import { useRouter } from "vue-router";
 import Starfield from "@/components/Starfield.vue";
 import Slider from "@/components/Slider.vue";
 import {getUsername} from "@/utils/Auth";
 import Dashboard from "@/components/Dashboard.vue";
 import Neural from "../components/Neural.vue"
+import { useThemeStore } from "../stores/themeStore";
 
 
 const router = useRouter();

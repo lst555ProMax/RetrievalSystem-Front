@@ -4,76 +4,84 @@
   <Dashboard>
     <template #left-content>
       <div class="userManagement">
-          <div class="main-content">
-            <h2>User Management</h2>
-            <table class="user-table">
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Email</th>
-                  <th>Nickname</th>
-                  <th>Birthday</th>
-                  <th>Gender</th>
-                  <th>Description</th>
-                  <th>Operation</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(user, index) in users" :key="index">
-                  <td v-if="editingIndex === index">
-                    <input v-model="editUserData.username" readonly />
-                  </td>
-                  <td v-else>{{ user.username }}</td>
+        <div class="main-content">
+          <h2>User Management</h2>
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Nickname</th>
+                <th>Birthday</th>
+                <th>Gender</th>
+                <th>Description</th>
+                <th>Operation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(user, index) in users" :key="index">
+                <td v-if="editingIndex === index">
+                  <input v-model="editUserData.username" readonly />
+                </td>
+                <td v-else>{{ user.username }}</td>
 
-                  <td v-if="editingIndex === index">
-                    <input v-model="editUserData.email" />
-                  </td>
-                  <td v-else>{{ user.email }}</td>
+                <td v-if="editingIndex === index">
+                  <input v-model="editUserData.email" />
+                </td>
+                <td v-else>{{ user.email }}</td>
 
-                  <td v-if="editingIndex === index">
-                    <input v-model="editUserData.nickname" />
-                  </td>
-                  <td v-else>{{ user.nickname || "N/A" }}</td>
+                <td v-if="editingIndex === index">
+                  <input v-model="editUserData.nickname" />
+                </td>
+                <td v-else>{{ user.nickname || "N/A" }}</td>
 
-                  <td v-if="editingIndex === index">
-                    <input type="date" v-model="editUserData.birthday" />
-                  </td>
-                  <td v-else>{{ formatDate(user.birthday) || "N/A" }}</td>
+                <td v-if="editingIndex === index">
+                  <input type="date" v-model="editUserData.birthday" />
+                </td>
+                <td v-else>{{ formatDate(user.birthday) || "N/A" }}</td>
 
-                  <td v-if="editingIndex === index">
-                    <input
-                      v-model="editUserData.Gender"
-                      placeholder="Gender not specified"
-                    />
-                  </td>
-                  <td v-else>{{ user.Gender || "N/A" }}</td>
+                <td v-if="editingIndex === index">
+                  <input
+                    v-model="editUserData.Gender"
+                    placeholder="Gender not specified"
+                  />
+                </td>
+                <td v-else>{{ user.Gender || "N/A" }}</td>
 
-                  <td v-if="editingIndex === index">
-                    <input v-model="editUserData.description" />
-                  </td>
-                  <td v-else>{{ user.description || "N/A" }}</td>
+                <td v-if="editingIndex === index">
+                  <input v-model="editUserData.description" />
+                </td>
+                <td v-else>{{ user.description || "N/A" }}</td>
 
-                  <td>
-                    <button
-                      v-if="editingIndex === index"
-                      @click="saveUser(index)"
-                    >
-                      Store
-                    </button>
-                    <button v-else @click="editUser(index)">Edit</button>
-                    <button @click="deleteUser(index)">Delete</button>
-                    <button
-                      v-if="editingIndex === index"
-                      @click="cancelEdit(index)"
-                    >
-                      Cancel
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                <td>
+                  <button
+                    v-if="editingIndex === index"
+                    @click="saveUser(index)"
+                  >
+                    Store
+                  </button>
+                  <button v-else @click="editUser(index)">Edit</button>
+
+                  <!-- 修改删除按钮 -->
+                  <button
+                    v-if="editingIndex !== index"
+                    @click="deleteUser(index)"
+                  >
+                    Delete
+                  </button>
+
+                  <button
+                    v-if="editingIndex === index"
+                    @click="cancelEdit(index)"
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
     </template>
   </Dashboard>
 </template>
@@ -299,14 +307,13 @@ body {
 
 .user-table th,
 .user-table td {
-  border: 1px solid rgba(255, 255, 255, 0.1);;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 10px;
   text-align: left;
-
 }
 
 .user-table th {
-  background-color: rgba(62,62,95,0.6);
+  background-color: rgba(62, 62, 95, 0.6);
 }
 
 .user-table th:nth-child(7),
@@ -323,10 +330,10 @@ body {
   cursor: pointer;
   color: #fff;
   background-color: #0dbe83;
-  width:40%;
-  height:100%;
+  width: 40%;
+  height: 100%;
   margin-left: 5px;
-  margin-right:5px;
+  margin-right: 5px;
 }
 
 .user-table button:hover {

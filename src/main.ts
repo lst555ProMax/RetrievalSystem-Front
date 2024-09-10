@@ -8,6 +8,7 @@ import router from './router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { ElIcon } from 'element-plus';
+import './assets/styles.css'; // 引入全局样式
 /* import 'element-plus/lib/theme-chalk/el-icon.css'; */
 
 //图标 图标在附件中

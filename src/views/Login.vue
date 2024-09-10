@@ -11,7 +11,7 @@
       >
         <div class="login-title">
           <i class="fa-solid fa-kiwi-bird fa-lg" style="color: #cf8b2a"></i>
-          RetrievalSystem
+          Retrieval System
         </div>
 
         <!-- 用户名 -->
@@ -182,14 +182,6 @@ const showPanel = (type) => {
 /* onMounted生命周期钩子函数   用于在组件完成挂载之后完成一些初始化的操作 */
 onMounted(() => {
   showPanel(1);
-  // 读取本地存储的登录信息
-  const savedUsername = localStorage.getItem("savedUsername");
-  const savedPassword = localStorage.getItem("savedPassword");
-  if (savedUsername && savedPassword) {
-    formData.value.username = savedUsername;
-    formData.value.password = savedPassword;
-    formData.value.rememberMe = true;
-  }
 });
 
 //登录，注册 弹出配置   reactive响应式对象
@@ -221,7 +213,7 @@ const rules = {
     { validator: proxy.Verify.email, message: "Please enter a valid email" },
   ],
   password: [{ required: true, message: "Please enter your password" }],
-  username: [{ required: true, message: "Please enter your nickname" }],
+  username: [{ required: true, message: "Please enter your username" }],
   registerPassword: [
     { required: true, message: "Please enter your password" },
     {
@@ -276,119 +268,137 @@ const emitUsername = () => {
 };
 
 //登录、注册、重置密码  提交表单
-const doSubmit = () => {
+const doSubmit = async () => {
+  // 表单验证
   formDataRef.value.validate(async (valid) => {
-    if (!valid) {
-      return;
-    }
+    if (!valid) return;
+
     let params = {};
-    Object.assign(
-      params,
-      formData.value
-    ); /* 将form.data的所有值都赋给params对象 */
-    /* 注册 */
-    if (opType.value == 0 || opType.value == 2) {
-      params.password = params.registerPassword;
-      delete params.registerPassword;
-      delete params.reRegisterPassword;
-    }
-    /* 登录 */
-    if (opType.value == 1) {
-      let cookieLoginInfo = proxy.VueCookies.get("loginInfo");
-      let cookiePassword =
-        cookieLoginInfo == null ? null : cookieLoginInfo.password;
-    }
-    let url = null;
+    // 将 form.data 的所有值都赋给 params 对象
+    Object.assign(params, formData.value);
 
-    if (opType.value == 0 || opType.value == 1) {
-      if (opType.value == 0) {
-        url = api.register;
-      } else if (opType.value == 1) {
-        url = api.login;
-      }
-
-      // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
-      const urlEncodedParams = new URLSearchParams(params);
-
-      try {
-        // 发送请求
-        const result = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded", // 确保内容类型为表单数据
-          },
-          body: urlEncodedParams.toString(), // 传递参数
-        });
-
-        // 解析响应
-        const response = await result.json();
-        data.value = response; // 更新数据
-
-        // 输出消息
-        console.log(response.message);
-
-        // 处理成功操作
-        if (response.code === 0) {
-          // 存储 JWT 令牌
-          localStorage.setItem("jwtToken", response.access_token); // 假设 token 是返回的 JWT 令牌字段名
-          alert("Operation successful");
-          if (response.data.permission_level === 1) {
-            router.push("/framework");
-          } else if (response.data.permission_level === 0) {
-            router.push("/userManagement");
-          }
-
-          emitUsername();
-          saveUsername(params.username);
-
-          // 处理“记住我”功能
-          if (formData.value.rememberMe) {
-            localStorage.setItem("savedUsername", params.username);
-            localStorage.setItem("savedPassword", params.password);
-          } else {
-            localStorage.removeItem("savedUsername");
-            localStorage.removeItem("savedPassword");
-          }
-        } else {
-          alert("Operation failed: " + response.message);
-        }
-      } catch (error) {
-        console.error("Request failed", error);
-        alert("Request failed. Please check your network or try again later");
-      }
-    } else if (opType.value == 2) {
-      url = api.resetPwd;
-      const formData2 = new FormData();
-      formData2.append("username", params.username);
-      formData2.append("password", params.password);
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          body: formData2, // 使用 FormData 作为请求体
-        });
-
-        const result = await response.json();
-        if (result.code === 0) {
-          alert("Password changed successfully!");
-          opType.value = 1;
-          resetForm();
-        } else {
-          console.error("Modification failed", result.message);
-        }
-      } catch (error) {
-        console.error("Request failed", error);
-      }
+    // 处理注册或登录操作
+    if (opType.value === 0 || opType.value === 1) {
+      handleRegisterOrLogin(params);
+    } else if (opType.value === 2) {
+      // 处理重置密码操作
+      handleResetPassword(params);
     }
   });
 };
 
-const jumpToAdmin = () => {
-  router.push("/userManagement");
+// 处理注册或登录
+const handleRegisterOrLogin = async (params) => {
+  let url = null;
+
+  // 注册
+  if (opType.value === 0) {
+    params.password = params.registerPassword;
+    delete params.registerPassword;
+    delete params.reRegisterPassword;
+    url = api.register;
+  }
+
+  // 登录
+  if (opType.value === 1) {
+    url = api.login;
+    let cookieLoginInfo = proxy.VueCookies.get("loginInfo");
+  }
+
+  // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
+  const urlEncodedParams = new URLSearchParams(params);
+
+  try {
+    // 发送请求
+    const result = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded", // 确保内容类型为表单数据
+      },
+      body: urlEncodedParams.toString(), // 传递参数
+    });
+
+    // 解析响应
+    const response = await result.json();
+    data.value = response; // 更新数据
+
+    // 输出消息
+    console.log(response.message);
+
+    // 处理成功操作
+    handleSuccessResponse(response, params);
+
+  } catch (error) {
+    console.error("Request failed", error);
+    alert("Request failed. Please check your network or try again later");
+  }
+
+  // 处理记住登录信息
+  if (opType.value === 1) {
+    handleRememberLogin(params);
+  }
 };
 
-const FastjumpToFrame = () => {
-  router.push("/framework");
+// 处理成功响应
+const handleSuccessResponse = (response, params) => {
+  if (response.code === 0) {
+    // 存储 JWT 令牌
+    localStorage.setItem("jwtToken", response.access_token); // 假设 token 是返回的 JWT 令牌字段名
+    alert("Operation successful");
+    if (response.data.permission_level === 1) {
+      router.push("/framework");
+    } else if (response.data.permission_level === 0) {
+      router.push("/userManagement");
+    }
+
+    emitUsername();
+    saveUsername(params.username);
+
+  } else {
+    alert("Operation failed: " + response.message);
+  }
 };
+
+// 处理记住登录信息
+const handleRememberLogin = (params) => {
+  if (params.rememberMe) {
+    const loginInfo = {
+      username: params.username,
+      password: params.password,
+      rememberMe: params.rememberMe,
+    };
+    proxy.VueCookies.set("loginInfo", loginInfo, "7d");
+  } else {
+    proxy.VueCookies.remove("loginInfo");
+  }
+};
+
+// 处理重置密码
+const handleResetPassword = async (params) => {
+  const url = api.resetPwd;
+  const formData2 = new FormData();
+  formData2.append("username", params.username);
+  formData2.append("password", params.password);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData2, // 使用 FormData 作为请求体
+    });
+
+    const result = await response.json();
+    if (result.code === 0) {
+      alert("Password changed successfully!");
+      opType.value = 1;
+      resetForm();
+    } else {
+      console.error("Modification failed", result.message);
+    }
+  } catch (error) {
+    console.error("Request failed", error);
+  }
+};
+
 </script>
 
 <style lang="scss" scoped>

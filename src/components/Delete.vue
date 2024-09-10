@@ -151,12 +151,14 @@ const close = () => {
 }
 
 .delete-content {
-  background-color: #1a1c2d;
-  border-radius: 8px;
-  width: 500px;
-  padding: 20px;
+  background-color: rgba(26, 28, 45, 0.35);
+  border-radius: 20px;
+  width: 450px;
+  padding: 20px 30px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  height: 80%;
+  border: 1px solid rgba(202, 202, 208, 0.35);
 }
 
 .delete-header {
@@ -194,17 +196,20 @@ const close = () => {
   width: 100%;
   padding: 8px;
   border: 1px solid #333;
-  border-radius: 4px;
+  border-radius: 10px;
   background-color: #2b2e3e;
   color: #ffffff;
+  font-size: 16px;
 }
 
 .agreement-text {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #333;
+  border-radius: 10px;
   background-color: #2b2e3e;
-  padding: 10px;
-  border-radius: 4px;
-  color: #aaa;
-  margin-bottom: 10px;
+  color: #ffffff;
+  font-size: 16px;
 }
 
 .agreement-check {
@@ -214,13 +219,16 @@ const close = () => {
   align-items: center;
   gap: 5px;
   color: #ffffff;
-  width: 30%;
+  width: 80%;
   height:10%;
+  margin-top:10px;
+  margin-bottom:30px;
+  margin-left:5px;
 }
 
 .agreement-label{
 display: flex;
-flex:4;
+flex:2;
 }
 
 .agreement-input{

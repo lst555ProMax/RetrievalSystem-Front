@@ -267,7 +267,7 @@ h3 {
   border-radius: 18px;
   box-shadow: 1px 1px 8px 0 grey;
   margin-bottom: 20px;
-  padding: 20px 25px 20px 25px;
+  padding: 10px 25px 20px 25px;
   width: 90%;
   height:22%;
   color: rgba(255, 255, 255, 0.8);
