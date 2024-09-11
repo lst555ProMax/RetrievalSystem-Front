@@ -1,4 +1,3 @@
-<!-- 目前用户上传图片之后消息处显示的是文字 -->
 <template>
   <starfield />
   <dashboard>
@@ -208,8 +207,6 @@ const api = {
 
 let url = api.image;
 
-// 上传显示的图片
-// 上传显示的图片
 const uploadImageFromList = async (index) => {
   try {
     // 获取选中的图片并转化为 blob 对象
@@ -217,8 +214,9 @@ const uploadImageFromList = async (index) => {
     const blob = await response.blob();
 
     // 创建新的 File 对象
-    selectedFile.value = new File([blob], `image_${index}.jpg`, { type: blob.type });
-    console.log("Selected file:", selectedFile.value);
+    selectedFile.value = new File([blob], `image_${index}.jpg`, {
+      type: blob.type,
+    });
 
     if (!selectedFile.value) {
       alert("Please choose an image file！");
@@ -230,7 +228,6 @@ const uploadImageFromList = async (index) => {
 
     // 创建图片 URL
     const imageUrl = URL.createObjectURL(selectedFile.value);
-    console.log("Image URL:", imageUrl);
 
     // 清空消息并设置加载状态
     uiChange.value = 1;
@@ -245,9 +242,6 @@ const uploadImageFromList = async (index) => {
       imageUrl,
       loading: true,
     });
-
-    // 打印消息对象中的图片 URL，检查是否存储正确
-    console.log("Messages:", messages.value);
 
     const formData = new FormData();
     formData.append("username", getUsername());
@@ -295,33 +289,26 @@ const uploadImageFromList = async (index) => {
       text: `Uploaded on ${currentTime}`,
       imageUrl,
     });
-
   } catch (error) {
     handleError("Request failed, please try again later");
     console.error("Submission failed", error);
   } finally {
-    // 请求完成，显示按钮
     isLoading.value = false;
   }
 };
-
 
 const sendImage = async (isRetry = false, index = -1) => {
   if (!selectedFile.value) {
     alert("Please choose an image file！");
     return;
   }
-  console.log(selectedFile.value);
   let currentTime = new Date().toLocaleTimeString();
 
   uiChange.value = 1;
   messages.value = [];
 
-  // 创建图片 URL
   const imageUrl = URL.createObjectURL(selectedFile.value);
-  console.log(imageUrl);
 
-  // 设置加载状态
   isLoading.value = true;
 
   // 添加用户上传图片的消息
@@ -374,22 +361,20 @@ const sendImage = async (isRetry = false, index = -1) => {
       loading: false,
     });
 
-          // Update user message loading state
-          if (messages.value[0]) {
-        messages.value[0].loading = false;
-      }
+    if (messages.value[0]) {
+      messages.value[0].loading = false;
+    }
 
     // 添加历史记录项，包括获取到的 ID 和文本
     history.value.push({
-      id: result.search_history_id, // 替换为实际ID
-      text: `Uploaded on ${currentTime}`, // 可根据需求修改
-      imageUrl, // 存储图像 URL
+      id: result.search_history_id,
+      text: `Uploaded on ${currentTime}`,
+      imageUrl,
     });
   } catch (error) {
     handleError("Request failed, please try again later");
     console.error("Submission failed", error);
   } finally {
-    // 请求完成，显示按钮
     isLoading.value = false;
   }
 };
@@ -415,10 +400,10 @@ const fetchHistory = async (id) => {
       const imageUrl = URL.createObjectURL(selectedFile.value);
 
       messages.value.push({
-        imageUrl, // 使用从历史记录中获取的 URL
+        imageUrl,
         time: result.data.date,
         isResponse: false,
-        fromHistory: true, // 标识为历史记录来源
+        fromHistory: true,
       });
 
       // 检查 search_text 是否为字符串
@@ -432,13 +417,13 @@ const fetchHistory = async (id) => {
         ? contentMatches
             .map((match) => match.replace("Content: ", "").trim())
             .join("\n")
-        : "This is the response provided by the system."; // 如果没有匹配项，显示默认信息
+        : "This is the response provided by the system.";
 
       messages.value.push({
         time: result.data.date,
         isResponse: true,
         text: responseText,
-        fromHistory: true, // 标识为历史记录来源
+        fromHistory: true,
       });
     } else {
       handleError(
@@ -467,7 +452,6 @@ const retryResponse = async (index) => {
   try {
     await sendImage(true, index);
   } catch (error) {
-    console.log(error);
     messages.value[index].text = "Request failed, please try again later.";
   }
 };
@@ -572,8 +556,8 @@ onMounted(() => {
 }
 
 .chat-history {
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 固定在底部 */
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 85%;
   flex: 1;
@@ -641,12 +625,11 @@ onMounted(() => {
 }
 
 .input-area {
-  position: absolute; /* 绝对定位 */
-  bottom: 0; /* 固定在底部 */
+  position: absolute;
+  bottom: 0;
   display: flex;
   align-items: center;
   background: transparent;
-  /*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
   height: 10%;
 }
@@ -656,7 +639,6 @@ onMounted(() => {
   padding: 10px;
   border: none;
   border-radius: 5px;
-  /*   margin-left: 10px; */
   margin-right: 10px;
   background-color: rgba(255, 255, 255, 0.1);
   color: #d3d3d3;
@@ -714,11 +696,11 @@ onMounted(() => {
 }
 
 .thumbnail {
-  width: 50px; /* 调整缩略图的宽度 */
-  height: 50px; /* 调整缩略图的高度 */
+  width: 50px;
+  height: 50px;
   object-fit: cover; /* 保持图像比例裁剪 */
-  margin-right: 8px; /* 调整与文字的间距 */
-  border-radius: 4px; /* 圆角效果，可选 */
+  margin-right: 8px;
+  border-radius: 4px;
 }
 
 .hidden {

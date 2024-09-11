@@ -25,7 +25,7 @@
       @click="markAllAsRead"
       :style="{ color: readAll ? '#c0c0c0' : '#ffffff' }"
     >
-      {{ readAll ? 'Read' : 'Read all' }}
+      {{ readAll ? "Read" : "Read all" }}
     </span>
   </div>
 
@@ -65,17 +65,16 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, onMounted } from "vue";
 
 // 从 localStorage 中加载已读状态
 const loadReadStatus = () => {
-  const savedFaqList = localStorage.getItem('faqList');
+  const savedFaqList = localStorage.getItem("faqList");
   if (savedFaqList) {
     faqList.value = JSON.parse(savedFaqList);
   }
-  const savedReadAll = localStorage.getItem('readAll');
+  const savedReadAll = localStorage.getItem("readAll");
   if (savedReadAll) {
     readAll.value = JSON.parse(savedReadAll);
   }
@@ -83,10 +82,11 @@ const loadReadStatus = () => {
 
 // 保存已读状态到 localStorage
 const saveReadStatus = () => {
-  localStorage.setItem('faqList', JSON.stringify(faqList.value));
-  localStorage.setItem('readAll', JSON.stringify(readAll.value));
+  localStorage.setItem("faqList", JSON.stringify(faqList.value));
+  localStorage.setItem("readAll", JSON.stringify(readAll.value));
 };
 
+//定义消息列表
 const faqList = ref([
   {
     question: "Launched the conversation function",
@@ -117,7 +117,7 @@ const setActiveTab = (tab) => {
 // 标记所有问题为已读
 const markAllAsRead = () => {
   readAll.value = true;
-  faqList.value.forEach(item => {
+  faqList.value.forEach((item) => {
     item.read = true;
   });
   saveReadStatus(); // 保存状态到 localStorage
@@ -127,17 +127,9 @@ const markAllAsRead = () => {
 onMounted(() => {
   loadReadStatus(); // 从 localStorage 中加载状态
 });
-
-// 模拟关闭菜单的方法，用于关闭可能的下拉菜单
-const closeDropdowns = () => {
-  console.log("Close the menu");
-};
 </script>
 
-
-
 <style scoped>
-
 /* 未读标志样式 */
 .unread-indicator {
   color: red;
@@ -191,7 +183,7 @@ const closeDropdowns = () => {
 }
 
 .content1 {
-  padding-left:15px;
+  padding-left: 15px;
   display: flex;
   flex-direction: column;
   align-items: top;

@@ -5,26 +5,22 @@
       <!-- 顶部标题和关闭按钮 -->
       <header class="faq-header">
         <h2>frequently asked questions</h2>
-        <!-- 关闭按钮，点击时关闭弹窗 -->
         <button class="close-button" @click="close">×</button>
       </header>
       <!-- 问题与解答内容区域 -->
       <div class="faq-content">
-        <!-- 循环渲染 FAQ 列表中的每个问题 -->
         <div
           v-for="(item, index) in faqList"
           :key="index"
           class="faq-item"
           @click="toggleAnswer(index)"
         >
-          <!-- 问题文本，点击时展开或折叠答案 -->
           <p class="question">
             {{ item.question
             }}<span :class="['arrow', { rotated: activeIndex === index }]"
               >&#9662;</span
             >
           </p>
-          <!-- 答案文本，当前激活索引与问题索引匹配时显示 -->
           <p v-if="activeIndex === index" class="answer">{{ item.answer }}</p>
         </div>
       </div>
@@ -58,23 +54,28 @@ const faqList = ref([
   },
   {
     question: "Q2: What are the basic functions of the product?",
-    answer: "Our products mainly support text retrieval and image retrieval functions, you can find satisfactory answers here.",
+    answer:
+      "Our products mainly support text retrieval and image retrieval functions, you can find satisfactory answers here.",
   },
   {
     question: "Q3: How do I change the associated email address?",
-    answer: "Please select Modify email address in the Edit Personal Information setting of your account.",
+    answer:
+      "Please select Modify email address in the Edit Personal Information setting of your account.",
   },
   {
     question: "Q4: Does it support multi-language interface?",
-    answer: "Currently, the interface is supported in both Chinese and English, and other languages will be opened in subsequent versions.",
+    answer:
+      "Currently, the interface is supported in both Chinese and English, and other languages will be opened in subsequent versions.",
   },
   {
     question: "Q5: How can I check my history?",
-    answer: "You can view the history on the sidebar page of the Wentu search interface.",
+    answer:
+      "You can view the history on the sidebar page of the Wentu search interface.",
   },
   {
     question: "Q6: How do I change my password?",
-    answer: "Please select Change Password in the Modify Personal Information setting of your account.",
+    answer:
+      "Please select Change Password in the Modify Personal Information setting of your account.",
   },
   {
     question: "Q7: What is the privacy policy of the product?",
@@ -82,15 +83,18 @@ const faqList = ref([
   },
   {
     question: "Q8: How do I contact customer service?",
-    answer: "You can find our contact details by clicking on the leftmost icon in the top right corner.",
+    answer:
+      "You can find our contact details by clicking on the leftmost icon in the top right corner.",
   },
   {
     question: "Q9: What is sponsorship?",
-    answer: "If you are satisfied enough with the interface design and functional implementation of our project, and think that we have full development potential, you can scan the QR code to sponsor us.",
+    answer:
+      "If you are satisfied enough with the interface design and functional implementation of our project, and think that we have full development potential, you can scan the QR code to sponsor us.",
   },
   {
     question: "Q10: Can I apply for a refund?",
-    answer: "If there are special circumstances, you can contact us for a refund application.",
+    answer:
+      "If there are special circumstances, you can contact us for a refund application.",
   },
 ]);
 
@@ -99,7 +103,6 @@ const activeIndex = ref(null);
 
 // 切换答案的展开或折叠状态
 const toggleAnswer = (index) => {
-  // 如果当前问题已经是展开状态，则将其折叠，否则展开该问题
   activeIndex.value = activeIndex.value === index ? null : index;
 };
 </script>

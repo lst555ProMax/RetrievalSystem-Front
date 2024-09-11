@@ -13,7 +13,7 @@
                 <th>Email</th>
                 <th>Nickname</th>
                 <th>Birthday</th>
-                <th>Gender</th>
+                <th>Sex</th>
                 <th>Description</th>
                 <th>Operation</th>
               </tr>
@@ -42,11 +42,11 @@
 
                 <td v-if="editingIndex === index">
                   <input
-                    v-model="editUserData.Gender"
-                    placeholder="Gender not specified"
+                    v-model="editUserData.Sex"
+                    placeholder="Sex not specified"
                   />
                 </td>
-                <td v-else>{{ user.Gender || "N/A" }}</td>
+                <td v-else>{{ user.sex || "N/A" }}</td>
 
                 <td v-if="editingIndex === index">
                   <input v-model="editUserData.description" />
@@ -62,7 +62,7 @@
                   </button>
                   <button v-else @click="editUser(index)">Edit</button>
 
-                  <!-- 修改删除按钮 -->
+                  <!-- 删除用户按钮 -->
                   <button
                     v-if="editingIndex !== index"
                     @click="deleteUser(index)"
@@ -111,7 +111,7 @@ const editUserData = ref({
   email: "",
   nickname: "",
   birthday: "",
-  Gender: "",
+  Sex: "",
   description: "",
 });
 
@@ -135,7 +135,6 @@ const fetchUsers = async () => {
 
     if (response.data.code === 0) {
       users.value = response.data.data; // 将返回的数据赋值给 users
-      console.log(response.data.data);
     } else {
       console.error("获取用户数据失败:", response.data.message);
     }
@@ -143,6 +142,7 @@ const fetchUsers = async () => {
     console.error("获取用户数据失败:", error);
   }
 };
+
 // 开始编辑用户信息
 const editUser = (index) => {
   editingIndex.value = index;
@@ -160,16 +160,14 @@ const saveUser = async (index) => {
     formData.append("email", users.value[index].email);
     formData.append("nickname", users.value[index].nickname);
     formData.append(
-      "Gender",
-      !users.value[index].Gender ? 3 : users.value[index].Gender
+      "sex",
+      !users.value[index].Sex ? 3 : users.value[index].Sex
     );
     formData.append("description", users.value[index].description);
     formData.append(
       "birthday",
       !users.value[index].birthday ? "2000-01-01" : users.value[index].birthday
     );
-
-    console.log(formData.get("birthday"));
 
     try {
       const response = await fetch(url2, {
@@ -181,7 +179,6 @@ const saveUser = async (index) => {
       });
 
       const result = await response.json();
-      console.log("333" + result);
       if (result.code === 0) {
         editingIndex.value = null;
         alert("User information has been updated!");
@@ -218,12 +215,9 @@ const deleteUser = async (index) => {
         body: urlEncodedParams.toString(),
       });
 
-      console.log(urlEncodedParams.toString());
       const result = await response.json();
 
       if (response.ok) {
-        console.log("Deletion successful", result);
-        console.log(urlEncodedParams.toString());
         editingIndex.value = null;
         fetchUsers();
       } else {

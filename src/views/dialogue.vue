@@ -1,8 +1,3 @@
-<!-- 进度条不随内容更新而滚动 -->
-<!-- v-if无法渲染样式的问题始终无法解决 -->
-<!-- 历史记录还没有实现 -->
-<!-- 聊天历史的样式需要改进 -->
-<!-- 需要引入大模型接口来实现最终的聊天逻辑 -->
 <template>
   <starfield />
   <dashboard>
@@ -10,6 +5,7 @@
       <div class="chat-system">
         <div class="main-content">
           <div class="up-down">
+            <!-- 推荐问题部分 -->
             <div v-if="!uiChange" :key="1">
               <div class="recommendations">
                 <div class="headbar">
@@ -64,6 +60,7 @@
               </div>
             </div>
 
+            <!-- 聊天记录部分 -->
             <div v-if="messages.length" class="chat-history" ref="chatHistory">
               <div
                 v-for="(message, index) in messages"
@@ -86,6 +83,7 @@
               </div>
             </div>
 
+             <!-- 输入区域 -->
             <div class="input-area">
               <input
                 type="text"
@@ -97,6 +95,7 @@
             </div>
           </div>
 
+           <!-- 历史记录部分 -->
           <div class="history-section">
             <h4>History Records</h4>
             <ul class="history-list">
@@ -124,7 +123,9 @@ import { API_ENDPOINTS } from "../config/apiConfig";
 
 const route = useRoute();
 const router = useRouter();
-const history = ref([]); // 初始化为空数组
+
+// 定义响应式数据
+const history = ref([]); 
 const question = ref([
   "What is cross-modal learning?",
   "How is the association between images and text established?",
@@ -166,20 +167,24 @@ const userInput2 = ref("");
 const messages = ref([]);
 const chatHistory = ref(null);
 
+// 切换问题选择
 const changeSelection = () => {
   questionSelection.value++;
   questionSelection.value = questionSelection.value % 5;
 };
 
+// 删除历史记录
 const removeHistory = (index) => {
   history.value.splice(index, 1);
 };
 
+// 查看历史记录
 const viewHistory = (index) => {
   const selectedHistory = history.value[index];
-  messages.value = selectedHistory.messages; // 显示之前的消息
+  messages.value = selectedHistory.messages; 
 };
 
+// 发送消息
 const sendMessage = async () => {
   if (userInput.value.trim()) {
     const currentTime = new Date().toLocaleTimeString();
@@ -198,7 +203,7 @@ const sendMessage = async () => {
 
     history.value.push({
       text: userInput.value,
-      messages: newMessage, // 保存当前消息记录
+      messages: newMessage,
     });
 
     await sendToBackend(userInput.value);
@@ -206,6 +211,7 @@ const sendMessage = async () => {
   }
 };
 
+// 根据问题索引发送消息
 const sendMessageIndex = async (index) => {
   uiChange.value = 1;
   userInput2.value = question.value[index];
@@ -237,6 +243,7 @@ const api = {
 
 let url = api.dialogue;
 
+// 处理搜索
 const handleSearch = async (question) => {
   uiChange.value = 1;
   userInput.value = question;
@@ -261,9 +268,10 @@ const handleSearch = async (question) => {
   }
 };
 
+// 发送请求到后端
 const sendToBackend = async (inputText) => {
   const formData = new FormData();
-  formData.append("content", inputText); // 传递content字段给后端
+  formData.append("content", inputText);
 
   try {
     const token = localStorage.getItem("jwtToken");
@@ -296,7 +304,6 @@ const sendToBackend = async (inputText) => {
         loading: false,
       });
 
-            // Update user message loading state
             if (messages.value[0]) {
         messages.value[0].loading = false;
       }
@@ -306,6 +313,7 @@ const sendToBackend = async (inputText) => {
   } 
 };
 
+// 重试响应
 const retryResponse = async () => {
   messages.value.splice(messages.value.length - 1, 1);
   messages.value[0].loading = true;
@@ -316,6 +324,7 @@ const retryResponse = async () => {
   }
 };
 
+// 复制响应
 const copyResponse = (index) => {
   const textToCopy = messages.value[index].text;
   navigator.clipboard
@@ -328,6 +337,7 @@ const copyResponse = (index) => {
     });
 };
 
+// 处理错误
 const handleError = (message) => {
   alert(message);
 };
@@ -359,8 +369,8 @@ const handleError = (message) => {
 }
 
 .recommendations {
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 固定在底部 */
+  position: absolute; 
+  top: 0; 
   width: 100%;
   height: 80%;
   display: flex;
@@ -425,8 +435,8 @@ const handleError = (message) => {
 }
 
 .chat-history {
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 固定在底部 */
+  position: absolute; 
+  top: 0; 
   width: 100%;
   height: 85%;
   flex: 1;
@@ -482,12 +492,11 @@ const handleError = (message) => {
 }
 
 .input-area {
-  position: absolute; /* 绝对定位 */
-  bottom: 0; /* 固定在底部 */
+  position: absolute; 
+  bottom: 0; 
   display: flex;
   align-items: center;
   background: transparent;
-/*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
   height: 10%;
 }
@@ -497,7 +506,6 @@ const handleError = (message) => {
   padding: 10px;
   border: none;
   border-radius: 5px;
-/*   margin-left: 10px; */
   margin-right: 10px;
   background-color: rgba(255,255,255,0.1);
   color: #d3d3d3;
@@ -556,7 +564,7 @@ height: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 200px; /* 可以根据需要调整宽度 */
+  max-width: 200px; 
 }
 
 .history-list button {

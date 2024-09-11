@@ -1,43 +1,38 @@
 <template>
   <starfield />
-<dashboard > 
-  <template #left-content>
-    <div v-html="htmlContent"></div>
-  </template>
-</dashboard>
-
+  <dashboard>
+    <template #left-content>
+      <div v-html="htmlContent"></div>
+    </template>
+  </dashboard>
 </template>
-  
+
 <script setup>
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
-import dashboard from "../components/Dashboard.vue"
+import dashboard from "../components/Dashboard.vue";
 
-import Starfield from "@/components/Starfield.vue"
-import { getUsername } from "@/utils/Auth"
+import Starfield from "@/components/Starfield.vue";
+import { getUsername } from "@/utils/Auth";
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
 
-
-const htmlContent = ref("")
-
+const htmlContent = ref("");
 
 onMounted(async () => {
   const username = getUsername();
 
   if (!username) {
     router.push("/");
-  }
-  else {
+  } else {
     // 加载 output.html 文件的内容
-    const response = await fetch('../../../public/output.html'); // 确保路径正确
+    const response = await fetch("../../../public/output.html");
     htmlContent.value = await response.text();
   }
 });
-
 </script>
 
 <style scoped>
@@ -50,12 +45,12 @@ body {
 }
 
 .image-upload-system {
-  display: flex; /* 使用Flexbox布局 */
+  display: flex;
   height: calc(100vh - 10px); /* 视口高度减去外边距总和，调整为适合的高度 */
   margin: 5px;
-  border-radius: 5px; /* 设置圆角 */
-  overflow: hidden; /* 确保圆角不会因内容溢出而被破坏 */
-  box-sizing: border-box; /* 包含外边距计算 */
+  border-radius: 5px;
+  overflow: hidden;
+  box-sizing: border-box;
   flex-direction: column;
 }
 
@@ -65,15 +60,14 @@ body {
   flex-direction: row;
 }
 
-
 .main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
   flex: 1;
-  overflow-y: auto; /* 如果内容超出高度，允许在该区域滚动 */
-  box-sizing: border-box; /* 包含 padding 在内计算总高度 */
+  overflow-y: auto;
+  box-sizing: border-box;
   height: calc(100%);
 }
 </style>

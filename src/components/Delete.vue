@@ -13,7 +13,7 @@
           <!-- 用户名 -->
           <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" id="username" :placeholder=username disabled />
+            <input type="text" id="username" :placeholder="username" disabled />
           </div>
 
           <!-- 密码 -->
@@ -43,12 +43,23 @@
             <label>Account Cancellation Notice</label>
             <div class="agreement-text">
               <p>
-                After you cancel your account, all your data will be permanently deleted and cannot be recovered. Please make sure that you have backed up all the data you need. If you continue to use the service, you need to register a new account. The logout process is irreversible, please be cautious.
+                After you cancel your account, all your data will be permanently
+                deleted and cannot be recovered. Please make sure that you have
+                backed up all the data you need. If you continue to use the
+                service, you need to register a new account. The logout process
+                is irreversible, please be cautious.
               </p>
             </div>
             <div class="agreement-check">
-              <label for="agreement" class="agreement-label">I understand and agree</label>
-              <input type="checkbox" id="agreement" v-model="form.agreement" class="agreement-input"/>
+              <label for="agreement" class="agreement-label"
+                >I understand and agree</label
+              >
+              <input
+                type="checkbox"
+                id="agreement"
+                v-model="form.agreement"
+                class="agreement-input"
+              />
             </div>
           </div>
         </form>
@@ -66,21 +77,21 @@
 <script setup>
 import { ref } from "vue";
 import { defineEmits } from "vue";
-import { getUsername } from "../utils/Auth"
+import { getUsername } from "../utils/Auth";
 import { API_ENDPOINTS } from "../config/apiConfig";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
 
-
+// 定义组件的属性
 const props = defineProps({
   isVisible: Boolean,
 });
 
-const username=getUsername();
+const username = getUsername();
 
-const emit=defineEmits(["update:isVisible"]);
+const emit = defineEmits(["update:isVisible"]);
 
 const form = ref({
   password: "",
@@ -88,17 +99,19 @@ const form = ref({
   agreement: false,
 });
 
+// API 接口配置
 const api = {
   delete: API_ENDPOINTS.delete,
 };
 
 let url = api.delete;
 
+// 从 localStorage 获取 JWT token
 const token = localStorage.getItem("jwtToken");
 
+// 执行删除操作
 const Delete = async () => {
-
-  if(!form.value.password){
+  if (!form.value.password) {
     alert("Please enter your password");
     return;
   }
@@ -128,15 +141,14 @@ const Delete = async () => {
   }
 };
 
-
-
+// 关闭弹窗
 const close = () => {
   emit("update:isVisible", false);
 };
 </script>
 
 <style scoped>
-/* 保持样式风格一致 */
+/* 背景遮罩层 */
 .delete-overlay {
   position: fixed;
   top: 0;
@@ -150,6 +162,7 @@ const close = () => {
   z-index: 1000;
 }
 
+/* 弹窗内容 */
 .delete-content {
   background-color: rgba(26, 28, 45, 0.35);
   border-radius: 20px;
@@ -159,8 +172,11 @@ const close = () => {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   height: 80%;
   border: 1px solid rgba(202, 202, 208, 0.35);
+  display: flex;/*  */
+  flex-direction: column;/*  */
 }
 
+/* 弹窗头部 */
 .delete-header {
   display: flex;
   justify-content: space-between;
@@ -173,6 +189,7 @@ const close = () => {
   margin: 0;
 }
 
+
 .close-button {
   background: none;
   border: none;
@@ -181,6 +198,12 @@ const close = () => {
   cursor: pointer;
 }
 
+.delete-body {
+  flex: 1; 
+  overflow-y: auto; 
+}
+
+/* 表单组 */
 .form-group {
   margin-bottom: 15px;
 }
@@ -188,7 +211,8 @@ const close = () => {
 .form-group label {
   display: block;
   color: #ffffff;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  margin-top:10px;
 }
 
 .form-group input,
@@ -202,6 +226,7 @@ const close = () => {
   font-size: 16px;
 }
 
+/* 协议文本 */
 .agreement-text {
   width: 100%;
   padding: 8px;
@@ -212,6 +237,7 @@ const close = () => {
   font-size: 16px;
 }
 
+/* 协议勾选框 */
 .agreement-check {
   display: flex;
   flex-direction: row;
@@ -220,26 +246,28 @@ const close = () => {
   gap: 5px;
   color: #ffffff;
   width: 80%;
-  height:10%;
-  margin-top:10px;
-  margin-bottom:30px;
-  margin-left:5px;
+  height: 10%;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  margin-left: 5px;
 }
 
-.agreement-label{
-display: flex;
-flex:2;
+.agreement-label {
+  display: flex;
+  flex: 2;
 }
 
-.agreement-input{
-display: flex;
-flex:1;
+.agreement-input {
+  display: flex;
+  flex: 1;
 }
 
+/* 底部按钮 */
 .delete-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-top: 10px;/*  */
 }
 
 .cancel-button,

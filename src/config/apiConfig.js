@@ -1,6 +1,6 @@
 // src/config/apiConfig.js
 /* export const API_BASE_URL = "http://192.168.229.89:8000"; */
-export const API_BASE_URL = "http://10.203.178.37:5000";
+export const API_BASE_URL = "http://127.0.0.1:8000";
 /* "http://192.168.156.89:8000" */
 
 export const API_ENDPOINTS = {

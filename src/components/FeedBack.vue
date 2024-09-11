@@ -7,30 +7,57 @@
       </header>
       <div class="feedback-content">
         <p class="message">
-          Hello, I'm sorry we can't provide you with a complete service, if you need help, please leave a message, we will contact and solve your problem as soon as possible!
+          Hello, I'm sorry we can't provide you with a complete service, if you
+          need help, please leave a message, we will contact and solve your
+          problem as soon as possible!
         </p>
 
         <!-- Problem Type Section -->
         <div class="problem-type">
           <label>The type of question *</label>
           <div class="problem-buttons">
-            <button :class="{ active: selectedType === 'member' }" @click="selectType('member')">Inquiries  </button>
-            <button :class="{ active: selectedType === 'product' }" @click="selectType('product')">Problems </button>
-            <button :class="{ active: selectedType === 'consult' }" @click="selectType('consult')">Question </button>
-            <button :class="{ active: selectedType === 'other' }" @click="selectType('other')">Misissue</button>
+            <button
+              :class="{ active: selectedType === 'member' }"
+              @click="selectType('member')"
+            >
+              Inquiries
+            </button>
+            <button
+              :class="{ active: selectedType === 'product' }"
+              @click="selectType('product')"
+            >
+              Problems
+            </button>
+            <button
+              :class="{ active: selectedType === 'consult' }"
+              @click="selectType('consult')"
+            >
+              Question
+            </button>
+            <button
+              :class="{ active: selectedType === 'other' }"
+              @click="selectType('other')"
+            >
+              Misissue
+            </button>
           </div>
         </div>
 
         <!-- Feedback Content Section -->
         <div class="feedback-text">
           <label>Feedback content *</label>
-          <textarea v-model="feedbackContent" placeholder="Please fill in your specific description"></textarea>
+          <textarea
+            v-model="feedbackContent"
+            placeholder="Please fill in your specific description"
+          ></textarea>
         </div>
       </div>
 
       <!-- Footer Buttons -->
       <footer class="feedback-footer">
-        <button class="feedback-count">Number of feedbacks: {{ feedbackCount }}</button>
+        <button class="feedback-count">
+          Number of feedbacks: {{ feedbackCount }}
+        </button>
         <div class="action-buttons">
           <button class="cancel-button" @click="close">Cancel</button>
           <button class="submit-button" @click="submitFeedback">Submit</button>
@@ -41,9 +68,9 @@
 </template>
 
 <script setup>
-import { ref,onMounted} from "vue";
+import { ref, onMounted } from "vue";
 import { defineProps, defineEmits } from "vue";
-import { getUsername } from "../utils/Auth"
+import { getUsername } from "../utils/Auth";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
 import Request from "../utils/Request";
@@ -55,7 +82,7 @@ const props = defineProps({
 const emit = defineEmits(["update:isVisible"]);
 
 onMounted(() => {
-  const storedCount = localStorage.getItem('feedbackCount');
+  const storedCount = localStorage.getItem("feedbackCount");
   if (storedCount) {
     feedbackCount.value = parseInt(storedCount, 10);
   }
@@ -66,13 +93,12 @@ const feedbackCount = ref(0); // 初始化反馈次数为0
 const selectedType = ref("member");
 const feedbackContent = ref("");
 const contactInfo = ref("");
-/* const uploadedImages = ref(Array(5).fill({ url: null })); // 存储上传的图片 */
 // 上传图片函数，参数index用于标识上传的是第几个框的图片
 const uploadImage = (index) => {
   // 选择文件上传
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
   input.onchange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -90,7 +116,7 @@ const uploadImage = (index) => {
 
 // 删除图片函数，参数index用于标识删除的是第几个框的图片
 const removeImage = (index) => {
-  images.value[index].url = ''; // 清空图片URL
+  images.value[index].url = ""; // 清空图片URL
 };
 
 const close = () => {
@@ -98,11 +124,11 @@ const close = () => {
 };
 
 const images = ref([
-  { url: '' },
-  { url: '' },
-  { url: '' },
-  { url: '' },
-  { url: '' }
+  { url: "" },
+  { url: "" },
+  { url: "" },
+  { url: "" },
+  { url: "" },
 ]);
 
 // 选择问题类型
@@ -161,12 +187,12 @@ async function submitFeedback() {
 
     if (result.code === 0) {
       feedbackCount.value += 1;
-      localStorage.setItem('feedbackCount', feedbackCount.value.toString());
+      localStorage.setItem("feedbackCount", feedbackCount.value.toString());
       alert("Submitted successfully!");
       close();
     }
   } catch (error) {
-    console.error("Submission failed", error);
+    alert("Submission failed", error);
   }
 }
 
@@ -182,7 +208,6 @@ function dataURLtoFile(dataurl, filename) {
   }
   return new File([u8arr], filename, { type: mime });
 }
-
 </script>
 
 <style scoped>
@@ -201,13 +226,15 @@ function dataURLtoFile(dataurl, filename) {
 
 .feedback-container {
   width: 480px;
-  height:600px;
+  height: 600px;
   background-color: rgba(26, 28, 45, 0.35);
   border-radius: 20px;
-  padding: 30px;
+  padding: 20px 30px 20px 30px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(202, 202, 208, 0.35);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .feedback-header {
@@ -233,8 +260,9 @@ function dataURLtoFile(dataurl, filename) {
 }
 
 .feedback-content {
-  margin-top: 25px; 
+  margin-top: 25px;
   color: #ffffff;
+  height:80%;
 }
 
 .message {
@@ -297,7 +325,7 @@ function dataURLtoFile(dataurl, filename) {
   font-size: 14px;
   align-items: bottom;
   color: #ffffff;
-  background-color:transparent;
+  background-color: transparent;
 }
 
 .action-buttons {
@@ -322,5 +350,4 @@ function dataURLtoFile(dataurl, filename) {
   background-color: #1e90ff;
   color: #ffffff;
 }
-
-  </style>
+</style>
