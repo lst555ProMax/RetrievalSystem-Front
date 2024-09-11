@@ -48,7 +48,7 @@
                     alt="Uploaded Image"
                     class="uploaded-image"
                   />
-                  <div v-if="message.loading" class="loading-icon">
+                  <div v-if="isLoading" class="loading-icon">
                     <i class="fa-solid fa-spinner fa-spin"></i>
                   </div>
                 </div>
