@@ -153,8 +153,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getUsername } from "@/utils/Auth.js"
 import PersonContent from "../components/PersonContent.vue";
 import Activity from "../components/Activity.vue";
 import Official from "../components/Official.vue";
@@ -248,6 +249,14 @@ const handleDelete = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isDeleteVisible.value = true;
 };
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  }
+})
 </script>
 
 <style scoped>

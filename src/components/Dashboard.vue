@@ -105,7 +105,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, computed,onMounted } from 'vue';
-import { getUsername } from "../utils/Auth";
+import { getUsername, clearUsername } from "../utils/Auth";
 
 const router = useRouter();
 const route = useRoute();
@@ -128,6 +128,7 @@ const isActive = (path) => {
 
 const GoToLogin=()=>{
     router.push("/");
+    clearUsername();
 }
 
 // 定义一个导航函数
