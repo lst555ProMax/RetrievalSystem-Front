@@ -161,7 +161,6 @@ const questionSelection = ref(0);
 const uiChange = ref(0);
 const messages = ref([]);
 const userInput = ref("");
-const userInput2 = ref("");
 const isLoading = ref(false);
 const chatHistory = ref(null);
 
@@ -334,9 +333,6 @@ const sendImage = async (isRetry = false, index = -1) => {
     loading: true,
   });
 
-
-  console.log(messages.get('imageUrl'));
-
   userInput.value = "";
 
   const formData = new FormData();
@@ -471,6 +467,7 @@ const retryResponse = async (index) => {
   try {
     await sendImage(true, index);
   } catch (error) {
+    console.log(error);
     messages.value[index].text = "Request failed, please try again later.";
   }
 };
