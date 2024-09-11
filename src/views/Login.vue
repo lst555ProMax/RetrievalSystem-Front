@@ -276,7 +276,7 @@ const doSubmit = async () => {
     let params = {};
     // 将 form.data 的所有值都赋给 params 对象
     Object.assign(params, formData.value);
-
+    console.log(params)
     // 处理注册或登录操作
     if (opType.value === 0 || opType.value === 1) {
       handleRegisterOrLogin(params);
@@ -378,7 +378,7 @@ const handleResetPassword = async (params) => {
   const url = api.resetPwd;
   const formData2 = new FormData();
   formData2.append("username", params.username);
-  formData2.append("password", params.password);
+  formData2.append("password", params.registerPassword);
 
   try {
     const response = await fetch(url, {
