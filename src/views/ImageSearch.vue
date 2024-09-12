@@ -363,8 +363,11 @@ const sendImage = async (isRetry = false, index = -1) => {
     }
 
     const result = await response.json();
-    const responseTime = new Date().toLocaleTimeString();
 
+    console.log(result);
+
+    const responseTime = new Date().toLocaleTimeString();
+    
     messages.value.push({
       text: result.text_list
         ? result.text_list.map((text) => text.content).join("\n")

@@ -345,7 +345,12 @@ const handleSuccessResponse = (response, params) => {
     // 存储 JWT 令牌
     localStorage.setItem("jwtToken", response.access_token); // 假设 token 是返回的 JWT 令牌字段名
     alert("Operation successful");
-    if (response.data.permission_level === 1) {
+    if (opType.value === 0) {
+      router.push("/");
+      opType.value = 1;
+      resetForm();
+    }
+    else if (response.data.permission_level === 1) {
       router.push("/framework");
     } else if (response.data.permission_level === 0) {
       router.push("/userManagement");
