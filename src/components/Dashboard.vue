@@ -4,10 +4,7 @@
       <nav class="main-menu">
         <div>
           <div class="user-info">
-            <img
-              :src="avatarSrc"
-              alt="user"
-            />
+            <img :src="avatarSrc" alt="user" />
             <p>{{ username }}</p>
           </div>
           <ul>
@@ -22,28 +19,33 @@
               </a>
             </li>
 
-            <li class="nav-item"
-            :class="{ active: isActive('/textSearch') }"
+            <li
+              class="nav-item"
+              :class="{ active: isActive('/textSearch') }"
               @click="navigateTo('/textSearch')"
-              >
+            >
               <a href="#">
                 <i class="fa fa-arrow-trend-up nav-icon"></i>
                 <span class="nav-text">Image</span>
               </a>
             </li>
 
-            <li class="nav-item"
-            :class="{ active: isActive('/imageSearch') }"
-              @click="navigateTo('/imageSearch')">
+            <li
+              class="nav-item"
+              :class="{ active: isActive('/imageSearch') }"
+              @click="navigateTo('/imageSearch')"
+            >
               <a href="#">
                 <i class="fa fa-compact-disc nav-icon"></i>
                 <span class="nav-text">Text</span>
               </a>
             </li>
 
-            <li class="nav-item"
-            :class="{ active: isActive('/dialogue') }"
-              @click="navigateTo('/dialogue')">
+            <li
+              class="nav-item"
+              :class="{ active: isActive('/dialogue') }"
+              @click="navigateTo('/dialogue')"
+            >
               <a href="#">
                 <i class="fa fa-circle-play nav-icon"></i>
                 <span class="nav-text">Dialog</span>
@@ -60,31 +62,22 @@
                 <span class="nav-text">About</span>
               </a>
             </li>
-
-<!--             <li
-              class="nav-item"
-              :class="{ active: isActive('/test') }"
-              @click="navigateTo('/test')"
-            >
-              <a href="#">
-                <i class="fa fa-heart nav-icon"></i>
-                <span class="nav-text">About</span>
-              </a>
-            </li> -->
           </ul>
         </div>
 
         <ul>
-          <li class="nav-item"
-          :class="{ active: isActive('/profile') }"
-          @click="navigateTo('/profile')">
+          <li
+            class="nav-item"
+            :class="{ active: isActive('/profile') }"
+            @click="navigateTo('/profile')"
+          >
             <a href="#">
               <i class="fa fa-user nav-icon"></i>
               <span class="nav-text">Profile</span>
             </a>
           </li>
 
-          <li class="nav-item" @click ="GoToLogin">
+          <li class="nav-item" @click="GoToLogin">
             <a href="#">
               <i class="fa fa-right-from-bracket nav-icon"></i>
               <span class="nav-text">Logout</span>
@@ -104,14 +97,14 @@
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, computed,onMounted } from 'vue';
+import { ref, computed, onMounted } from "vue";
 import { getUsername, clearUsername } from "../utils/Auth";
 
 const router = useRouter();
 const route = useRoute();
-const username=getUsername();
+const username = getUsername();
 
-const avatarSrc = ref('../assets/avatar/lst.jpg'); // 默认头像
+const avatarSrc = ref("../assets/avatar/lst.jpg"); // 默认头像
 
 onMounted(() => {
   // 从 localStorage 或其他地方获取头像文件路径
@@ -126,10 +119,10 @@ const isActive = (path) => {
   return route.path === path;
 };
 
-const GoToLogin=()=>{
-    router.push("/");
-    clearUsername();
-}
+const GoToLogin = () => {
+  router.push("/");
+  clearUsername();
+};
 
 // 定义一个导航函数
 const navigateTo = (path) => {
@@ -140,6 +133,7 @@ const navigateTo = (path) => {
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&family=Roboto:wght@300;400;500;700&display=swap");
 
+/* 全局样式重置 */
 *,
 *::before,
 *::after {
@@ -148,8 +142,9 @@ const navigateTo = (path) => {
   margin: 0;
 }
 
+/* 导航菜单样式 */
 nav {
-  user-select: none;
+  user-select: none; /* 禁止选择文本 */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -158,43 +153,42 @@ nav {
 
 nav ul,
 nav ul li {
-  outline: 0;
+  outline: 0; /* 去掉列表项的轮廓 */
 }
 
 nav ul li a {
-  text-decoration: none;
+  text-decoration: none; /* 去掉链接下划线 */
 }
 
 img {
-  width: 100%;
+  width: 100%; /* 图片宽度填满容器 */
 }
 
 h1 {
-  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  font-size: clamp(1.2rem, 3vw, 1.5rem); /* 动态字体大小 */
 }
 
 body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100vh; /* 页面最小高度 */
 }
 
-/* MAIN MENU */
-
+/* 主菜单样式 */
 main {
   display: grid;
-  grid-template-columns: 11% 89%;
+  grid-template-columns: 11% 89%; /* 主菜单和内容区宽度比例 */
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* 高度填满视口 */
   margin: 0px;
   background: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px); /* 背景模糊效果 */
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.5); /* 边框颜色和透明度 */
+  border-radius: 15px; /* 圆角边框 */
   box-shadow: 0 0.5px 0 1px rgba(255, 255, 255, 0.23) inset,
-    0 1px 0 0 rgba(255, 255, 255, 0.6) inset, 0 4px 16px rgba(0, 0, 0, 0.12);
+    0 1px 0 0 rgba(255, 255, 255, 0.6) inset, 0 4px 16px rgba(0, 0, 0, 0.12); /* 阴影效果 */
   z-index: 10;
 }
 
@@ -202,8 +196,8 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 15px 0 0 15px;
-  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 15px 0 0 15px; /* 圆角边框 */
+  border-right: 1px solid rgba(255, 255, 255, 0.5); /* 右侧边框 */
   padding: 12px 0 20px;
   overflow: hidden;
   font-family: inherit;
@@ -211,12 +205,12 @@ main {
 
 .user-info img {
   padding: 12px 24px 6px;
-  border-radius: 50%;
+  border-radius: 50%; /* 圆形头像 */
 }
 
 .user-info p {
   color: #fff;
-  font-size: clamp(0.8rem, 5vw, 1.5rem);
+  font-size: clamp(0.8rem, 5vw, 1.5rem); /* 动态字体大小 */
   font-weight: 500;
   text-align: center;
   line-height: 1;
@@ -238,25 +232,24 @@ main {
   border-radius: 5px;
 }
 
-
-.nav-item a i{
+.nav-item a i {
   display: -ms-inline-flexbox;
-  color:#ffffffd0;
+  color: #ffffffd0; /* 图标颜色 */
 }
 
-.nav-item a i:hover{
-  color: #3e3e5f;
+.nav-item a i:hover {
+  color: #3e3e5f; /* 图标悬停颜色 */
 }
 
 .nav-item.active a {
-  background: rgba(106, 109, 155, 0.5);
+  background: rgba(106, 109, 155, 0.5); /* 活动菜单项背景色 */
   text-decoration: none;
 }
 
 .nav-icon {
   width: 40px;
   height: 20px;
-  font-size: 1.1rem;
+  font-size: 1.1rem; /* 图标大小 */
 }
 
 .nav-text {
@@ -266,36 +259,23 @@ main {
   letter-spacing: 0;
 }
 
-/* CONTENT */
-
+/* 内容区样式 */
 .content {
   display: grid;
   grid-template-columns: 100% 100%;
   max-height: 100%;
   max-width: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-y: scroll; /* 纵向滚动 */
+  overflow-x: hidden; /* 横向隐藏滚动条 */
 }
 
-/* LEFT CONTENT */
-
+/* 左侧内容样式 */
 .left-content {
   padding: 10px 30px;
   color: #e5e5e5;
 }
 
-/* Containers of Artist and Albums */
-
-.containers {
-  display: flex;
-  align-items: center;
-  padding: 0 0 12px;
-  overflow-x: auto;
-  cursor: grab;
-}
-
-/* MEDIA QUERIES */
-
+/* 媒体查询样式，适配不同屏幕宽度 */
 @media (max-width: 1500px) {
   .content {
     grid-template-columns: 100%;
@@ -373,4 +353,3 @@ main {
   }
 }
 </style>
-

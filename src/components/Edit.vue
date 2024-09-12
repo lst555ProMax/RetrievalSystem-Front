@@ -3,7 +3,7 @@
     <div class="edit-content" @click="stop">
       <!-- 头部 -->
       <div class="edit-header">
-        <h2>Data Modifications</h2>
+        <h2>Modification</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
@@ -23,7 +23,7 @@
 
           <!-- 邮箱 -->
           <div class="form-group" prop="email">
-            <label for="email">email</label>
+            <label for="email">Email</label>
             <input
               type="email"
               id="email"
@@ -36,18 +36,18 @@
 
           <!-- 新密码 -->
           <div class="form-group" prop="password">
-            <label for="password">password</label>
+            <label for="password">Password</label>
             <input
               type="password"
               id="password"
-              placeholder="Please input your new password"
+              placeholder="Please enter your new password"
               v-model="form.password"
             />
           </div>
 
           <!-- 确认新密码 -->
           <div class="form-group" prop="rePassword">
-            <label for="rePassword">Confirm the password</label>
+            <label for="rePassword">Confirm Password</label>
             <input
               type="password"
               id="rePassword"
@@ -83,7 +83,7 @@
 
           <!-- 性别选择 -->
           <div class="form-group">
-            <label>Sex</label>
+            <label>Gender</label>
             <div class="gender-options">
               <div class="gender-option">
                 <label class="gender-option-label">Male</label>
@@ -120,10 +120,10 @@
 
           <!-- 个人简介 -->
           <div class="form-group">
-            <label for="bio">Biography</label>
+            <label for="bio">Personal Introduction</label>
             <textarea
               id="bio"
-              placeholder="Please edit your profile"
+              placeholder="Please edit your personal introduction"
               v-model="form.description"
             ></textarea>
           </div>
@@ -133,7 +133,7 @@
       <!-- 底部按钮 -->
       <div class="edit-footer">
         <button class="cancel-button" @click="close">Close</button>
-        <button class="confirm-button" @click="submitForm">Sure</button>
+        <button class="confirm-button" @click="submitForm">Confirm</button>
       </div>
     </div>
   </div>
@@ -146,9 +146,8 @@ import { useRouter, useRoute } from "vue-router";
 import Verify from "../utils/verify";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
-
-import { getUsername } from "../utils/Auth"
-const username=getUsername();
+import { getUsername } from "../utils/Auth";
+const username = getUsername();
 
 const avatarPreview = ref(null);
 
@@ -174,7 +173,7 @@ const initialFormState = {
 
 const form = ref({ ...initialFormState });
 
-/* 检查密码的再次修改 */
+/* 检查确认密码是否一致 */
 const checkRePassword = (rule, value, callback) => {
   if (value !== formData.value.registerPassword) {
     callback(new Error(rule.message));
@@ -186,20 +185,24 @@ const checkRePassword = (rule, value, callback) => {
 const rules = {
   email: [
     { required: true, message: "Please modify your email address" },
-    { validator: proxy.Verify.email, message: "Please enter a valid email address" },
+    {
+      validator: proxy.Verify.email,
+      message: "Please enter a valid email address",
+    },
   ],
   password: [
     { required: true, message: "Please enter your password" },
     {
       validator: proxy.Verify.password,
-      message: "The password can only be numbers, letters, special characters 8-18 digits",
+      message:
+        "Password can only contain numbers, letters, special characters, and should be 8-18 characters long",
     },
   ],
   rePassword: [
     { required: true, message: "Please enter your password again" },
     {
       validator: checkRePassword,
-      message: "The password entered twice is inconsistent",
+      message: "The two entered passwords do not match",
     },
   ],
 };
@@ -220,7 +223,6 @@ const handleFileChange = (event) => {
     reader.onload = (e) => {
       avatarPreview.value = e.target.result;
       localStorage.setItem(`avatar_${username}`, e.target.result);
-      console.log(`avatar_${username}`);
     };
     reader.readAsDataURL(file);
     form.avatar = file; // 保存文件到 form 对象
@@ -245,7 +247,6 @@ const submitForm = async () => {
   formData.append("description", form.value.description);
   formData.append("birthday", form.value.birthday);
 
-  console.log("111"+formData.get('username'));
   // 如果有头像上传，添加头像到 formData
   if (form.avatar) {
     formData.append("avatar", form.avatar);
@@ -267,15 +268,14 @@ const submitForm = async () => {
 
     const result = await response.json();
     if (result.code === 0) {
-      alert("The modification was successful");
+      alert("Modification successful");
       emit("update:isVisible", false);
       avatarPreview.value = null;
       resetForm();
     } else {
-      console.error("The modification failed", result.message);
     }
   } catch (error) {
-    console.error("The request failed", error);
+    alert("Request failed", error);
   }
 };
 
@@ -290,11 +290,9 @@ const close = () => {
 // 重置表单函数
 const resetForm = () => {
   form.value = { ...initialFormState };
-  avatarPreview.value = null; // 清除头像预览
-  selectedGender.value = "secret"; // 重置性别选择
+  avatarPreview.value = null; // Clear avatar preview
+  selectedGender.value = "secret"; // Reset gender selection
 };
-
-
 </script>
 
 <style scoped>
@@ -313,7 +311,6 @@ const resetForm = () => {
 
 .edit-content {
   background-color: rgba(26, 28, 45, 0.35);
-
   border-radius: 20px;
   width: 400px;
   padding: 20px 30px;
@@ -322,8 +319,6 @@ const resetForm = () => {
   height: 80%;
   border: 1px solid rgba(202, 202, 208, 0.35);
 }
-
-
 
 .edit-header {
   display: flex;
@@ -347,24 +342,23 @@ const resetForm = () => {
 
 .edit-body {
   margin-bottom: 20px;
-
-}
-
-.form{
+  max-height: 85%;
   overflow-y: scroll;
-  max-height: 530px;
 }
 
-.form::-webkit-scrollbar {
+.edit-body::-webkit-scrollbar {
   display: none;
 }
+
+.form {
+
+}
+
+
 .form-group {
   margin-bottom: 15px;
   height: 100%;
-
 }
-
-
 
 .form-group label {
   display: block;
@@ -390,7 +384,7 @@ const resetForm = () => {
 }
 
 .avatar {
-  width: 100px; 
+  width: 100px;
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
@@ -400,7 +394,6 @@ const resetForm = () => {
   display: flex;
   gap: 10px;
   align-items: center;
-  /*   justify-content: center; */
 }
 
 .gender-option {
@@ -444,4 +437,3 @@ const resetForm = () => {
   cursor: pointer;
 }
 </style>
-<!-- #2c2e3d -->

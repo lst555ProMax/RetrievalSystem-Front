@@ -135,10 +135,8 @@ const setSetting = async () => {
     const result = await response.json();
 
     if (result.code === 0) {
-      console.log("Modification successful", result);
       alert("Backup settings have been modified!");
     } else {
-      console.error("Modification failed", result.message);
       alert("Modification failed!");
     }
   } catch (error) {
@@ -160,7 +158,6 @@ const getRecord = async () => {
       backupRecords.value.forEach((record) => {
         record.admin = response.data.admin_name;
       });
-      /*       alert("备份记录更新成功！"); */
     } else {
       console.error(
         "Failed to retrieve administrator backup records:",
@@ -172,6 +169,7 @@ const getRecord = async () => {
   }
 };
 
+// 执行备份操作
 const Backup = async () => {
   try {
     const response = await axios.get(api.create_backup, {
@@ -220,7 +218,6 @@ const cancelEditing = () => {
 // 执行备份
 const executeBackup = () => {
   alert("Backup operation in progress...");
-  // 这里可以添加实际的备份操作逻辑
 };
 </script>
 
@@ -242,7 +239,7 @@ body {
   overflow: hidden;
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
   justify-items: center;
 }
 
@@ -255,7 +252,7 @@ body {
   overflow-y: auto;
   box-sizing: border-box;
   height: 780px;
-  width:100%;
+  width: 100%;
 }
 
 h3 {
@@ -269,7 +266,7 @@ h3 {
   margin-bottom: 20px;
   padding: 10px 25px 20px 25px;
   width: 90%;
-  height:22%;
+  height: 22%;
   color: rgba(255, 255, 255, 0.8);
   align-items: center;
   justify-content: center;
@@ -289,7 +286,7 @@ input {
   border-radius: 4px;
   background-color: rgba(62, 62, 95, 0.6);
   color: #fff;
-width:45%;
+  width: 45%;
 }
 
 .btn {

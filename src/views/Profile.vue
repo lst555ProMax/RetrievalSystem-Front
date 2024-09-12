@@ -155,7 +155,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getUsername } from "@/utils/Auth.js"
+import { getUsername } from "@/utils/Auth.js";
 import PersonContent from "../components/PersonContent.vue";
 import Activity from "../components/Activity.vue";
 import Official from "../components/Official.vue";
@@ -174,6 +174,7 @@ import StarfieldVue from "../components/Starfield.vue";
 const router = useRouter();
 const goHome = () => router.push("/home");
 
+// 定义表单可见性状态
 const isForm1Visible = ref(false);
 const isForm2Visible = ref(false);
 const isForm3Visible = ref(false);
@@ -184,7 +185,10 @@ const isPayVisible = ref(false);
 const isDeleteVisible = ref(false);
 const isPersonalizationVisible = ref(false);
 
+// 用于隐藏定时器
 const hideTimers = ref({});
+
+// 显示表单
 const showForm = (formName) => {
   clearTimeout(hideTimers.value[formName]);
   if (formName === "form1Vision") {
@@ -196,6 +200,7 @@ const showForm = (formName) => {
   }
 };
 
+// 隐藏表单
 const hideForm = (formName) => {
   hideTimers.value[formName] = setTimeout(() => {
     if (formName === "form1Vision") {
@@ -208,6 +213,8 @@ const hideForm = (formName) => {
     }
   }, 100);
 };
+
+// 启动隐藏定时器
 
 const startHideTimer = (formName) => {
   hideTimers.value[formName] = setTimeout(() => {
@@ -222,29 +229,32 @@ const startHideTimer = (formName) => {
   }, 100);
 };
 
+// 处理支付
 const handlePay = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isPayVisible.value = true;
 };
-
+// 切换表单
 const handleToggleForm = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isEditVisible.value = true;
 };
-
+// 处理回答
 const handleAnswer = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isAnswerVisible.value = true;
 };
-
+// 处理个性化
 const handlePersonalization = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isPersonalizationVisible.value = true;
 };
+// 处理反馈
 const handleFeedBack = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isFeedBackVisible.value = true;
 };
+// 处理注销
 const handleDelete = () => {
   document.querySelector(".form3Vision").style.display = "none";
   isDeleteVisible.value = true;
@@ -256,7 +266,7 @@ onMounted(() => {
   if (!username) {
     router.push("/");
   }
-})
+});
 </script>
 
 <style scoped>
@@ -267,7 +277,7 @@ onMounted(() => {
 }
 
 body {
-  /*     display: flex; */
+  /* 设置字体和布局 */
   font-family: Arial;
   overflow: hidden;
   min-height: 100%;
@@ -289,7 +299,6 @@ body {
 
 .title {
   font-family: "Dancing Script", cursive;
-  /*   padding-top: 15px; */
   color: #fff;
   align-items: center;
 }
@@ -313,12 +322,12 @@ ul li a {
   text-decoration: none;
 }
 
-ul li a i{
+ul li a i {
   display: -ms-inline-flexbox;
-  color:#ffffffd0;
+  color: #ffffffd0;
 }
 
-ul li a i:hover{
+ul li a i:hover {
   color: #3e3e5f;
 }
 
@@ -345,12 +354,12 @@ ul li a i:hover{
   background-color: rgba(128, 128, 128, 0.05);
   padding: 30px;
   border-radius: 18px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: absolute;
-  top: 200%; /* 将元素的顶部边缘定位在其包含块的顶部边缘以下 200% 的位置 */
-  left: 50%; /* 将元素的左边缘定位在其包含块的左边缘的 50% 位置 */
-  transform: translateX(-100%); /* 将元素在水平方向上移动其自身宽度的 50% */
-  z-index: 10; /* 设置元素的堆叠顺序，值越大，元素越位于其他元素之上 */
+  top: 200%;
+  left: 50%;
+  transform: translateX(-100%);
+  z-index: 10;
 }
 
 .form2Vision,
@@ -360,7 +369,6 @@ ul li a i:hover{
   height: 400px;
   display: none;
   background-color: rgba(128, 128, 128, 0.05);
-  /*   box-shadow: 1px 1px 8px 0 rgb(199, 199, 199); */
   border-radius: 18px;
   padding: 30px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
@@ -371,19 +379,12 @@ ul li a i:hover{
   z-index: 10; /* 设置元素的堆叠顺序，值越大，元素越位于其他元素之上 */
 }
 
-/* End */
-
-/* Main */
 .main {
-  /*   margin-top: 2%;
-  margin-left: 29%; */
   font-size: 28px;
   padding: 100px 10px;
   width: auto;
   height: 636px;
   align-items: center;
-  /* display: flex;
-flex:10; */
 }
 
 .main h2 {
@@ -401,7 +402,7 @@ flex:10; */
   margin-bottom: 20px;
   padding: 20px 0 20px 50px;
   width: 60%;
-  color:rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .main .card table {
@@ -410,9 +411,4 @@ flex:10; */
   height: 350px;
   width: 80%;
 }
-
-/* .edit {
-  position: absolute;
-  right: 14%;
-} */
 </style>

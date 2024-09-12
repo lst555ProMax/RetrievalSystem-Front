@@ -2,21 +2,20 @@
   <starfield />
 
   <div v-if="showModal" class="modal" @click.self="closeModal">
-  <div class="modal-content">
-    <img :src="currentImage" alt="Enlarged Image" class="modal-image" />
-    <div class="modal-buttons">
-    <button @click="downloadImage(currentImage)">Save</button>
-    <button @click="closeModal">Close</button>
+    <div class="modal-content">
+      <img :src="currentImage" alt="Enlarged Image" class="modal-image" />
+      <div class="modal-buttons">
+        <button @click="downloadImage(currentImage)">Save</button>
+        <button @click="closeModal">Close</button>
+      </div>
+    </div>
   </div>
-  </div>
-</div>
 
   <dashboard>
     <template #left-content>
       <div class="non-header">
         <div class="main-content">
           <div class="up-down">
-            <!-- Recommended Searches -->
             <div v-if="!uiChange" :key="1">
               <div class="recommendations">
                 <div class="headbar">
@@ -180,7 +179,7 @@ const token = localStorage.getItem("jwtToken");
 
 const api = {
   text: API_ENDPOINTS.text,
-  fetchHistory: API_ENDPOINTS.list, // API endpoint for fetching history records
+  fetchHistory: API_ENDPOINTS.list,
 };
 
 // 放大图片函数
@@ -199,7 +198,7 @@ const closeModal = () => {
 const downloadImage = (imageUrl) => {
   const link = document.createElement("a");
   link.href = imageUrl;
-  link.download = `downloaded_image.png`; // 定义下载的文件名
+  link.download = `downloaded_image.png`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -222,7 +221,6 @@ const sendMessage = async () => {
     uiChange.value = 1;
     messages.value = [];
 
-    // Add user question to message list
     messages.value.push({
       text: userInput.value,
       time: currentTime,
@@ -230,10 +228,8 @@ const sendMessage = async () => {
       loading: true,
     });
 
-    // Call backend API
     await sendToBackend(userInput.value);
 
-    // Clear input box
     userInput.value = "";
   }
 };
@@ -349,7 +345,7 @@ const fetchHistory = async (id) => {
         text: result.data.search_text,
         time: result.data.date,
         isResponse: false,
-        fromHistory: true, // Mark as coming from history
+        fromHistory: true,
       });
 
       const imageUrls = [];
@@ -364,7 +360,7 @@ const fetchHistory = async (id) => {
         time: result.data.date,
         isResponse: true,
         imageurls: imageUrls,
-        fromHistory: true, // Mark as coming from history
+        fromHistory: true,
       });
     } else {
       handleError(
@@ -393,7 +389,7 @@ const downloadAllImages = () => {
     message.imageurls.forEach((imageUrl, imgIndex) => {
       const link = document.createElement("a");
       link.href = imageUrl;
-      link.download = `image_${imgIndex}.png`; // Custom filename
+      link.download = `image_${imgIndex}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -421,7 +417,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 .modal {
   position: fixed;
   top: 0;
@@ -444,12 +439,12 @@ onMounted(() => {
   align-items: center;
 }
 
-.modal-buttons{
-  width:100%;
-  display:flex;
+.modal-buttons {
+  width: 100%;
+  display: flex;
   justify-content: center;
   align-items: center;
-  height:50px;
+  height: 50px;
 }
 
 .modal-image {
@@ -460,8 +455,8 @@ onMounted(() => {
 
 .modal-content button {
   margin-top: 10px;
-  margin-left:15px;
-  margin-right:15px;
+  margin-left: 15px;
+  margin-right: 15px;
   padding: 8px 16px;
   background-color: #2e3140;
   color: white;
@@ -469,8 +464,8 @@ onMounted(() => {
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
-  height:80%;
-  width:20%;
+  height: 80%;
+  width: 20%;
 }
 
 .textToImage-system {
@@ -505,8 +500,8 @@ onMounted(() => {
 }
 
 .recommendations {
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 固定在底部 */
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 80%;
   display: flex;
@@ -572,8 +567,8 @@ onMounted(() => {
 }
 
 .chat-history {
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 固定在底部 */
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 85%;
   flex: 1;
@@ -644,12 +639,11 @@ onMounted(() => {
 }
 
 .input-area {
-  position: absolute; /* 绝对定位 */
-  bottom: 0; /* 固定在底部 */
+  position: absolute;
+  bottom: 0;
   display: flex;
   align-items: center;
   background: transparent;
-  /*   border-top: 1px solid #e0dde7bb; */
   width: 100%;
   height: 10%;
 }
@@ -659,7 +653,6 @@ onMounted(() => {
   padding: 10px;
   border: none;
   border-radius: 5px;
-  /*   margin-left: 10px; */
   margin-right: 10px;
   background-color: rgba(255, 255, 255, 0.1);
   color: #d3d3d3;

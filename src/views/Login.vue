@@ -38,7 +38,6 @@
             v-model.trim="formData.email"
             maxLength="150"
           >
-            <!-- 具名插槽用法，这里的template是用来插入自定义组件的 -->
             <template #prefix>
               <span class="iconfont icon-account"></span>
             </template>
@@ -157,7 +156,7 @@ import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import BackgroundAnimation from "../components/BackgroundAnimation.vue";
-import { useUserStore } from "../stores/userStore"; // 引入 Store
+import { useUserStore } from "../stores/userStore";
 import { saveUsername } from "../utils/Auth";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
@@ -179,7 +178,6 @@ const showPanel = (type) => {
   resetForm();
 };
 
-/* onMounted生命周期钩子函数   用于在组件完成挂载之后完成一些初始化的操作 */
 onMounted(() => {
   showPanel(1);
 });
@@ -202,7 +200,7 @@ const checkRePassword = (rule, value, callback) => {
 const formData = ref({
   username: "",
   password: "",
-  rememberMe: false, // Remember me 选项
+  rememberMe: false,
 });
 const formDataRef = ref();
 
@@ -245,7 +243,6 @@ const resetForm = () => {
     formDataRef.value.resetFields();
     formData.value = {};
 
-    //登录
     if (opType.value == 1) {
       const cookieLoginInfo = proxy.VueCookies.get("loginInfo");
       if (cookieLoginInfo) {
@@ -255,13 +252,12 @@ const resetForm = () => {
   });
 };
 
-const userStore = useUserStore(); // 使用 Store
+const userStore = useUserStore();
 
 // 发射用户名的函数
 const emitUsername = () => {
   if (formData.value.username) {
-    userStore.setUsername(formData.value.username); // 更新 Store 中的 username
-    console.log("Username has been updated to:", userStore.username);
+    userStore.setUsername(formData.value.username);
   } else {
     console.error("Username is empty, unable to submit!");
   }
@@ -269,29 +265,22 @@ const emitUsername = () => {
 
 //登录、注册、重置密码  提交表单
 const doSubmit = async () => {
-  // 表单验证
   formDataRef.value.validate(async (valid) => {
     if (!valid) return;
 
     let params = {};
-    // 将 form.data 的所有值都赋给 params 对象
     Object.assign(params, formData.value);
-    console.log(params)
-    // 处理注册或登录操作
     if (opType.value === 0 || opType.value === 1) {
       handleRegisterOrLogin(params);
     } else if (opType.value === 2) {
-      // 处理重置密码操作
       handleResetPassword(params);
     }
   });
 };
 
-// 处理注册或登录
 const handleRegisterOrLogin = async (params) => {
   let url = null;
 
-  // 注册
   if (opType.value === 0) {
     params.password = params.registerPassword;
     delete params.registerPassword;
@@ -299,7 +288,6 @@ const handleRegisterOrLogin = async (params) => {
     url = api.register;
   }
 
-  // 登录
   if (opType.value === 1) {
     url = api.login;
     let cookieLoginInfo = proxy.VueCookies.get("loginInfo");
@@ -309,25 +297,19 @@ const handleRegisterOrLogin = async (params) => {
   const urlEncodedParams = new URLSearchParams(params);
 
   try {
-    // 发送请求
     const result = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded", // 确保内容类型为表单数据
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: urlEncodedParams.toString(), // 传递参数
+      body: urlEncodedParams.toString(),
     });
 
-    // 解析响应
     const response = await result.json();
-    data.value = response; // 更新数据
-
-    // 输出消息
-    console.log(response.message);
+    data.value = response;
 
     // 处理成功操作
     handleSuccessResponse(response, params);
-
   } catch (error) {
     console.error("Request failed", error);
     alert("Request failed. Please check your network or try again later");
@@ -342,23 +324,23 @@ const handleRegisterOrLogin = async (params) => {
 // 处理成功响应
 const handleSuccessResponse = (response, params) => {
   if (response.code === 0) {
-    // 存储 JWT 令牌
-    localStorage.setItem("jwtToken", response.access_token); // 假设 token 是返回的 JWT 令牌字段名
-    alert("Operation successful");
     if (opType.value === 0) {
-      router.push("/");
+      alert("Register successfully");
       opType.value = 1;
       resetForm();
-    }
-    else if (response.data.permission_level === 1) {
-      router.push("/framework");
-    } else if (response.data.permission_level === 0) {
-      router.push("/userManagement");
-    }
+    } else {
+      // 存储 JWT 令牌
+      localStorage.setItem("jwtToken", response.access_token);
+      alert("Operation successful");
+      if (response.data.permission_level === 1) {
+        router.push("/framework");
+      } else if (response.data.permission_level === 0) {
+        router.push("/userManagement");
+      }
 
-    emitUsername();
-    saveUsername(params.username);
-
+      emitUsername();
+      saveUsername(params.username);
+    }
   } else {
     alert("Operation failed: " + response.message);
   }
@@ -388,7 +370,7 @@ const handleResetPassword = async (params) => {
   try {
     const response = await fetch(url, {
       method: "POST",
-      body: formData2, // 使用 FormData 作为请求体
+      body: formData2,
     });
 
     const result = await response.json();
@@ -397,17 +379,15 @@ const handleResetPassword = async (params) => {
       opType.value = 1;
       resetForm();
     } else {
-      console.error("Modification failed", result.message);
+      alert("Username is incorrect");
     }
   } catch (error) {
     console.error("Request failed", error);
   }
 };
-
 </script>
 
 <style lang="scss" scoped>
-/* 登录框 */
 .body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
@@ -421,7 +401,6 @@ const handleResetPassword = async (params) => {
   margin: calc((100vh - 500px) / 2) auto;
 }
 
-/* 登录注册 */
 .login-register {
   padding: 25px;
   background-color: rgba(26, 28, 45, 0.35);
@@ -430,16 +409,13 @@ const handleResetPassword = async (params) => {
   border-radius: 20px;
 }
 
-.form-item{
+.form-item {
   border: 1px solid #333;
   border-radius: 10px;
   background-color: #2b2e3e;
   color: #ffffff;
 }
 
-
-
-/* 标题 */
 .login-title {
   text-align: center;
   font-size: 20px;
@@ -451,12 +427,10 @@ const handleResetPassword = async (params) => {
   margin-right: 10px;
 }
 
-/* 记住我选项 */
 .rememberme-panel {
   width: 100%;
 }
 
-/* 忘记密码？没有账号？*/
 .no-account {
   margin-top: 10px;
   width: 100%;
@@ -464,40 +438,38 @@ const handleResetPassword = async (params) => {
   justify-content: space-between;
 }
 
-/* 确定按钮 */
 .op-btn {
   width: 100%;
 }
 
 .button-panel {
   display: flex;
-  justify-content: space-between; /* 在主轴上分配空间 */
-  width: 100%; /* 设置宽度为100%以填满父容器 */
-  height: fit-content; /* 高度自适应内容 */
-  padding: 20px; /* 可选：为按钮面板添加内边距 */
+  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
+  padding: 20px;
 }
 
 .reco-panel,
 .help-panel {
   display: flex;
-  align-items: center; /* 使按钮在交叉轴上居中对齐 */
+  align-items: center;
 }
 
 .button-panel-2 {
   display: flex;
-  justify-content: space-between; /* 在主轴上分配空间 */
-  width: 100%; /* 设置宽度为100%以填满父容器 */
-  height: fit-content; /* 高度自适应内容 */
-  padding: 20px; /* 可选：为按钮面板添加内边距 */
+  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
+  padding: 20px;
 }
 
 .admin-panel,
 .fast-panel {
   display: flex;
-  align-items: center; /* 使按钮在交叉轴上居中对齐 */
+  align-items: center;
 }
 
-/* 图片验证码 */
 .check-code-panel {
   width: 100%;
   display: flex;

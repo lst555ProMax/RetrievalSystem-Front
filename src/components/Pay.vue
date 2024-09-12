@@ -1,31 +1,29 @@
 <template>
   <div v-if="isVisible" class="personal-overlay">
     <div class="personal-content" @click="stop">
-      <!-- 头部 -->
+      <!-- 头部：显示标题和关闭按钮 -->
       <div class="personal-header">
         <h2>sponsor</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
-      <!-- 内容 -->
+      <!-- 内容：赞助说明和图片展示 -->
       <div class="personal-body">
-        <p class="sponsorship-text">Maintaining such a cross-modal image text retrieval system and developing new features for the project required a great deal of effort and was only sustained with the generous financial support of our sponsors.</p>
-        
-        <!-- 图片展示 -->
+        <p class="sponsorship-text">
+          Maintaining such a cross-modal image text retrieval system and
+          developing new features for the project required a great deal of
+          effort and was only sustained with the generous financial support of
+          our sponsors.
+        </p>
+
+        <!-- 图片展示区 -->
         <div class="sponsorship-image">
           <img src="../assets/sponsorship.png" alt="Sponsored Images" />
         </div>
       </div>
-
-      <!-- 底部按钮 -->
-<!--       <div class="personal-footer">
-        <button class="cancel-button" @click="handleSponsorship">赞助</button>
-        <button class="confirm-button" @click="submitForm">确定</button>
-      </div> -->
     </div>
   </div>
 </template>
-
 
 <script setup>
 import { ref, getCurrentInstance } from "vue";
@@ -45,6 +43,7 @@ const token = localStorage.getItem("jwtToken");
 
 const emit = defineEmits(["update:isVisible"]);
 
+// 关闭弹窗
 const close = () => {
   emit("update:isVisible", false);
 };
@@ -54,12 +53,11 @@ const handleSponsorship = () => {
   alert("Thank you for your support!");
 };
 
+// 表单提交逻辑
 const submitForm = async () => {
   // 你的提交逻辑
 };
-
 </script>
-
 
 <style scoped>
 .personal-overlay {
@@ -79,7 +77,7 @@ const submitForm = async () => {
   background-color: rgba(26, 28, 45, 0.35);
   border-radius: 20px;
   width: 380px;
-  height:480px;
+  height: 480px;
   padding: 20px 30px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -116,10 +114,13 @@ const submitForm = async () => {
 
 .sponsorship-text {
   color: #ffffff;
-  margin-bottom: 50px;
+  margin:10px 10px 50px 10px;
+  line-height: 1.5;
+  font-weight: 500;
+  font-size: 15px;
 }
 
-.sponsorship-image{
+.sponsorship-image {
   align-items: center;
   justify-items: center;
   text-align: center;
