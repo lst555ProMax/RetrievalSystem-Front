@@ -1,5 +1,5 @@
 <template>
-  <starfield />
+  <component :is="currentThemeComponent" />
   <dashboard>
     <template #left-content>
       <div v-html="htmlContent"></div>
@@ -8,12 +8,20 @@
 </template>
 
 <script setup>
-import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
+import {
+  ref,
+  reactive,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  computed,
+} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import dashboard from "../components/Dashboard.vue";
-
-import Starfield from "@/components/Starfield.vue";
+import Starfield from "../components/Starfield.vue";
+import CrossStar from "@/components/CrossStar.vue";
+import Neural from "../components/Neural.vue";
 import { getUsername } from "@/utils/Auth";
 
 const { proxy } = getCurrentInstance();
@@ -22,15 +30,53 @@ const route = useRoute();
 
 const htmlContent = ref("");
 
-onMounted(async () => {
+const currentTheme = ref("Starfield");
+
+const checkUserAndInitialize = () => {
   const username = getUsername();
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme) {
+    currentTheme.value = savedTheme;
+  }
 
   if (!username) {
     router.push("/");
-  } else {
-    // 加载 output.html 文件的内容
+  }
+};
+
+const currentThemeComponent = computed(() => {
+  switch (currentTheme.value) {
+    case "Neural":
+      return Neural;
+    case "CrossStar":
+      return CrossStar;
+    default:
+      return Starfield;
+  }
+});
+
+const loadHtmlContent = async () => {
+  try {
     const response = await fetch("../../../public/output.html");
     htmlContent.value = await response.text();
+  } catch (error) {
+    console.error("Failed to load HTML content:", error);
+  }
+};
+
+onMounted(() => {
+  const username = getUsername();
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme) {
+    currentTheme.value = savedTheme;
+  }
+
+  loadHtmlContent();
+
+  if (!username) {
+    router.push("/");
   }
 });
 </script>

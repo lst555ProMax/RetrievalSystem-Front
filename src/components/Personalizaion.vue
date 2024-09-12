@@ -16,7 +16,7 @@
             <select id="theme" v-model="form.theme">
               <option value="Starfield">Starfield</option>
               <option value="Neural">Neural</option>
-              <option value="Slider">Slider</option>
+              <option value="CrossStar">CrossStar</option>
             </select>
           </div>
 
@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, getCurrentInstance } from "vue";
+import { ref, getCurrentInstance, onMounted } from "vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
 import { useUserStore } from "../stores/userStore";
 import { useThemeStore } from "../stores/themeStore"; // 导入主题 store
@@ -82,7 +82,7 @@ const props = defineProps({
 });
 
 const form = ref({
-  theme: "Slider",
+  theme: "CrossStar",
   font: "Arial",
   imgUrl: null,
 });
@@ -133,6 +133,9 @@ const submitForm = async () => {
       alert("The modification was successful");
       emit("update:isVisible", false);
       avatarPreview.value = null;
+
+      localStorage.setItem("theme", form.value.theme);
+
       themeStore.setTheme(form.value.theme);
       fontStore.setFont(form.value.font);
     } else {
@@ -144,6 +147,16 @@ const submitForm = async () => {
 };
 
 const emit = defineEmits(["update:isVisible"]);
+
+onMounted(() =>{
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme) {
+    form.value.theme = savedTheme;
+    themeStore.setTheme(savedTheme);
+  }
+
+});
 
 // 关闭弹窗
 const close = () => {

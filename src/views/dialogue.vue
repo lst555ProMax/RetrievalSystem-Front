@@ -1,5 +1,5 @@
 <template>
-  <starfield />
+  <component :is="currentThemeComponent" />
   <dashboard>
     <template #left-content>
       <div class="chat-system">
@@ -77,13 +77,13 @@
                   </div>
                 </div>
                 <div v-if="message.isResponse" class="response">
-                  <button  @click="retryResponse(index)">Retry</button>
-                  <button  @click="copyResponse(index)">Get</button>
+                  <button @click="retryResponse(index)">Retry</button>
+                  <button @click="copyResponse(index)">Get</button>
                 </div>
               </div>
             </div>
 
-             <!-- 输入区域 -->
+            <!-- 输入区域 -->
             <div class="input-area">
               <input
                 type="text"
@@ -95,7 +95,7 @@
             </div>
           </div>
 
-           <!-- 历史记录部分 -->
+          <!-- 历史记录部分 -->
           <div class="history-section">
             <h4>History Records</h4>
             <ul class="history-list">
@@ -114,9 +114,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from "vue";
+import { ref, watch, onMounted, nextTick, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import Starfield from "@/components/Starfield.vue";
+import Starfield from "../components/Starfield.vue";
+import CrossStar from "@/components/CrossStar.vue";
+import Neural from "../components/Neural.vue";
 import { getUsername } from "@/utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
@@ -125,7 +127,7 @@ const route = useRoute();
 const router = useRouter();
 
 // 定义响应式数据
-const history = ref([]); 
+const history = ref([]);
 const question = ref([
   "What is cross-modal learning?",
   "How is the association between images and text established?",
@@ -159,13 +161,24 @@ const question = ref([
   "How to improve cross-modal retrieval models through knowledge distillation?",
 ]);
 
-
 const questionSelection = ref(0);
 const uiChange = ref(0);
 const userInput = ref("");
 const userInput2 = ref("");
 const messages = ref([]);
 const chatHistory = ref(null);
+const currentTheme = ref("Starfield");
+
+const currentThemeComponent = computed(() => {
+  switch (currentTheme.value) {
+    case "Neural":
+      return Neural;
+    case "CrossStar":
+      return CrossStar;
+    default:
+      return Starfield;
+  }
+});
 
 // 切换问题选择
 const changeSelection = () => {
@@ -181,7 +194,7 @@ const removeHistory = (index) => {
 // 查看历史记录
 const viewHistory = (index) => {
   const selectedHistory = history.value[index];
-  messages.value = selectedHistory.messages; 
+  messages.value = selectedHistory.messages;
 };
 
 // 发送消息
@@ -238,7 +251,7 @@ const sendMessageIndex = async (index) => {
 };
 
 const api = {
-  dialogue:API_ENDPOINTS.dialogue ,
+  dialogue: API_ENDPOINTS.dialogue,
 };
 
 let url = api.dialogue;
@@ -300,17 +313,17 @@ const sendToBackend = async (inputText) => {
       messages.value.push({
         text: result.message,
         time: new Date().toLocaleTimeString(),
-        isResponse: true,         
+        isResponse: true,
         loading: false,
       });
 
-            if (messages.value[0]) {
+      if (messages.value[0]) {
         messages.value[0].loading = false;
       }
     }
   } catch (error) {
     handleError(`Request failed ${error.message}`);
-  } 
+  }
 };
 
 // 重试响应
@@ -341,6 +354,20 @@ const copyResponse = (index) => {
 const handleError = (message) => {
   alert(message);
 };
+
+onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  } else {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme) {
+      currentTheme.value = savedTheme;
+    }
+  }
+});
 </script>
 
 <style scoped>
@@ -369,8 +396,8 @@ const handleError = (message) => {
 }
 
 .recommendations {
-  position: absolute; 
-  top: 0; 
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 80%;
   display: flex;
@@ -435,8 +462,8 @@ const handleError = (message) => {
 }
 
 .chat-history {
-  position: absolute; 
-  top: 0; 
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 85%;
   flex: 1;
@@ -444,7 +471,7 @@ const handleError = (message) => {
 }
 
 .message {
-  background: rgba(173,216,230,0.05);
+  background: rgba(173, 216, 230, 0.05);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -492,8 +519,8 @@ const handleError = (message) => {
 }
 
 .input-area {
-  position: absolute; 
-  bottom: 0; 
+  position: absolute;
+  bottom: 0;
   display: flex;
   align-items: center;
   background: transparent;
@@ -507,22 +534,22 @@ const handleError = (message) => {
   border: none;
   border-radius: 5px;
   margin-right: 10px;
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #d3d3d3;
   height: 50px;
-  font-family: 'Consolas',monospace;
+  font-family: "Consolas", monospace;
   font-size: 15px;
 }
 
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: rgba(0,123,255,0.1);
+  background-color: rgba(0, 123, 255, 0.1);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-height: 50px;
+  height: 50px;
 }
 .input-area button:hover {
   background-color: #0056b3;
@@ -530,7 +557,7 @@ height: 50px;
 
 .history-section {
   flex: 1;
-  background-color:rgba(128,128,128,0.05);
+  background-color: rgba(128, 128, 128, 0.05);
   padding: 10px;
   border-radius: 5px;
 }
@@ -553,7 +580,7 @@ height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(60,63,87,0.65);
+  background-color: rgba(60, 63, 87, 0.65);
   padding: 8px;
   border-radius: 4px;
   color: #d3d3d3;
@@ -564,7 +591,7 @@ height: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 200px; 
+  max-width: 200px;
 }
 
 .history-list button {

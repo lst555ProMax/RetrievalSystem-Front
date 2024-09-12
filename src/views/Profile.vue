@@ -1,6 +1,5 @@
 <template>
-  <Starfield />
-
+  <component :is="currentThemeComponent" />
   <Dashboard>
     <template #left-content>
       <head>
@@ -165,6 +164,8 @@ import Pay from "../components/Pay.vue";
 import Delete from "../components/Delete.vue";
 import Answer from "../components/Answer.vue";
 import Starfield from "../components/Starfield.vue";
+import CrossStar from "@/components/CrossStar.vue";
+import Neural from "../components/Neural.vue";
 import Dashboard from "../components/Dashboard.vue";
 import Personalization from "../components/Personalizaion.vue";
 
@@ -184,6 +185,19 @@ const isFeedBackVisible = ref(false);
 const isPayVisible = ref(false);
 const isDeleteVisible = ref(false);
 const isPersonalizationVisible = ref(false);
+
+const currentTheme = ref("Starfield");
+
+const currentThemeComponent = computed(() => {
+  switch (currentTheme.value) {
+    case "Neural":
+      return Neural;
+    case "CrossStar":
+      return CrossStar;
+    default:
+      return Starfield;
+  }
+});
 
 // 用于隐藏定时器
 const hideTimers = ref({});
@@ -265,6 +279,12 @@ onMounted(() => {
 
   if (!username) {
     router.push("/");
+  } else {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme) {
+      currentTheme.value = savedTheme;
+    }
   }
 });
 </script>

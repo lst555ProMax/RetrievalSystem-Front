@@ -1,5 +1,5 @@
 <template>
-  <starfield />
+  <component :is="currentThemeComponent" />
   <dashboard>
     <template #left-content>
       <div class="imageToText-system">
@@ -102,9 +102,11 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted } from "vue";
+import { ref, watch, nextTick, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import Starfield from "../components/Starfield.vue";
+import CrossStar from "@/components/CrossStar.vue";
+import Neural from "../components/Neural.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
@@ -162,6 +164,19 @@ const messages = ref([]);
 const userInput = ref("");
 const isLoading = ref(false);
 const chatHistory = ref(null);
+
+const currentTheme = ref("Starfield");
+
+const currentThemeComponent = computed(() => {
+  switch (currentTheme.value) {
+    case "Neural":
+      return Neural;
+    case "CrossStar":
+      return CrossStar;
+    default:
+      return Starfield;
+  }
+});
 
 const changeSelection = () => {
   questionSelection.value++;
@@ -474,6 +489,12 @@ onMounted(() => {
 
   if (!username) {
     router.push("/");
+  } else {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme) {
+      currentTheme.value = savedTheme;
+    }
   }
 });
 </script>

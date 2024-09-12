@@ -1,6 +1,5 @@
 <template>
-  <starfield />
-
+  <component :is="currentThemeComponent" />
   <div v-if="showModal" class="modal" @click.self="closeModal">
     <div class="modal-content">
       <img :src="currentImage" alt="Enlarged Image" class="modal-image" />
@@ -125,9 +124,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from "vue";
+import { ref, watch, onMounted, nextTick, computed } from "vue";
 import { useRouter } from "vue-router";
 import Starfield from "../components/Starfield.vue";
+import CrossStar from "@/components/CrossStar.vue";
+import Neural from "../components/Neural.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
@@ -174,6 +175,19 @@ const showModal = ref(false);
 const currentImage = ref("");
 let isReResponce = ref(false);
 const chatHistory = ref(null);
+
+const currentTheme = ref("Starfield");
+
+const currentThemeComponent = computed(() => {
+  switch (currentTheme.value) {
+    case "Neural":
+      return Neural;
+    case "CrossStar":
+      return CrossStar;
+    default:
+      return Starfield;
+  }
+});
 
 const token = localStorage.getItem("jwtToken");
 
@@ -410,6 +424,17 @@ const handleError = (errorMessage) => {
 };
 
 onMounted(() => {
+  const username = getUsername();
+
+  if (!username) {
+    router.push("/");
+  } else {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme) {
+      currentTheme.value = savedTheme;
+    }
+  }
   nextTick(() => {
     chatHistory.value.scrollTop = chatHistory.value.scrollHeight;
   });
