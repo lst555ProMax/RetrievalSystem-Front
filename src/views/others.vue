@@ -58,7 +58,7 @@ const currentThemeComponent = computed(() => {
 
 const loadHtmlContent = async () => {
   try {
-    const response = await fetch("../../../public/output.html");
+    const response = await fetch("../../public/output.html");
     htmlContent.value = await response.text();
   } catch (error) {
     console.error("Failed to load HTML content:", error);

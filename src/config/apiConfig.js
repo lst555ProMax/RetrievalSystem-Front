@@ -1,7 +1,5 @@
 // src/config/apiConfig.js
-/* export const API_BASE_URL = "http://192.168.229.89:8000"; */
-export const API_BASE_URL = "http://10.203.218.155:5000";
-/* "http://192.168.156.89:8000" */
+export const API_BASE_URL = "http://127.0.0.1:8000";/* nginx自动解析 */
 
 export const API_ENDPOINTS = {
 
